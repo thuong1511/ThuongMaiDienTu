@@ -148,6 +148,18 @@
                             <p>Chọn mốc dự đoán tổng số lượng sản phẩm sẽ bán được. Nếu cược đúng, bạn sẽ được hoàn lại tiền chênh lệch!</p>
                         </div>
 
+                        <div class="bet-timer-warning">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            <div>
+                                <strong>Thời gian quyết định có giới hạn!</strong>
+                                <p>Sau khi chọn mốc, bạn có <strong>2 ngày (48 giờ)</strong> để xác nhận. Nếu hết thời gian mà mốc chưa đạt đủ số lượng, bạn sẽ tự động bị xem là cược sai và phải trả <strong>giá cao nhất </strong> <strong>(28.850.000 đ)</strong>.</p>
+                            </div>
+                        </div>
+
                         <div class="bet-options">
                             <div class="bet-card">
                                 <input type="radio" name="bet" id="bet1" value="100-499">
@@ -155,7 +167,6 @@
                                     <div class="bet-range">100 - 499</div>
                                     <div class="bet-price">25.550.000 đ</div>
                                     <div class="bet-discount">Giảm 11.4%</div>
-                                    <div class="bet-votes">397 người chọn</div>
                                 </label>
                             </div>
 
@@ -166,7 +177,6 @@
                                     <div class="bet-range">500 - 799</div>
                                     <div class="bet-price">23.550.000 đ</div>
                                     <div class="bet-discount">Giảm 18.4%</div>
-                                    <div class="bet-votes">412 người chọn</div>
                                 </label>
                             </div>
 
@@ -176,7 +186,6 @@
                                     <div class="bet-range">800 - 999</div>
                                     <div class="bet-price">21.550.000 đ</div>
                                     <div class="bet-discount">Giảm 25.3%</div>
-                                    <div class="bet-votes">82 người chọn</div>
                                 </label>
                             </div>
 
@@ -187,9 +196,16 @@
                                     <div class="bet-range">1000 - 1200</div>
                                     <div class="bet-price">18.550.000 đ</div>
                                     <div class="bet-discount">Giảm 35.7%</div>
-                                    <div class="bet-votes">33 người chọn</div>
                                 </label>
                             </div>
+                        </div>
+
+                        <div class="bet-progress-alert">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <p>Chiến dịch hiện có <strong>924 người tham gia</strong>. Chỉ còn thiếu <strong>76 người</strong> để đạt mốc 1000!</p>
                         </div>
                     </div>
 
@@ -341,6 +357,38 @@
                         </div>
                     </div>
 
+                    <div class="bet-decision-timer">
+                        <div class="timer-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <strong>Thời gian quyết định còn lại:</strong>
+                        </div>
+                        <div class="decision-countdown">
+                            <div class="time-box">
+                                <span class="time-value">02</span>
+                                <span class="time-label">ngày</span>
+                            </div>
+                            <span class="time-sep">:</span>
+                            <div class="time-box">
+                                <span class="time-value">00</span>
+                                <span class="time-label">giờ</span>
+                            </div>
+                            <span class="time-sep">:</span>
+                            <div class="time-box">
+                                <span class="time-value">00</span>
+                                <span class="time-label">phút</span>
+                            </div>
+                            <span class="time-sep">:</span>
+                            <div class="time-box">
+                                <span class="time-value">00</span>
+                                <span class="time-label">giây</span>
+                            </div>
+                        </div>
+                        <p class="timer-note">Sau khi thanh toán đơn, đồng hồ đếm ngược cá nhân sẽ được khởi động.</p>
+                    </div>
+
                     <div class="refund-note">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -348,8 +396,7 @@
                             <path d="M12 8h.01"></path>
                         </svg>
                         <div>
-                            <strong>Lưu ý:</strong>
-                            <p>Bạn thanh toán theo giá gốc. Nếu cược đúng, hệ thống sẽ tự động hoàn lại <strong>5.300.000 đ</strong> sau khi chiến dịch kết thúc.</p>
+                            <p><strong>Cơ chế hoàn tiền:</strong> Bạn thanh toán theo giá gốc. Nếu cược đúng (mốc đạt đủ số lượng trong thời gian quyết định), hệ thống sẽ tự động hoàn lại 5.300.000 đ sau khi chiến dịch kết thúc.</p>
                         </div>
                     </div>
 
@@ -383,13 +430,13 @@
                         <label for="terms">Tôi đồng ý với <a href="#">Điều khoản và Điều kiện</a> của EXED</label>
                     </div>
 
-                    <button class="btn-checkout">
+                    <a href="payment-success.html" class="btn-checkout">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M5 12h14"></path>
                             <path d="m12 5 7 7-7 7"></path>
                         </svg>
                         XÁC NHẬN THANH TOÁN
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

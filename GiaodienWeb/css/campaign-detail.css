@@ -321,6 +321,43 @@
     line-height: 1.6;
 }
 
+/* Bet Warning Box */
+.bet-warning-box {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 2px solid #ff9800;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    animation: pulse-warning 2s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
+}
+
+.bet-warning-box svg {
+    flex-shrink: 0;
+    color: #f57c00;
+    margin-top: 2px;
+}
+
+.bet-warning-box strong {
+    color: #e65100;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.bet-warning-box p {
+    color: #5d4037;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 14px;
+}
+
 .price-tiers {
     display: flex;
     flex-direction: column;
@@ -330,7 +367,7 @@
 
 .tier-row {
     display: grid;
-    grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr;
+    grid-template-columns: 1.2fr 1.5fr 0.8fr;
     gap: 15px;
     padding: 18px 20px;
     background: linear-gradient(135deg, rgba(236, 234, 229, 0.5), rgba(236, 234, 229, 0.3));
@@ -364,12 +401,6 @@
     font-weight: 700;
     font-size: 18px;
     color: var(--primary-dark);
-}
-
-.tier-votes {
-    font-size: 14px;
-    color: rgba(95, 7, 4, 0.7);
-    font-weight: 600;
 }
 
 .tier-discount {
