@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tham gia - EXPED</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/checkout.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="../images/logo.png" alt="EXPED">
+            </div>
+            <nav class="nav">
+                <a href="../index.html" class="nav-link">TRANG CHỦ</a>
+                <a href="campaigns.html" class="nav-link">CHIẾN DỊCH</a>
+                <a href="#" class="nav-link">GIỚI THIỆU</a>
+                <a href="#" class="nav-link">SẢN PHẨM</a>
+                <a href="#" class="nav-link">NGHỆ SĨ COLLAB</a>
+            </nav>
+            <div class="header-actions">
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <svg class="arrow-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                        <a href="order-history.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span>Đơn hàng của tôi</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="login.html" class="dropdown-item logout">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Checkout Section -->
+    <section class="checkout-section">
+        <div class="container">
+            <h1 class="page-title">ĐĂNG KÝ THAM GIA CHIẾN DỊCH</h1>
+            
+            <div class="checkout-grid">
+                <!-- Left: Form -->
+                <div class="checkout-form">
+                    <!-- Step 1: Product Selection -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <span class="step-number">1</span>
+                            <h2>CHỌN SẢN PHẨM</h2>
+                        </div>
+                        
+                        <div class="product-preview">
+                            <img src="../images/chiendich1.jpg" alt="ROSÉ X EXED">
+                            <div class="product-info">
+                                <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
+                                <p>Limited Edition Sneaker - Premium Collection</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Màu sắc</label>
+                            <div class="color-options">
+                                <div class="color-option active">
+                                    <div class="color-swatch" style="background: linear-gradient(135deg, #f5f5dc, #fff)"></div>
+                                    <span>Trắng Kem</span>
+                                </div>
+                                <div class="color-option">
+                                    <div class="color-swatch" style="background: linear-gradient(135deg, #000, #333)"></div>
+                                    <span>Đen</span>
+                                </div>
+                                <div class="color-option">
+                                    <div class="color-swatch" style="background: linear-gradient(135deg, #C4A87F, #D4AF6A)"></div>
+                                    <span>Vàng Gold</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Kích thước (EU)</label>
+                            <div class="size-options">
+                                <button class="size-btn">35</button>
+                                <button class="size-btn">36</button>
+                                <button class="size-btn">37</button>
+                                <button class="size-btn active">38</button>
+                                <button class="size-btn">39</button>
+                                <button class="size-btn">40</button>
+                                <button class="size-btn">41</button>
+                                <button class="size-btn">42</button>
+                                <button class="size-btn">43</button>
+                                <button class="size-btn">44</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Số lượng</label>
+                            <div class="quantity-selector">
+                                <button class="qty-btn minus">-</button>
+                                <input type="number" value="1" min="1" max="10" class="qty-input">
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Bet Selection -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <span class="step-number">2</span>
+                            <h2>CHỌN MỐC ĐẶT CƯỢC</h2>
+                        </div>
+
+                        <div class="bet-explanation">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 16v-4"></path>
+                                <path d="M12 8h.01"></path>
+                            </svg>
+                            <p>Chọn mốc dự đoán tổng số lượng sản phẩm sẽ bán được. Nếu cược đúng, bạn sẽ được hoàn lại tiền chênh lệch!</p>
+                        </div>
+
+                        <div class="bet-options">
+                            <div class="bet-card">
+                                <input type="radio" name="bet" id="bet1" value="100-499">
+                                <label for="bet1">
+                                    <div class="bet-range">100 - 499</div>
+                                    <div class="bet-price">25.550.000 đ</div>
+                                    <div class="bet-discount">Giảm 11.4%</div>
+                                    <div class="bet-votes">397 người chọn</div>
+                                </label>
+                            </div>
+
+                            <div class="bet-card popular">
+                                <div class="popular-badge">PHỔ BIẾN</div>
+                                <input type="radio" name="bet" id="bet2" value="500-799" checked>
+                                <label for="bet2">
+                                    <div class="bet-range">500 - 799</div>
+                                    <div class="bet-price">23.550.000 đ</div>
+                                    <div class="bet-discount">Giảm 18.4%</div>
+                                    <div class="bet-votes">412 người chọn</div>
+                                </label>
+                            </div>
+
+                            <div class="bet-card">
+                                <input type="radio" name="bet" id="bet3" value="800-999">
+                                <label for="bet3">
+                                    <div class="bet-range">800 - 999</div>
+                                    <div class="bet-price">21.550.000 đ</div>
+                                    <div class="bet-discount">Giảm 25.3%</div>
+                                    <div class="bet-votes">82 người chọn</div>
+                                </label>
+                            </div>
+
+                            <div class="bet-card best">
+                                <div class="best-badge">GIÁ TỐT NHẤT</div>
+                                <input type="radio" name="bet" id="bet4" value="1000-1200">
+                                <label for="bet4">
+                                    <div class="bet-range">1000 - 1200</div>
+                                    <div class="bet-price">18.550.000 đ</div>
+                                    <div class="bet-discount">Giảm 35.7%</div>
+                                    <div class="bet-votes">33 người chọn</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Shipping Address -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <span class="step-number">3</span>
+                            <h2>ĐỊA CHỈ GIAO HÀNG</h2>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Họ và tên</label>
+                                <input type="text" placeholder="Nguyễn Văn A" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input type="tel" placeholder="0912345678" class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Địa chỉ chi tiết</label>
+                            <input type="text" placeholder="Số nhà, tên đường" class="form-input">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tỉnh/Thành phố</label>
+                                <select class="form-select">
+                                    <option>Hồ Chí Minh</option>
+                                    <option>Hà Nội</option>
+                                    <option>Đà Nẵng</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quận/Huyện</label>
+                                <select class="form-select">
+                                    <option>Quận 1</option>
+                                    <option>Quận 2</option>
+                                    <option>Quận 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Order Summary -->
+                <div class="order-summary">
+                    <h2>TÓNG QUAN ĐƠN HÀNG</h2>
+                    
+                    <div class="summary-section">
+                        <h3>Sản phẩm</h3>
+                        <div class="summary-item">
+                            <span>ROSÉ X EXED Sneaker</span>
+                            <span>1x</span>
+                        </div>
+                        <div class="summary-detail">
+                            <span>Màu: Trắng Kem | Size: 38</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <h3>Mốc đặt cược</h3>
+                        <div class="summary-item highlight">
+                            <span>500 - 799 sản phẩm</span>
+                            <span class="discount-tag">-18.4%</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <h3>Chi tiết thanh toán</h3>
+                        <div class="summary-item">
+                            <span>Giá gốc (1 sản phẩm)</span>
+                            <span>28.850.000 đ</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Phí tham gia</span>
+                            <span>500.000 đ</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-item total">
+                            <span>Tổng thanh toán</span>
+                            <span>29.350.000 đ</span>
+                        </div>
+                    </div>
+
+                    <div class="refund-note">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                        <div>
+                            <strong>Lưu ý:</strong>
+                            <p>Bạn thanh toán theo giá gốc. Nếu cược đúng, hệ thống sẽ tự động hoàn lại <strong>5.300.000 đ</strong> sau khi chiến dịch kết thúc.</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h3>Phương thức thanh toán</h3>
+                        <div class="payment-option">
+                            <input type="radio" name="payment" id="momo" checked>
+                            <label for="momo">
+                                <div class="payment-icon">💳</div>
+                                <span>Ví MoMo</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" name="payment" id="vnpay">
+                            <label for="vnpay">
+                                <div class="payment-icon">🏦</div>
+                                <span>VNPay</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" name="payment" id="card">
+                            <label for="card">
+                                <div class="payment-icon">💳</div>
+                                <span>Thẻ tín dụng/ghi nợ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms">
+                        <label for="terms">Tôi đồng ý với <a href="#">Điều khoản và Điều kiện</a> của EXPED</label>
+                    </div>
+
+                    <button class="btn-checkout">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14"></path>
+                            <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                        XÁC NHẬN THANH TOÁN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>THÔNG TIN LIÊN HỆ</h4>
+                    <p>📍 Địa chỉ: 123 P. Trung Thanh Phố</p>
+                    <p>📞 Điện thoại: 000 11 2345</p>
+                    <p>✉️ Email: exped@gmail.com</p>
+                </div>
+                <div class="footer-col">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <p>• Giới thiệu EXED</p>
+                    <p>• Chính sách bảo mật</p>
+                    <p>• Đối tác chiến lược</p>
+                </div>
+                <div class="footer-col">
+                    <h4>THEO DÕI CHÚNG TÔI</h4>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

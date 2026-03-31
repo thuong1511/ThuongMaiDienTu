@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXPED - Limited Sneaker Collab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="EXPED">
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">TRANG CHỦ</a>
+                <a href="pages/campaigns.html" class="nav-link">CHIẾN DỊCH</a>
+                <a href="#" class="nav-link">GIỚI THIỆU</a>
+                <a href="#" class="nav-link">SẢN PHẨM</a>
+                <a href="#" class="nav-link">NGHỆ SĨ COLLAB</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <svg class="arrow-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span>Đơn hàng của tôi</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            <span>Yêu thích</span>
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>Cài đặt</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item logout">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="hero-title">ROSÉ X EXED</h1>
+                <button class="btn-primary">Tham gia ngay</button>
+                <p class="hero-price">Chỉ với 500.000 đ</p>
+            </div>
+        </div>
+        <div class="slider-dots">
+            <span class="dot"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </section>
+
+    <!-- Info Bar + Price Table Combined -->
+    <section class="info-price-combined">
+        <div class="combined-container">
+            <div class="info-left-box">
+                <div class="info-row-compact">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Kết thúc sau <strong>03 ngày : 14 giờ : 24 phút : 55 giây</strong></span>
+                </div>
+                
+                <div class="info-row-compact">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span>Sản phẩm đã đăng ký!</span>
+                </div>
+                
+                <div class="progress-container-compact">
+                    <div class="progress-labels">
+                        <span style="left: 0%">0</span>
+                        <span style="left: 16%">100</span>
+                        <span style="left: 41.67%">500</span>
+                        <span style="left: 66.67%">800</span>
+                        <span style="left: 83.33%">1000</span>
+                        <span style="left: 100%">1200</span>
+                    </div>
+                    <div class="progress-bar-compact">
+                        <div class="progress-fill-compact" style="width: 77%"></div>
+                        <div class="progress-divider" style="left: 16%"></div>
+                        <div class="progress-divider" style="left: 41.67%"></div>
+                        <div class="progress-divider" style="left: 66.67%"></div>
+                        <div class="progress-divider" style="left: 83.33%"></div>
+                        <div class="progress-marker-current" style="left: 77%">924</div>
+                    </div>
+                </div>
+                
+                <div class="info-row-compact">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Người tham gia: <strong>911</strong></span>
+                </div>
+            </div>
+            
+            <div class="price-right-box">
+                <div class="price-header-row">
+                    <span class="header-col1">GIÁ GỐC: 28.850.000 đ</span>
+                    <span class="header-col2"></span>
+                    <span class="header-col3">LƯỢT BÌNH CHỌN</span>
+                </div>
+                <div class="price-data-row">
+                    <span class="col1">100 - 499:</span>
+                    <span class="col2">25.50.000 đ</span>
+                    <span class="col3">397</span>
+                </div>
+                <div class="price-data-row">
+                    <span class="col1">500 - 799:</span>
+                    <span class="col2">23.550.000 đ</span>
+                    <span class="col3">412</span>
+                </div>
+                <div class="price-data-row">
+                    <span class="col1">800 - 999:</span>
+                    <span class="col2">21.550.000 đ</span>
+                    <span class="col3">82</span>
+                </div>
+                <div class="price-data-row">
+                    <span class="col1">1000 - 1200:</span>
+                    <span class="col2">18.550.000 đ</span>
+                    <span class="col3">33</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campaigns Section -->
+    <section class="campaigns">
+        <div class="container">
+            <h2 class="section-title">CÁC CHIẾN DỊCH GẦN ĐÂY</h2>
+            <div class="campaign-grid">
+                <div class="campaign-card">
+                    <div class="campaign-image-wrapper">
+                        <img src="images/chiendich1.jpg" alt="SL 72 OG W">
+                        <div class="campaign-badge-discount">-25.3 %</div>
+                    </div>
+                    <div class="campaign-info">
+                        <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
+                        <p class="campaign-status">Trạng thái: <span class="status-active">Đang diễn ra</span></p>
+                        <p class="campaign-participants">Người tham gia: <strong>9/11</strong></p>
+                        <p class="campaign-price">Giá hiện tại: <strong>21.550.000 đ</strong></p>
+                        <div class="campaign-actions">
+                            <div class="campaign-time">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span>03 ngày : 14 giờ</span>
+                            </div>
+                            <button class="btn-view">Xem ngay</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="campaign-card">
+                    <div class="campaign-image-wrapper">
+                        <img src="images/chiendich2.jpg" alt="Gazelle">
+                        <div class="campaign-badge-discount">-41.5 %</div>
+                    </div>
+                    <div class="campaign-info">
+                        <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
+                        <p class="campaign-status">Trạng thái: <span class="status-ended">Đã kết thúc</span></p>
+                        <p class="campaign-participants">Người tham gia: <strong>1208</strong></p>
+                        <p class="campaign-price">Giá cuối: <strong>18.790.000 đ</strong></p>
+                        <div class="campaign-actions">
+                            <div class="campaign-time empty"></div>
+                            <button class="btn-view">Xem ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-view-all">XEM THÊM</button>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title-center">HOW IT WORKS</h2>
+            <img src="images/cochehoatdong.png" alt="Cơ chế hoạt động" class="how-it-works-image">
+        </div>
+    </section>
+
+    <!-- Artists Collab -->
+    <section class="artists">
+        <div class="container">
+            <h2 class="section-title">NGHỆ SĨ COLLAB</h2>
+            <div class="artists-slider">
+                <button class="slider-btn prev">‹</button>
+                <div class="artists-list">
+                    <div class="artist">
+                        <img src="images/rose.jpg" alt="ROSÉ">
+                        <p>ROSÉ</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/lisa.jpg" alt="LISA">
+                        <p>LISA</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/jisoo.jpg" alt="JISOO">
+                        <p>JISOO</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/jen.jpg" alt="JENNIE">
+                        <p>JENNIE</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/goyounjung.jpg" alt="GO YOUN JUNG">
+                        <p>GO YOUN JUNG</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/kimjiwon.jpg" alt="KIM JI WON">
+                        <p>KIM JI WON</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/jichangwook.jpg" alt="JI CHANG WOOK">
+                        <p>JI CHANG WOOK</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/parkbogum.jpg" alt="PARK BO GUM">
+                        <p>PARK BO GUM</p>
+                    </div>
+                </div>
+                <button class="slider-btn next">›</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bidding Section -->
+    <section class="bidding">
+        <div class="container">
+            <h2 class="section-title">ĐÁNH GIÁ GẦN ĐÂY</h2>
+            <div class="bidding-grid">
+                <div class="bidding-card">
+                    <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
+                    <p class="bidding-time">Người tham gia: <strong>Trần Văn A</strong></p>
+                    <p class="bidding-desc">Đánh giá sức chứa mình nhất không, chúng trưa thì sẽ đi mua hàng thật và thông báo kết quả trên sàn ứng dụng liền nhé!</p>
+                    <div class="bidding-images">
+                        <img src="images/review1.jpg" alt="Review 1">
+                        <img src="images/review1.1.jpg" alt="Review 1.1">
+                    </div>
+                    <p class="bidding-price">Đã mua: Giày Canada - 18.750.000 ₫</p>
+                    <p class="bidding-votes">Số lượng: <strong>1 đôi</strong></p>
+                </div>
+                <div class="bidding-card">
+                    <h3>CHIẾN DỊCH LISA X EXED</h3>
+                    <p class="bidding-time">Người tham gia: <strong>Trần Văn A</strong></p>
+                    <p class="bidding-desc">Chất lượng tốt và là hàng xịn xò của cửa hàng đã được xác nhận bởi tôi là Sneaker Blazer</p>
+                    <div class="bidding-images">
+                        <img src="images/review2.png" alt="Review 2">
+                        <img src="images/review2.1.jpg" alt="Review 2.1">
+                    </div>
+                    <p class="bidding-price">Đã mua: Giày Adidas - 21.700.000 ₫</p>
+                    <p class="bidding-votes">Số lượng: <strong>2 đôi</strong></p>
+                </div>
+            </div>
+            <button class="btn-next">›</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>THÔNG TIN LIÊN HỆ</h4>
+                    <p>📍 Địa chỉ: 123 P. Trung Thanh Phố</p>
+                    <p>📞 Điện thoại: 000 "11 2345</p>
+                    <p>✉️ Email: exped@gmail.com</p>
+                </div>
+                <div class="footer-col">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <p>• Giới thiệu EXED</p>
+                    <p>• Chính sách bảo mật</p>
+                    <p>• Đối tác chiến lược</p>
+                    <p>• Chuyên gia về dịch vụ hàng thật</p>
+                </div>
+                <div class="footer-col">
+                    <h4>THEO DÕI CHÚNG TÔI</h4>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

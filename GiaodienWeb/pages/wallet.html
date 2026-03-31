@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ví của tôi - EXPED</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/wallet.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"><img src="../images/logo.png" alt="EXPED"></a>
+            </div>
+            <nav class="nav">
+                <a href="../index.html" class="nav-link">TRANG CHỦ</a>
+                <a href="campaigns.html" class="nav-link">CHIẾN DỊCH</a>
+                <a href="#" class="nav-link">GIỚI THIỆU</a>
+                <a href="#" class="nav-link">SẢN PHẨM</a>
+                <a href="#" class="nav-link">NGHỆ SĨ COLLAB</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="profile.html" class="dropdown-item">Hồ sơ cá nhân</a>
+                        <a href="order-history.html" class="dropdown-item">Đơn hàng của tôi</a>
+                        <a href="wallet.html" class="dropdown-item">Ví của tôi</a>
+                        <a href="#" class="dropdown-item logout">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Wallet Section -->
+    <section class="wallet-section">
+        <div class="container">
+            <h1 class="page-title">VÍ CỦA TÔI</h1>
+            
+            <!-- Wallet Balance Card -->
+            <div class="wallet-balance-card">
+                <div class="balance-info">
+                    <h3>Số dư khả dụng</h3>
+                    <p class="balance-amount">8.750.000 đ</p>
+                    <p class="balance-note">Số tiền được hoàn từ các chiến dịch</p>
+                </div>
+                <div class="balance-actions">
+                    <button class="btn-withdraw">Rút tiền</button>
+                    <button class="btn-history">Lịch sử</button>
+                </div>
+            </div>
+
+            <!-- Transaction Filter -->
+            <div class="transaction-filter">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="refund">Hoàn tiền</button>
+                <button class="filter-btn" data-filter="payment">Thanh toán</button>
+                <button class="filter-btn" data-filter="withdraw">Rút tiền</button>
+            </div>
+
+            <!-- Transaction List -->
+            <div class="transaction-list">
+                <!-- Refund Transaction -->
+                <div class="transaction-item" data-type="refund">
+                    <div class="transaction-icon refund">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Hoàn tiền - Cược đúng</h4>
+                        <p>Chiến dịch PARK BO GUM X EXED</p>
+                        <span class="transaction-date">30/03/2026 14:25</span>
+                    </div>
+                    <div class="transaction-amount positive">+3.200.000 đ</div>
+                </div>
+
+                <!-- Refund Transaction -->
+                <div class="transaction-item" data-type="refund">
+                    <div class="transaction-icon refund">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Hoàn tiền - Cược đúng</h4>
+                        <p>Chiến dịch LISA X EXED</p>
+                        <span class="transaction-date">28/03/2026 10:15</span>
+                    </div>
+                    <div class="transaction-amount positive">+5.550.000 đ</div>
+                </div>
+
+                <!-- Payment Transaction -->
+                <div class="transaction-item" data-type="payment">
+                    <div class="transaction-icon payment">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Thanh toán đơn hàng</h4>
+                        <p>Chiến dịch ROSÉ X EXED - #ORD-2024-003</p>
+                        <span class="transaction-date">25/03/2026 16:30</span>
+                    </div>
+                    <div class="transaction-amount negative">-28.850.000 đ</div>
+                </div>
+
+                <!-- Refund - Campaign Failed -->
+                <div class="transaction-item" data-type="refund">
+                    <div class="transaction-icon refund">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Hoàn tiền - Chiến dịch thất bại</h4>
+                        <p>Chiến dịch JISOO X EXED (không đạt MOQ)</p>
+                        <span class="transaction-date">20/03/2026 09:00</span>
+                    </div>
+                    <div class="transaction-amount positive">+21.500.000 đ</div>
+                </div>
+
+                <!-- Payment Transaction -->
+                <div class="transaction-item" data-type="payment">
+                    <div class="transaction-icon payment">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Thanh toán đơn hàng</h4>
+                        <p>Chiến dịch JISOO X EXED - #ORD-2024-002</p>
+                        <span class="transaction-date">15/03/2026 11:20</span>
+                    </div>
+                    <div class="transaction-amount negative">-22.000.000 đ</div>
+                </div>
+
+                <!-- Withdraw Transaction -->
+                <div class="transaction-item" data-type="withdraw">
+                    <div class="transaction-icon withdraw">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-content">
+                        <h4>Rút tiền về tài khoản ngân hàng</h4>
+                        <p>Vietcombank - **** 1234</p>
+                        <span class="transaction-date">10/03/2026 14:00</span>
+                    </div>
+                    <div class="transaction-amount negative">-5.000.000 đ</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>THÔNG TIN LIÊN HỆ</h4>
+                    <p>📍 Địa chỉ: 123 P. Trung Thanh Phố</p>
+                    <p>📞 Điện thoại: 000 111 2345</p>
+                    <p>✉️ Email: exped@gmail.com</p>
+                </div>
+                <div class="footer-col">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <p>• Giới thiệu EXED</p>
+                    <p>• Chính sách bảo mật</p>
+                </div>
+                <div class="footer-col">
+                    <h4>THEO DÕI CHÚNG TÔI</h4>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

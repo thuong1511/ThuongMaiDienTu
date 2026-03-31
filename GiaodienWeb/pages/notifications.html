@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo - EXPED</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/notifications.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"><img src="../images/logo.png" alt="EXPED"></a>
+            </div>
+            <nav class="nav">
+                <a href="../index.html" class="nav-link">TRANG CHỦ</a>
+                <a href="campaigns.html" class="nav-link">CHIẾN DỊCH</a>
+                <a href="#" class="nav-link">GIỚI THIỆU</a>
+                <a href="#" class="nav-link">SẢN PHẨM</a>
+                <a href="#" class="nav-link">NGHỆ SĨ COLLAB</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="profile.html" class="dropdown-item">Hồ sơ cá nhân</a>
+                        <a href="order-history.html" class="dropdown-item">Đơn hàng của tôi</a>
+                        <a href="notifications.html" class="dropdown-item">Thông báo</a>
+                        <a href="#" class="dropdown-item logout">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notifications Section -->
+    <section class="notifications-section">
+        <div class="container">
+            <h1 class="page-title">THÔNG BÁO</h1>
+            
+            <div class="notifications-filter">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="campaign">Chiến dịch</button>
+                <button class="filter-btn" data-filter="order">Đơn hàng</button>
+                <button class="filter-btn" data-filter="payment">Thanh toán</button>
+            </div>
+
+            <div class="notifications-list">
+                <!-- New Campaign -->
+                <div class="notification-item unread" data-type="campaign">
+                    <div class="notification-icon campaign">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Chiến dịch mới: JENNIE X EXED</h3>
+                        <p>Chiến dịch giày sneaker limited edition mới đã được mở bán. Đăng ký ngay để nhận giá tốt nhất!</p>
+                        <span class="notification-time">5 phút trước</span>
+                    </div>
+                    <div class="notification-badge">Mới</div>
+                </div>
+
+                <!-- Campaign Ending Soon -->
+                <div class="notification-item unread" data-type="campaign">
+                    <div class="notification-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Chiến dịch ROSÉ X EXED sắp chốt sổ</h3>
+                        <p>Chiến dịch sẽ kết thúc trong 2 giờ nữa. Đăng ký ngay để không bỏ lỡ!</p>
+                        <span class="notification-time">1 giờ trước</span>
+                    </div>
+                    <div class="notification-badge">Khẩn</div>
+                </div>
+
+                <!-- Bet Result - Win -->
+                <div class="notification-item" data-type="payment">
+                    <div class="notification-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Cược đúng! Bạn được hoàn tiền</h3>
+                        <p>Chiến dịch PARK BO GUM X EXED đã đạt mốc 1200 sản phẩm. Bạn được hoàn 3.200.000 đ</p>
+                        <span class="notification-time">2 giờ trước</span>
+                    </div>
+                </div>
+
+                <!-- Order Shipped -->
+                <div class="notification-item" data-type="order">
+                    <div class="notification-icon info">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Đơn hàng đang được vận chuyển</h3>
+                        <p>Đơn hàng #ORD-2024-001 đang trên đường giao đến bạn. Dự kiến giao hàng: 02/04/2026</p>
+                        <span class="notification-time">1 ngày trước</span>
+                    </div>
+                </div>
+
+                <!-- Refund Processed -->
+                <div class="notification-item" data-type="payment">
+                    <div class="notification-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Hoàn tiền tự động thành công</h3>
+                        <p>Số tiền 5.500.000 đ đã được hoàn vào ví của bạn. Xem chi tiết tại Lịch sử giao dịch.</p>
+                        <span class="notification-time">2 ngày trước</span>
+                    </div>
+                </div>
+
+                <!-- Campaign Failed -->
+                <div class="notification-item" data-type="campaign">
+                    <div class="notification-icon error">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Chiến dịch JISOO X EXED không thành công</h3>
+                        <p>Chiến dịch không đạt MOQ. Toàn bộ tiền sản phẩm đã được hoàn trả (trừ phí tham gia).</p>
+                        <span class="notification-time">3 ngày trước</span>
+                    </div>
+                </div>
+
+                <!-- Order Delivered -->
+                <div class="notification-item" data-type="order">
+                    <div class="notification-icon success">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h3>Đơn hàng đã được giao thành công</h3>
+                        <p>Đơn hàng #ORD-2024-002 đã được giao. Hãy đánh giá sản phẩm để chia sẻ trải nghiệm!</p>
+                        <span class="notification-time">5 ngày trước</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>THÔNG TIN LIÊN HỆ</h4>
+                    <p>📍 Địa chỉ: 123 P. Trung Thanh Phố</p>
+                    <p>📞 Điện thoại: 000 111 2345</p>
+                    <p>✉️ Email: exped@gmail.com</p>
+                </div>
+                <div class="footer-col">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <p>• Giới thiệu EXED</p>
+                    <p>• Chính sách bảo mật</p>
+                </div>
+                <div class="footer-col">
+                    <h4>THEO DÕI CHÚNG TÔI</h4>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
