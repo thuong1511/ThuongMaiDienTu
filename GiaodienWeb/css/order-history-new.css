@@ -291,6 +291,72 @@
     color: #e65100;
 }
 
+.decision-countdown-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 2px solid #ff9800;
+    border-radius: 10px;
+}
+
+.decision-countdown-mini svg {
+    flex-shrink: 0;
+    color: #f57c00;
+}
+
+.decision-countdown-mini span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5d4037;
+}
+
+.decision-countdown-mini strong {
+    color: #e65100;
+    font-weight: 800;
+}
+
+/* Decision Countdown Box in Payment Card */
+.decision-countdown-box {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 2px solid #ff9800;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.decision-countdown-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.decision-countdown-header svg {
+    flex-shrink: 0;
+    color: #f57c00;
+}
+
+.decision-countdown-header span {
+    font-size: 12px;
+    font-weight: 700;
+    color: #5d4037;
+    text-transform: uppercase;
+}
+
+.decision-countdown-time {
+    text-align: center;
+}
+
+.decision-countdown-time strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: #e65100;
+    display: block;
+}
+
 /* Order Payment */
 .order-payment {
     width: 250px;

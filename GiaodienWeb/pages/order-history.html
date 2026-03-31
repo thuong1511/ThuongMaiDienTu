@@ -127,10 +127,23 @@
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <polyline points="12 6 12 12 16 14"></polyline>
                                     </svg>
-                                    <span>Kết thúc sau: 03 ngày 14 giờ</span>
+                                    <span>Kết thúc sau: <span class="campaign-countdown" data-deadline="2026-04-05T23:59:59">03 ngày 14 giờ</span></span>
                                 </div>
                             </div>
                             <div class="order-payment">
+                                <div class="decision-countdown-box">
+                                    <div class="decision-countdown-header">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <span>Thời gian quyết định:</span>
+                                    </div>
+                                    <div class="decision-countdown-time">
+                                        <strong class="decision-countdown" data-deadline="2026-03-27T15:30:00">01 ngày 23 giờ 45 phút</strong>
+                                    </div>
+                                </div>
                                 <div class="payment-row">
                                     <span>Đã thanh toán:</span>
                                     <span class="amount">29.350.000 đ</span>
@@ -518,6 +531,60 @@
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
     <script>
+        // Countdown functions
+        function startCountdowns() {
+            // Campaign countdown
+            const campaignCountdowns = document.querySelectorAll('.campaign-countdown');
+            campaignCountdowns.forEach(countdown => {
+                const deadline = new Date(countdown.getAttribute('data-deadline')).getTime();
+                updateCampaignCountdown(countdown, deadline);
+                setInterval(() => updateCampaignCountdown(countdown, deadline), 1000);
+            });
+
+            // Decision countdown
+            const decisionCountdowns = document.querySelectorAll('.decision-countdown');
+            decisionCountdowns.forEach(countdown => {
+                const deadline = new Date(countdown.getAttribute('data-deadline')).getTime();
+                updateDecisionCountdown(countdown, deadline);
+                setInterval(() => updateDecisionCountdown(countdown, deadline), 1000);
+            });
+        }
+
+        function updateCampaignCountdown(element, deadline) {
+            const now = new Date().getTime();
+            const distance = deadline - now;
+
+            if (distance < 0) {
+                element.textContent = 'Đã kết thúc';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            
+            element.textContent = `${String(days).padStart(2, '0')} ngày ${String(hours).padStart(2, '0')} giờ`;
+        }
+
+        function updateDecisionCountdown(element, deadline) {
+            const now = new Date().getTime();
+            const distance = deadline - now;
+
+            if (distance < 0) {
+                element.textContent = 'Đã hết hạn';
+                element.style.color = '#d32f2f';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            
+            element.textContent = `${String(days).padStart(2, '0')} ngày ${String(hours).padStart(2, '0')} giờ ${String(minutes).padStart(2, '0')} phút`;
+        }
+
+        // Start countdowns when page loads
+        document.addEventListener('DOMContentLoaded', startCountdowns);
+
         // Main tabs functionality
         const mainTabs = document.querySelectorAll('.main-tab-btn');
         const tabPanels = document.querySelectorAll('.tab-panel');

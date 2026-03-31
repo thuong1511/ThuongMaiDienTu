@@ -178,5 +178,70 @@
     <script src="../js/data.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
+    <script>
+        // Countdown Timer for Decision Time (2 days from now)
+        function startDecisionCountdown() {
+            // Set deadline to 2 days from now (48 hours)
+            const deadline = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+            
+            const countdownInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = deadline - now;
+                
+                // Calculate time units
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update display
+                const timeValues = document.querySelectorAll('.countdown-display .time-value');
+                if (timeValues.length >= 4) {
+                    timeValues[0].textContent = String(days).padStart(2, '0');
+                    timeValues[1].textContent = String(hours).padStart(2, '0');
+                    timeValues[2].textContent = String(minutes).padStart(2, '0');
+                    timeValues[3].textContent = String(seconds).padStart(2, '0');
+                }
+                
+                // If countdown finished
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    timeValues.forEach(val => val.textContent = '00');
+                    document.querySelector('.timer-warning').textContent = 'Thời gian quyết định đã hết!';
+                    document.querySelector('.decision-timer-box').style.background = 'linear-gradient(135deg, #ffebee, #ffcdd2)';
+                }
+            }, 1000);
+        }
+        
+        // Start countdown when page loads
+        document.addEventListener('DOMContentLoaded', startDecisionCountdown);
+        
+        // Copy link functionality
+        document.querySelector('.share-btn.copy-link').addEventListener('click', function() {
+            const campaignUrl = window.location.origin + '/pages/campaign-detail.html';
+            navigator.clipboard.writeText(campaignUrl).then(function() {
+                const btn = document.querySelector('.share-btn.copy-link');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Đã sao chép!';
+                setTimeout(function() {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+        
+        // Share to Facebook
+        document.querySelector('.share-btn.facebook').addEventListener('click', function() {
+            const campaignUrl = window.location.origin + '/pages/campaign-detail.html';
+            const shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(campaignUrl);
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        });
+        
+        // Share to Zalo (mobile only)
+        document.querySelector('.share-btn.zalo').addEventListener('click', function() {
+            const campaignUrl = window.location.origin + '/pages/campaign-detail.html';
+            const shareUrl = 'https://zalo.me/share?url=' + encodeURIComponent(campaignUrl);
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        });
+    </script>
 </body>
 </html>
