@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch sử đơn hàng - EXPED</title>
+    <title>Lịch sử tham gia chiến dịch - EXED</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/order-history.css">
+    <link rel="stylesheet" href="../css/styles.css?v=3">
+    <link rel="stylesheet" href="../css/order-history.css?v=3">
 </head>
 <body>
     <!-- Header -->
@@ -79,17 +79,369 @@
         <div class="container">
             <h1 class="page-title">LỊCH SỬ THAM GIA CHIẾN DỊCH</h1>
 
-            <!-- Filter Tabs -->
-            <div class="filter-tabs">
-                <button class="tab-btn active" data-filter="all">Tất cả</button>
-                <button class="tab-btn" data-filter="ongoing">Đang diễn ra</button>
-                <button class="tab-btn" data-filter="success">Thành công</button>
-                <button class="tab-btn" data-filter="failed">Thất bại</button>
-                <button class="tab-btn" data-filter="shipping">Đang giao hàng</button>
+            <!-- Main Tabs -->
+            <div class="main-tabs">
+                <button class="main-tab-btn active" data-main-tab="registered">Đơn đăng ký</button>
+                <button class="main-tab-btn" data-main-tab="orders">Đơn hàng của tôi</button>
             </div>
 
-            <!-- Order List -->
-            <div class="order-list">
+            <!-- Registered Orders Tab -->
+            <div class="tab-panel active" id="registered-panel">
+                <div class="order-list">
+                    <!-- Registered Order 1 - Ongoing Campaign -->
+                    <div class="order-card" data-type="registered">
+                        <div class="order-header">
+                            <div class="order-id">
+                                <span class="label">Mã đơn:</span>
+                                <span class="value">#CD2024002</span>
+                            </div>
+                            <span class="order-status ongoing">⏳ Đang diễn ra</span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                <img src="../images/chiendich1.jpg" alt="Campaign">
+                            </div>
+                            <div class="order-info">
+                                <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Ngày tham gia:</span>
+                                        <span class="detail-value">25/03/2026</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Số lượng:</span>
+                                        <span class="detail-value">1 sản phẩm</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Mốc đặt cược:</span>
+                                        <span class="detail-value bet-pending">800 - 999 (Chờ kết quả)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Tiến độ hiện tại:</span>
+                                        <span class="detail-value">924 / 1200 sản phẩm</span>
+                                    </div>
+                                </div>
+                                <div class="countdown-mini">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>Kết thúc sau: 03 ngày 14 giờ</span>
+                                </div>
+                            </div>
+                            <div class="order-payment">
+                                <div class="payment-row">
+                                    <span>Đã thanh toán:</span>
+                                    <span class="amount">29.350.000 đ</span>
+                                </div>
+                                <div class="payment-row pending">
+                                    <span>Chờ kết quả:</span>
+                                    <span class="amount">Đang chờ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-actions">
+                                <button class="btn-detail">Xem chi tiết</button>
+                                <button class="btn-cancel">Hủy đơn</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Orders Tab -->
+            <div class="tab-panel" id="orders-panel">
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="all">Tất cả</button>
+                    <button class="tab-btn" data-filter="success">Chiến dịch thành công</button>
+                    <button class="tab-btn" data-filter="failed">Chiến dịch thất bại</button>
+                </div>
+
+                <div class="order-list">
+                    <!-- Success Order 1 - Preparing -->
+                    <div class="order-card" data-status="success" data-shipping="preparing">
+                        <div class="order-header">
+                            <div class="order-id">
+                                <span class="label">Mã đơn:</span>
+                                <span class="value">#CD2024005</span>
+                            </div>
+                            <span class="order-status success">✓ Cược đúng - Đang chuẩn bị</span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                <img src="../images/chiendich3.jpg" alt="Campaign">
+                            </div>
+                            <div class="order-info">
+                                <h3>CHIẾN DỊCH JISOO X EXED</h3>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Ngày tham gia:</span>
+                                        <span class="detail-value">20/03/2026</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Số lượng:</span>
+                                        <span class="detail-value">1 sản phẩm</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Mốc đặt cược:</span>
+                                        <span class="detail-value bet-correct">500 - 799 (Đúng ✓)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Tổng thực tế:</span>
+                                        <span class="detail-value">652 sản phẩm</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-payment">
+                                <div class="payment-row">
+                                    <span>Đã thanh toán:</span>
+                                    <span class="amount">25.500.000 đ</span>
+                                </div>
+                                <div class="payment-row refund">
+                                    <span>Đã hoàn lại:</span>
+                                    <span class="amount">-2.000.000 đ</span>
+                                </div>
+                                <div class="payment-row total">
+                                    <span>Thực trả:</span>
+                                    <span class="amount">23.500.000 đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="shipping-status">
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đang chuẩn bị</span>
+                                </div>
+                                <div class="status-line"></div>
+                                <div class="status-step">
+                                    <div class="step-icon">2</div>
+                                    <span>Đang giao</span>
+                                </div>
+                                <div class="status-line"></div>
+                                <div class="status-step">
+                                    <div class="step-icon">3</div>
+                                    <span>Đã giao</span>
+                                </div>
+                            </div>
+                            <div class="order-actions">
+                                <button class="btn-detail">Xem chi tiết</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Order 2 - Shipping -->
+                    <div class="order-card" data-status="success" data-shipping="shipping">
+                        <div class="order-header">
+                            <div class="order-id">
+                                <span class="label">Mã đơn:</span>
+                                <span class="value">#CD2024001</span>
+                            </div>
+                            <span class="order-status success">✓ Cược đúng - Đang giao hàng</span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                <img src="../images/chiendich2.jpg" alt="Campaign">
+                            </div>
+                            <div class="order-info">
+                                <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Ngày tham gia:</span>
+                                        <span class="detail-value">15/02/2026</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Số lượng:</span>
+                                        <span class="detail-value">2 sản phẩm</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Mốc đặt cược:</span>
+                                        <span class="detail-value bet-correct">1000 - 1200 (Đúng ✓)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Tổng thực tế:</span>
+                                        <span class="detail-value">1208 sản phẩm</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-payment">
+                                <div class="payment-row">
+                                    <span>Đã thanh toán:</span>
+                                    <span class="amount">58.200.000 đ</span>
+                                </div>
+                                <div class="payment-row refund">
+                                    <span>Đã hoàn lại:</span>
+                                    <span class="amount">-20.600.000 đ</span>
+                                </div>
+                                <div class="payment-row total">
+                                    <span>Thực trả:</span>
+                                    <span class="amount">37.600.000 đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="shipping-status">
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đang chuẩn bị</span>
+                                </div>
+                                <div class="status-line completed"></div>
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đang giao</span>
+                                </div>
+                                <div class="status-line"></div>
+                                <div class="status-step">
+                                    <div class="step-icon">3</div>
+                                    <span>Đã giao</span>
+                                </div>
+                            </div>
+                            <div class="order-actions">
+                                <button class="btn-detail">Xem chi tiết</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Order 3 - Delivered -->
+                    <div class="order-card" data-status="success" data-shipping="delivered">
+                        <div class="order-header">
+                            <div class="order-id">
+                                <span class="label">Mã đơn:</span>
+                                <span class="value">#CD2024003</span>
+                            </div>
+                            <span class="order-status success">✓ Cược đúng - Đã giao hàng</span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                <img src="../images/chiendich2.jpg" alt="Campaign">
+                            </div>
+                            <div class="order-info">
+                                <h3>CHIẾN DỊCH LISA X EXED</h3>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Ngày tham gia:</span>
+                                        <span class="detail-value">10/01/2026</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Số lượng:</span>
+                                        <span class="detail-value">1 sản phẩm</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Mốc đặt cược:</span>
+                                        <span class="detail-value bet-correct">800 - 999 (Đúng ✓)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Tổng thực tế:</span>
+                                        <span class="detail-value">856 sản phẩm</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-payment">
+                                <div class="payment-row">
+                                    <span>Đã thanh toán:</span>
+                                    <span class="amount">29.350.000 đ</span>
+                                </div>
+                                <div class="payment-row refund">
+                                    <span>Đã hoàn lại:</span>
+                                    <span class="amount">-5.550.000 đ</span>
+                                </div>
+                                <div class="payment-row total">
+                                    <span>Thực trả:</span>
+                                    <span class="amount">23.800.000 đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="shipping-status">
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đang chuẩn bị</span>
+                                </div>
+                                <div class="status-line completed"></div>
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đang giao</span>
+                                </div>
+                                <div class="status-line completed"></div>
+                                <div class="status-step completed">
+                                    <div class="step-icon">✓</div>
+                                    <span>Đã giao</span>
+                                </div>
+                            </div>
+                            <div class="order-actions">
+                                <button class="btn-detail">Xem chi tiết</button>
+                                <button class="btn-review">Đánh giá</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Failed Order -->
+                    <div class="order-card" data-status="failed">
+                        <div class="order-header">
+                            <div class="order-id">
+                                <span class="label">Mã đơn:</span>
+                                <span class="value">#CD2024004</span>
+                            </div>
+                            <span class="order-status failed">✗ Chiến dịch thất bại</span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                <img src="../images/chiendich1.jpg" alt="Campaign">
+                            </div>
+                            <div class="order-info">
+                                <h3>CHIẾN DỊCH JENNIE X EXED</h3>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Ngày tham gia:</span>
+                                        <span class="detail-value">05/12/2025</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Số lượng:</span>
+                                        <span class="detail-value">1 sản phẩm</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Lý do:</span>
+                                        <span class="detail-value">Không đạt MOQ (87/100)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-payment">
+                                <div class="payment-row">
+                                    <span>Đã thanh toán:</span>
+                                    <span class="amount">29.350.000 đ</span>
+                                </div>
+                                <div class="payment-row refund">
+                                    <span>Đã hoàn lại:</span>
+                                    <span class="amount">-28.850.000 đ</span>
+                                </div>
+                                <div class="payment-row total">
+                                    <span>Phí tham gia:</span>
+                                    <span class="amount">500.000 đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-actions">
+                                <button class="btn-detail">Xem chi tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
                 <!-- Order Item 1 - Success -->
                 <div class="order-card" data-status="success">
                     <div class="order-header">
@@ -380,5 +732,58 @@
     <script src="../js/data.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
+    <script>
+        // Main tabs functionality
+        const mainTabs = document.querySelectorAll('.main-tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        mainTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all main tabs
+                mainTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                const mainTab = tab.getAttribute('data-main-tab');
+
+                // Show/hide panels
+                tabPanels.forEach(panel => {
+                    if (panel.id === mainTab + '-panel') {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Order filter functionality (for "Đơn hàng của tôi" tab)
+        const filterTabs = document.querySelectorAll('.tab-btn');
+        const orderCards = document.querySelectorAll('#orders-panel .order-card');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                filterTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                const filter = tab.getAttribute('data-filter');
+
+                // Show/hide orders based on filter
+                orderCards.forEach(card => {
+                    const status = card.getAttribute('data-status');
+                    
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else if (filter === status) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

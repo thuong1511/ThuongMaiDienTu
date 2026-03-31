@@ -59,6 +59,20 @@
                             </svg>
                             <span>Đơn hàng của tôi</span>
                         </a>
+                        <a href="wallet.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            <span>Ví của tôi</span>
+                        </a>
+                        <a href="notifications.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            <span>Thông báo</span>
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a href="login.html" class="dropdown-item logout">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -133,13 +147,6 @@
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                             <span>Bảo mật</span>
-                        </button>
-                        <button class="menu-item" data-tab="wallet">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                <line x1="1" y1="10" x2="23" y2="10"></line>
-                            </svg>
-                            <span>Biến động số dư</span>
                         </button>
                     </div>
                 </div>
@@ -261,82 +268,6 @@
                                 ĐỔI MẬT KHẨU
                             </button>
                         </form>
-                    </div>
-
-                    <!-- Tab: Wallet -->
-                    <div class="tab-content" id="wallet">
-                        <h2>BIẾN ĐỘNG SỐ DƯ</h2>
-                        
-                        <div class="wallet-summary">
-                            <div class="wallet-card">
-                                <div class="wallet-icon">💰</div>
-                                <div class="wallet-info">
-                                    <span class="wallet-label">Tổng đã thanh toán</span>
-                                    <span class="wallet-amount">350.500.000 đ</span>
-                                </div>
-                            </div>
-                            <div class="wallet-card">
-                                <div class="wallet-icon">💸</div>
-                                <div class="wallet-info">
-                                    <span class="wallet-label">Tổng đã hoàn lại</span>
-                                    <span class="wallet-amount refund">-85.200.000 đ</span>
-                                </div>
-                            </div>
-                            <div class="wallet-card">
-                                <div class="wallet-icon">✅</div>
-                                <div class="wallet-info">
-                                    <span class="wallet-label">Thực trả</span>
-                                    <span class="wallet-amount total">265.300.000 đ</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="transaction-list">
-                            <div class="transaction-item">
-                                <div class="transaction-icon refund">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="23 4 23 10 17 10"></polyline>
-                                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                                    </svg>
-                                </div>
-                                <div class="transaction-info">
-                                    <h4>Hoàn tiền - Cược đúng</h4>
-                                    <p>Chiến dịch PARK BO GUM X EXED</p>
-                                    <span class="transaction-date">15/02/2026 14:30</span>
-                                </div>
-                                <div class="transaction-amount refund">-20.600.000 đ</div>
-                            </div>
-
-                            <div class="transaction-item">
-                                <div class="transaction-icon payment">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                        <line x1="1" y1="10" x2="23" y2="10"></line>
-                                    </svg>
-                                </div>
-                                <div class="transaction-info">
-                                    <h4>Thanh toán đơn hàng</h4>
-                                    <p>Chiến dịch ROSÉ X EXED</p>
-                                    <span class="transaction-date">25/03/2026 10:15</span>
-                                </div>
-                                <div class="transaction-amount payment">+29.350.000 đ</div>
-                            </div>
-
-                            <div class="transaction-item">
-                                <div class="transaction-icon refund">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="23 4 23 10 17 10"></polyline>
-                                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                                    </svg>
-                                </div>
-                                <div class="transaction-info">
-                                    <h4>Hoàn tiền - Chiến dịch thất bại</h4>
-                                    <p>Chiến dịch JENNIE X EXED</p>
-                                    <span class="transaction-date">10/12/2025 16:45</span>
-                                </div>
-                                <div class="transaction-amount refund">-28.850.000 đ</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

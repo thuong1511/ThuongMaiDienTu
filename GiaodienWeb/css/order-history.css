@@ -13,6 +13,48 @@
     text-transform: uppercase;
 }
 
+/* Main Tabs */
+.main-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.main-tab-btn {
+    padding: 15px 50px;
+    background: #fff;
+    color: var(--primary-dark);
+    border: 3px solid var(--accent-gold);
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.main-tab-btn:hover {
+    background: rgba(196, 168, 127, 0.2);
+    transform: translateY(-2px);
+}
+
+.main-tab-btn.active {
+    background: var(--accent-gold);
+    color: var(--primary-dark);
+    box-shadow: 0 6px 20px rgba(196, 168, 127, 0.4);
+}
+
+/* Tab Panels */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
 /* Filter Tabs */
 .filter-tabs {
     display: flex;

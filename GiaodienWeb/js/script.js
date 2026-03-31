@@ -327,27 +327,6 @@ if (searchBtn && searchInput) {
     });
 }
 
-// User button functionality
-const userBtn = document.querySelector('.user-btn');
-const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-if (dropdownItems.length > 0) {
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const text = item.querySelector('span').textContent;
-            
-            if (text === 'Đăng xuất') {
-                if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                    alert('Đã đăng xuất thành công!');
-                }
-            } else {
-                alert(`Chức năng "${text}" đang được phát triển!`);
-            }
-        });
-    });
-}
-
 // Add pulse effect to HOT badges
 setInterval(() => {
     document.querySelectorAll('.campaign-badge.hot').forEach(badge => {

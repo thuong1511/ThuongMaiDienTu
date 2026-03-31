@@ -188,7 +188,8 @@ body {
     transform: translateY(-10px);
     transition: all 0.3s;
     z-index: 1000;
-    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 .user-dropdown:hover .dropdown-menu {
