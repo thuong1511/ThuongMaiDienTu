@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>EXPED - Limited Sneaker Collab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
     <!-- Header -->
@@ -43,14 +46,14 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">
+                        <a href="pages/profile.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span>Hồ sơ cá nhân</span>
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a href="pages/order-history.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
@@ -58,11 +61,19 @@
                             </svg>
                             <span>Đơn hàng của tôi</span>
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a href="pages/wallet.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
                             </svg>
-                            <span>Yêu thích</span>
+                            <span>Ví của tôi</span>
+                        </a>
+                        <a href="pages/notifications.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            <span>Thông báo</span>
                         </a>
                         <a href="#" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -72,7 +83,7 @@
                             <span>Cài đặt</span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item logout">
+                        <a href="pages/login.html" class="dropdown-item logout">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -245,36 +256,48 @@
                 <button class="slider-btn prev">‹</button>
                 <div class="artists-list">
                     <div class="artist">
-                        <img src="images/rose.jpg" alt="ROSÉ">
+                        <img src="images/avt_rose.jpg" alt="ROSÉ">
                         <p>ROSÉ</p>
                     </div>
                     <div class="artist">
-                        <img src="images/lisa.jpg" alt="LISA">
+                        <img src="images/avt_lisa.jpg" alt="LISA">
                         <p>LISA</p>
                     </div>
                     <div class="artist">
-                        <img src="images/jisoo.jpg" alt="JISOO">
+                        <img src="images/avt_jisoo.jpg" alt="JISOO">
                         <p>JISOO</p>
                     </div>
                     <div class="artist">
-                        <img src="images/jen.jpg" alt="JENNIE">
+                        <img src="images/avt_jen.jpg" alt="JENNIE">
                         <p>JENNIE</p>
                     </div>
                     <div class="artist">
-                        <img src="images/goyounjung.jpg" alt="GO YOUN JUNG">
-                        <p>GO YOUN JUNG</p>
-                    </div>
-                    <div class="artist">
-                        <img src="images/kimjiwon.jpg" alt="KIM JI WON">
-                        <p>KIM JI WON</p>
-                    </div>
-                    <div class="artist">
-                        <img src="images/jichangwook.jpg" alt="JI CHANG WOOK">
+                        <img src="images/avt_jichangwook.jpg" alt="JI CHANG WOOK">
                         <p>JI CHANG WOOK</p>
                     </div>
                     <div class="artist">
-                        <img src="images/parkbogum.jpg" alt="PARK BO GUM">
+                        <img src="images/avt_parkbogum.jpg" alt="PARK BO GUM">
                         <p>PARK BO GUM</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/avt_goyounjung.jpg" alt="GO YOUN JUNG">
+                        <p>GO YOUN JUNG</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/avt_kimjiwon.jpg" alt="KIM JI WON">
+                        <p>KIM JI WON</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/avt_namtan.jpg" alt="NAMTAN">
+                        <p>NAMTAN</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/avt_sieun.jpg" alt="SIEUN">
+                        <p>SIEUN</p>
+                    </div>
+                    <div class="artist">
+                        <img src="images/avt_chuongnhuocnam.jpg" alt="CHƯƠNG NHƯỢC NAM">
+                        <p>CHƯƠNG NHƯỢC NAM</p>
                     </div>
                 </div>
                 <button class="slider-btn next">›</button>
@@ -286,31 +309,156 @@
     <section class="bidding">
         <div class="container">
             <h2 class="section-title">ĐÁNH GIÁ GẦN ĐÂY</h2>
-            <div class="bidding-grid">
+            <div class="bidding-slider">
+                <button class="review-btn prev-review">‹</button>
+                <div class="bidding-grid">
                 <div class="bidding-card">
                     <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
-                    <p class="bidding-time">Người tham gia: <strong>Trần Văn A</strong></p>
-                    <p class="bidding-desc">Đánh giá sức chứa mình nhất không, chúng trưa thì sẽ đi mua hàng thật và thông báo kết quả trên sàn ứng dụng liền nhé!</p>
+                    <p class="bidding-time">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                        Người tham gia: <strong>Nguyễn Triều Tiên</strong>
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 3px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">4.0</span>
+                    </div>
+                    <p class="bidding-desc">Đóng gói đẹp, sản phẩm chất lượng, đúng như mô tả. Giao hàng nhanh ủng hộ những tổng thể thì vẫn ưng lắm nha!</p>
                     <div class="bidding-images">
                         <img src="images/review1.jpg" alt="Review 1">
                         <img src="images/review1.1.jpg" alt="Review 1.1">
                     </div>
-                    <p class="bidding-price">Đã mua: Giày Canada - 18.750.000 ₫</p>
+                    <p class="bidding-price">Đã mua: <strong>Giày Gazella - 18.790.000 đ</strong></p>
                     <p class="bidding-votes">Số lượng: <strong>1 đôi</strong></p>
                 </div>
                 <div class="bidding-card">
                     <h3>CHIẾN DỊCH LISA X EXED</h3>
-                    <p class="bidding-time">Người tham gia: <strong>Trần Văn A</strong></p>
-                    <p class="bidding-desc">Chất lượng tốt và là hàng xịn xò của cửa hàng đã được xác nhận bởi tôi là Sneaker Blazer</p>
+                    <p class="bidding-time">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                        Người tham gia: <strong>Ngô Thị Thảo Vy</strong>
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 3px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">5.0</span>
+                    </div>
+                    <p class="bidding-desc">Chất lượng thì quá là tuyệt với không còn gì để bàn cãi. Shop giao tác nhiều nữa đi a! Hi vọng lần tới sẽ là Justin Bieber.</p>
                     <div class="bidding-images">
                         <img src="images/review2.png" alt="Review 2">
                         <img src="images/review2.1.jpg" alt="Review 2.1">
                     </div>
-                    <p class="bidding-price">Đã mua: Giày Adidas - 21.700.000 ₫</p>
+                    <p class="bidding-price">Đã mua: <strong>Giày Adidas - 21.790.000 đ</strong></p>
                     <p class="bidding-votes">Số lượng: <strong>2 đôi</strong></p>
                 </div>
+                <div class="bidding-card">
+                    <h3>CHIẾN DỊCH JENNIE X EXED</h3>
+                    <p class="bidding-time">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                        Người tham gia: <strong>Nguyễn Hoàng Anh Thư</strong>
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 3px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">5.0</span>
+                    </div>
+                    <p class="bidding-desc">Sản phẩm đẹp lắm, đúng như hình ảnh mô tả. Đóng gói cẩn thận, giao hàng nhanh. Rất hài lòng với lần mua này!</p>
+                    <div class="bidding-images">
+                        <img src="images/review1.jpg" alt="Review 3">
+                        <img src="images/review1.1.jpg" alt="Review 3.1">
+                    </div>
+                    <p class="bidding-price">Đã mua: <strong>Giày Nike - 19.500.000 đ</strong></p>
+                    <p class="bidding-votes">Số lượng: <strong>1 đôi</strong></p>
+                </div>
+                <div class="bidding-card">
+                    <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
+                    <p class="bidding-time">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                        Người tham gia: <strong>Nguyễn Thị Thương</strong>
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 3px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">4.5</span>
+                    </div>
+                    <p class="bidding-desc">Giày đẹp, chất lượng tốt. Mình rất thích thiết kế này. Sẽ ủng hộ shop trong các chiến dịch tiếp theo!</p>
+                    <div class="bidding-images">
+                        <img src="images/review2.png" alt="Review 4">
+                        <img src="images/review2.1.jpg" alt="Review 4.1">
+                    </div>
+                    <p class="bidding-price">Đã mua: <strong>Giày Puma - 17.900.000 đ</strong></p>
+                    <p class="bidding-votes">Số lượng: <strong>2 đôi</strong></p>
+                </div>
+                </div>
+                <button class="review-btn next-review">›</button>
             </div>
-            <button class="btn-next">›</button>
         </div>
     </section>
 
