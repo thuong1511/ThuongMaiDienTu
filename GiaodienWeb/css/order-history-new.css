@@ -171,13 +171,12 @@
     gap: 30px;
     padding: 30px;
     align-items: flex-start;
-    flex-wrap: nowrap;
 }
 
 .order-image {
-    width: 150px;
-    min-width: 150px;
-    height: 150px;
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
     border-radius: 15px;
     overflow: hidden;
     border: 3px solid var(--accent-gold);
@@ -264,8 +263,8 @@
 
 /* Order Payment */
 .order-payment {
-    width: 220px;
-    min-width: 220px;
+    width: 250px;
+    min-width: 250px;
     flex-shrink: 0;
     background: linear-gradient(135deg, rgba(236, 234, 229, 0.5), rgba(236, 234, 229, 0.3));
     padding: 20px;
@@ -324,6 +323,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 /* Shipping Status */
@@ -332,6 +332,7 @@
     align-items: center;
     gap: 10px;
     flex: 1;
+    min-width: 400px;
 }
 
 .status-step {
@@ -387,6 +388,7 @@
 .order-actions {
     display: flex;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .btn-detail,

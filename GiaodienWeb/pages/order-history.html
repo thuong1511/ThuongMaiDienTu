@@ -8,7 +8,75 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=3">
-    <link rel="stylesheet" href="../css/order-history.css?v=3">
+    <link rel="stylesheet" href="../css/order-history-new.css">
+    <style>
+        /* Force horizontal layout for all order cards - override all media queries */
+        .order-body {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 30px !important;
+            padding: 30px !important;
+            align-items: flex-start !important;
+            flex-wrap: nowrap !important;
+        }
+        .order-image {
+            width: 150px !important;
+            min-width: 150px !important;
+            max-width: 150px !important;
+            height: 150px !important;
+            flex-shrink: 0 !important;
+        }
+        .order-info {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .order-payment {
+            width: 220px !important;
+            min-width: 220px !important;
+            max-width: 220px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        /* Override media queries completely */
+        @media (max-width: 768px) {
+            .order-body {
+                display: flex !important;
+                flex-direction: row !important;
+                grid-template-columns: none !important;
+            }
+            .order-image {
+                width: 150px !important;
+                min-width: 150px !important;
+                max-width: 150px !important;
+                height: 150px !important;
+            }
+            .order-payment {
+                width: 220px !important;
+                min-width: 220px !important;
+                max-width: 220px !important;
+            }
+            .order-info {
+                flex: 1 !important;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .order-body {
+                display: flex !important;
+                flex-direction: row !important;
+                grid-template-columns: none !important;
+            }
+        }
+        
+        /* Ensure order cards can scroll horizontally if needed */
+        .order-list {
+            overflow-x: auto;
+        }
+        
+        .order-card {
+            min-width: fit-content;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -442,92 +510,6 @@
             </div>
         </div>
     </section>
-                <!-- Order Item 1 - Success -->
-                <div class="order-card" data-status="success">
-                    <div class="order-header">
-                        <div class="order-id">
-                            <span class="label">Mã đơn:</span>
-                            <span class="value">#CD2024001</span>
-                        </div>
-                        <span class="order-status success">✓ Cược đúng - Đã giao hàng</span>
-                    </div>
-
-                    <div class="order-body">
-                        <div class="order-image">
-                            <img src="../images/chiendich2.jpg" alt="Campaign">
-                        </div>
-                        <div class="order-info">
-                            <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
-                            <div class="order-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Ngày tham gia:</span>
-                                    <span class="detail-value">15/02/2026</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số lượng:</span>
-                                    <span class="detail-value">2 sản phẩm</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Mốc đặt cược:</span>
-                                    <span class="detail-value bet-correct">1000 - 1200 (Đúng ✓)</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Tổng thực tế:</span>
-                                    <span class="detail-value">1208 sản phẩm</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="order-payment">
-                            <div class="payment-row">
-                                <span>Đã thanh toán:</span>
-                                <span class="amount">58.200.000 đ</span>
-                            </div>
-                            <div class="payment-row refund">
-                                <span>Đã hoàn lại:</span>
-                                <span class="amount">-20.600.000 đ</span>
-                            </div>
-                            <div class="payment-row total">
-                                <span>Thực trả:</span>
-                                <span class="amount">37.600.000 đ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-footer">
-                        <div class="shipping-status">
-                            <div class="status-step completed">
-                                <div class="step-icon">✓</div>
-                                <span>Đã sản xuất</span>
-                            </div>
-                            <div class="status-line completed"></div>
-                            <div class="status-step completed">
-                                <div class="step-icon">✓</div>
-                                <span>Đang vận chuyển</span>
-                            </div>
-                            <div class="status-line completed"></div>
-                            <div class="status-step completed">
-                                <div class="step-icon">✓</div>
-                                <span>Đã giao hàng</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn-detail">Xem chi tiết</button>
-                            <button class="btn-review">Đánh giá</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order Item 2 - Ongoing -->
-                <div class="order-card" data-status="ongoing">
-                    <div class="order-header">
-                        <div class="order-id">
-                            <span class="label">Mã đơn:</span>
-                            <span class="value">#CD2024002</span>
-                        </div>
-                        <span class="order-status ongoing">⏳ Đang diễn ra</span>
-                    </div>
-
-                    <div class="order-body">
                         <div class="order-image">
                             <img src="../images/chiendich1.jpg" alt="Campaign">
                         </div>
