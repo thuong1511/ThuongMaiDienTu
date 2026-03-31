@@ -8,75 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=3">
-    <link rel="stylesheet" href="../css/order-history-new.css">
-    <style>
-        /* Force horizontal layout for all order cards - override all media queries */
-        .order-body {
-            display: flex !important;
-            flex-direction: row !important;
-            gap: 30px !important;
-            padding: 30px !important;
-            align-items: flex-start !important;
-            flex-wrap: nowrap !important;
-        }
-        .order-image {
-            width: 150px !important;
-            min-width: 150px !important;
-            max-width: 150px !important;
-            height: 150px !important;
-            flex-shrink: 0 !important;
-        }
-        .order-info {
-            flex: 1 !important;
-            min-width: 0 !important;
-        }
-        .order-payment {
-            width: 220px !important;
-            min-width: 220px !important;
-            max-width: 220px !important;
-            flex-shrink: 0 !important;
-        }
-        
-        /* Override media queries completely */
-        @media (max-width: 768px) {
-            .order-body {
-                display: flex !important;
-                flex-direction: row !important;
-                grid-template-columns: none !important;
-            }
-            .order-image {
-                width: 150px !important;
-                min-width: 150px !important;
-                max-width: 150px !important;
-                height: 150px !important;
-            }
-            .order-payment {
-                width: 220px !important;
-                min-width: 220px !important;
-                max-width: 220px !important;
-            }
-            .order-info {
-                flex: 1 !important;
-            }
-        }
-        
-        @media (max-width: 1024px) {
-            .order-body {
-                display: flex !important;
-                flex-direction: row !important;
-                grid-template-columns: none !important;
-            }
-        }
-        
-        /* Ensure order cards can scroll horizontally if needed */
-        .order-list {
-            overflow-x: auto;
-        }
-        
-        .order-card {
-            min-width: fit-content;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/order-history-new.css?v=2">
 </head>
 <body>
     <!-- Header -->
@@ -227,6 +159,14 @@
                     <button class="tab-btn active" data-filter="all">Tất cả</button>
                     <button class="tab-btn" data-filter="success">Chiến dịch thành công</button>
                     <button class="tab-btn" data-filter="failed">Chiến dịch thất bại</button>
+                </div>
+
+                <!-- Sub-filter Tabs (only visible when "Chiến dịch thành công" is selected) -->
+                <div class="sub-filter-tabs" id="success-sub-filters" style="display: none;">
+                    <button class="sub-tab-btn active" data-sub-filter="all-success">Tất cả</button>
+                    <button class="sub-tab-btn" data-sub-filter="preparing">Đang chuẩn bị</button>
+                    <button class="sub-tab-btn" data-sub-filter="shipping">Đang giao</button>
+                    <button class="sub-tab-btn" data-sub-filter="delivered">Đã giao</button>
                 </div>
 
                 <div class="order-list">
@@ -510,178 +450,6 @@
             </div>
         </div>
     </section>
-                        <div class="order-image">
-                            <img src="../images/chiendich1.jpg" alt="Campaign">
-                        </div>
-                        <div class="order-info">
-                            <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
-                            <div class="order-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Ngày tham gia:</span>
-                                    <span class="detail-value">25/03/2026</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số lượng:</span>
-                                    <span class="detail-value">1 sản phẩm</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Mốc đặt cược:</span>
-                                    <span class="detail-value bet-pending">800 - 999 (Chờ kết quả)</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Tiến độ hiện tại:</span>
-                                    <span class="detail-value">924 / 1200 sản phẩm</span>
-                                </div>
-                            </div>
-                            <div class="countdown-mini">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                </svg>
-                                <span>Kết thúc sau: 03 ngày 14 giờ</span>
-                            </div>
-                        </div>
-                        <div class="order-payment">
-                            <div class="payment-row">
-                                <span>Đã thanh toán:</span>
-                                <span class="amount">29.350.000 đ</span>
-                            </div>
-                            <div class="payment-row pending">
-                                <span>Chờ kết quả:</span>
-                                <span class="amount">Đang chờ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-footer">
-                        <div class="order-actions">
-                            <button class="btn-detail">Xem chi tiết</button>
-                            <button class="btn-cancel">Hủy đơn</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order Item 3 - Failed Bet -->
-                <div class="order-card" data-status="success">
-                    <div class="order-header">
-                        <div class="order-id">
-                            <span class="label">Mã đơn:</span>
-                            <span class="value">#CD2024003</span>
-                        </div>
-                        <span class="order-status bet-wrong">✗ Cược sai - Đã giao hàng</span>
-                    </div>
-
-                    <div class="order-body">
-                        <div class="order-image">
-                            <img src="../images/chiendich2.jpg" alt="Campaign">
-                        </div>
-                        <div class="order-info">
-                            <h3>CHIẾN DỊCH LISA X EXED</h3>
-                            <div class="order-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Ngày tham gia:</span>
-                                    <span class="detail-value">10/01/2026</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số lượng:</span>
-                                    <span class="detail-value">1 sản phẩm</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Mốc đặt cược:</span>
-                                    <span class="detail-value bet-wrong">1000 - 1200 (Sai ✗)</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Tổng thực tế:</span>
-                                    <span class="detail-value">856 sản phẩm</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="order-payment">
-                            <div class="payment-row">
-                                <span>Đã thanh toán:</span>
-                                <span class="amount">29.350.000 đ</span>
-                            </div>
-                            <div class="payment-row no-refund">
-                                <span>Không hoàn tiền:</span>
-                                <span class="amount">0 đ</span>
-                            </div>
-                            <div class="payment-row total">
-                                <span>Thực trả:</span>
-                                <span class="amount">29.350.000 đ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-footer">
-                        <div class="shipping-status">
-                            <div class="status-step completed">
-                                <div class="step-icon">✓</div>
-                                <span>Đã giao hàng</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn-detail">Xem chi tiết</button>
-                            <button class="btn-review">Đánh giá</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order Item 4 - Campaign Failed -->
-                <div class="order-card" data-status="failed">
-                    <div class="order-header">
-                        <div class="order-id">
-                            <span class="label">Mã đơn:</span>
-                            <span class="value">#CD2024004</span>
-                        </div>
-                        <span class="order-status failed">✗ Chiến dịch thất bại</span>
-                    </div>
-
-                    <div class="order-body">
-                        <div class="order-image">
-                            <img src="../images/chiendich1.jpg" alt="Campaign">
-                        </div>
-                        <div class="order-info">
-                            <h3>CHIẾN DỊCH JENNIE X EXED</h3>
-                            <div class="order-details">
-                                <div class="detail-row">
-                                    <span class="detail-label">Ngày tham gia:</span>
-                                    <span class="detail-value">05/12/2025</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Số lượng:</span>
-                                    <span class="detail-value">1 sản phẩm</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="detail-label">Lý do:</span>
-                                    <span class="detail-value">Không đạt MOQ (87/100)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="order-payment">
-                            <div class="payment-row">
-                                <span>Đã thanh toán:</span>
-                                <span class="amount">29.350.000 đ</span>
-                            </div>
-                            <div class="payment-row refund">
-                                <span>Đã hoàn lại:</span>
-                                <span class="amount">-28.850.000 đ</span>
-                            </div>
-                            <div class="payment-row total">
-                                <span>Phí tham gia:</span>
-                                <span class="amount">500.000 đ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-footer">
-                        <div class="order-actions">
-                            <button class="btn-detail">Xem chi tiết</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -689,22 +457,57 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>THÔNG TIN LIÊN HỆ</h4>
-                    <p>📍 Địa chỉ: 123 P. Trung Thanh Phố</p>
-                    <p>📞 Điện thoại: 000 11 2345</p>
-                    <p>✉️ Email: exped@gmail.com</p>
+                    <p>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-top: 2px;">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        Địa chỉ: 48 Cao Thắng, thành phố Đà Nẵng
+                    </p>
+                    <p>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-top: 2px;">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        Điện thoại: 090 111 2345
+                    </p>
+                    <p>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-top: 2px;">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        Email: exed@gmail.com
+                    </p>
                 </div>
                 <div class="footer-col">
                     <h4>VỀ CHÚNG TÔI</h4>
-                    <p>• Giới thiệu EXED</p>
-                    <p>• Chính sách bảo mật</p>
-                    <p>• Đối tác chiến lược</p>
+                    <ul>
+                        <li>Giới thiệu EXED</li>
+                        <li>Cam kết chất lượng</li>
+                        <li>Đối tác chiến lược</li>
+                        <li>Chương trình khách hàng thân thiết</li>
+                    </ul>
                 </div>
                 <div class="footer-col">
                     <h4>THEO DÕI CHÚNG TÔI</h4>
                     <div class="social-links">
-                        <a href="#">Facebook</a>
-                        <a href="#">Instagram</a>
-                        <a href="#">Twitter</a>
+                        <a href="#" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -742,6 +545,8 @@
         // Order filter functionality (for "Đơn hàng của tôi" tab)
         const filterTabs = document.querySelectorAll('.tab-btn');
         const orderCards = document.querySelectorAll('#orders-panel .order-card');
+        const subFilterContainer = document.getElementById('success-sub-filters');
+        const subFilterTabs = document.querySelectorAll('.sub-tab-btn');
 
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -751,6 +556,16 @@
                 tab.classList.add('active');
 
                 const filter = tab.getAttribute('data-filter');
+
+                // Show/hide sub-filters
+                if (filter === 'success') {
+                    subFilterContainer.style.display = 'flex';
+                    // Reset to "Tất cả" sub-filter
+                    subFilterTabs.forEach(st => st.classList.remove('active'));
+                    subFilterTabs[0].classList.add('active');
+                } else {
+                    subFilterContainer.style.display = 'none';
+                }
 
                 // Show/hide orders based on filter
                 orderCards.forEach(card => {
@@ -762,6 +577,35 @@
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Sub-filter functionality for "Chiến dịch thành công"
+        subFilterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all sub-tabs
+                subFilterTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                const subFilter = tab.getAttribute('data-sub-filter');
+
+                // Show/hide orders based on sub-filter
+                orderCards.forEach(card => {
+                    const status = card.getAttribute('data-status');
+                    const shipping = card.getAttribute('data-shipping');
+                    
+                    // Only filter success orders
+                    if (status === 'success') {
+                        if (subFilter === 'all-success') {
+                            card.style.display = 'block';
+                        } else if (subFilter === shipping) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
                     }
                 });
             });

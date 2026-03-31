@@ -60,7 +60,7 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
@@ -83,6 +83,36 @@
     color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+}
+
+/* Sub-filter Tabs */
+.sub-filter-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.sub-tab-btn {
+    padding: 10px 25px;
+    background: rgba(196, 168, 127, 0.1);
+    color: var(--primary-dark);
+    border: 2px solid rgba(196, 168, 127, 0.5);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s;
+}
+
+.sub-tab-btn:hover,
+.sub-tab-btn.active {
+    background: rgba(196, 168, 127, 0.4);
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(196, 168, 127, 0.2);
 }
 
 /* Order List */
@@ -441,17 +471,20 @@
 @media (max-width: 768px) {
     .order-body {
         flex-direction: column;
+        gap: 20px;
     }
     
     .order-image {
         width: 100%;
         max-width: 100%;
+        min-width: 100%;
         height: 250px;
     }
     
     .order-payment {
         width: 100%;
         max-width: 100%;
+        min-width: 100%;
     }
     
     .order-footer {
@@ -462,6 +495,7 @@
     .shipping-status {
         overflow-x: auto;
         padding-bottom: 10px;
+        min-width: 100%;
     }
     
     .order-actions {
@@ -475,6 +509,15 @@
     .tab-btn {
         padding: 10px 20px;
         font-size: 13px;
+    }
+    
+    .sub-filter-tabs {
+        gap: 8px;
+    }
+    
+    .sub-tab-btn {
+        padding: 8px 18px;
+        font-size: 12px;
     }
     
     .order-header {
@@ -496,5 +539,26 @@
     .main-tab-btn {
         padding: 12px 30px;
         font-size: 16px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    .order-body {
+        gap: 20px;
+    }
+    
+    .order-image {
+        width: 150px;
+        min-width: 150px;
+        height: 150px;
+    }
+    
+    .order-payment {
+        width: 200px;
+        min-width: 200px;
+    }
+    
+    .shipping-status {
+        min-width: 350px;
     }
 }

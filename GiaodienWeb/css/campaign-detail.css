@@ -224,13 +224,14 @@
     padding: 25px;
     border-radius: 20px;
     border: 3px solid var(--accent-gold);
+    margin-bottom: 20px;
 }
 
 .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-size: 15px;
     font-weight: 700;
     color: var(--primary-dark);
@@ -246,8 +247,7 @@
     height: 40px;
     background: rgba(196, 168, 127, 0.2);
     border-radius: 20px;
-    overflow: visible;
-    margin-bottom: 20px;
+    overflow: hidden;
 }
 
 .progress-fill-detail {
@@ -258,33 +258,44 @@
     box-shadow: 0 0 20px rgba(196, 168, 127, 0.5);
 }
 
-.moq-marker {
-    position: absolute;
-    top: -35px;
-    transform: translateX(-50%);
+/* MOQ Section */
+.moq-section {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+    padding: 20px 25px;
+    border-radius: 20px;
+    border: 3px solid #4caf50;
+    margin-bottom: 25px;
 }
 
-.moq-label {
-    background-color: var(--primary-dark);
-    color: var(--primary-light);
-    padding: 6px 15px;
-    border-radius: 15px;
-    font-size: 12px;
+.moq-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.moq-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
     font-weight: 800;
-    white-space: nowrap;
+    color: #2e7d32;
+}
+
+.moq-badge svg {
+    color: #4caf50;
+    flex-shrink: 0;
 }
 
 .moq-status {
     font-size: 14px;
     font-weight: 700;
-    padding: 10px 15px;
-    border-radius: 10px;
+    color: #2e7d32;
+    margin: 0;
 }
 
 .moq-status.success {
-    background-color: rgba(76, 175, 80, 0.1);
     color: #2e7d32;
-    border: 2px solid #4caf50;
 }
 
 /* Pricing Table */
@@ -339,6 +350,8 @@
 .tier-row.highlight {
     background: linear-gradient(135deg, rgba(196, 168, 127, 0.3), rgba(196, 168, 127, 0.2));
     border: 2px solid var(--accent-gold);
+    box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+    transform: translateX(5px);
 }
 
 .tier-range {
@@ -401,12 +414,14 @@
     gap: 10px;
     transition: all 0.3s;
     box-shadow: 0 8px 25px rgba(95, 7, 4, 0.3);
+    text-decoration: none;
 }
 
 .btn-join-campaign:hover {
     background: linear-gradient(135deg, rgba(95, 7, 4, 0.9), var(--primary-dark));
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(95, 7, 4, 0.4);
+    color: var(--primary-light);
 }
 
 .btn-share {
