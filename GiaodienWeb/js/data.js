@@ -5,9 +5,9 @@ const USERS = {
     customers: [
         {
             id: 1,
-            email: 'customer@example.com',
-            password: '123456',
-            fullname: 'Nguyễn Văn A',
+            email: 'nguyenthu2018dn@gmail.com',
+            password: '123',
+            fullname: 'Nguyễn Hoàng Anh Thư',
             phone: '0912345678',
             role: 'customer',
             avatar: '../images/rose.jpg',
@@ -26,8 +26,8 @@ const USERS = {
     ],
     admin: {
         id: 999,
-        email: 'admin@exped.com',
-        password: 'admin123',
+        email: 'admin@gmail.com',
+        password: '123',
         fullname: 'Admin User',
         phone: '0900000000',
         role: 'admin',
