@@ -808,26 +808,14 @@ body {
 
 /* How It Works */
 .how-it-works {
-    background-color: var(--primary-dark);
-    padding: 60px 0;
-    color: var(--primary-light);
-}
-
-.section-title-center {
-    font-size: 36px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 50px;
-    color: var(--accent-gold);
-    letter-spacing: 2px;
+    padding: 40px 0;
 }
 
 .how-it-works-image {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     display: block;
     margin: 0 auto;
-    border-radius: 10px;
 }
 
 /* Artists Section */
@@ -1391,40 +1379,40 @@ body {
 }
 
 .price-right-box {
-    flex: 0.8;
+    flex: 0.65;
     background: linear-gradient(135deg, rgba(70, 70, 70, 0.95), rgba(50, 50, 50, 0.95));
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-radius: 15px;
     border: 3px solid rgba(150, 150, 150, 0.5);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .price-header-row {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 0.8fr;
-    gap: 15px;
-    padding-bottom: 12px;
-    border-bottom: 3px solid var(--accent-gold);
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-gold);
     color: var(--accent-gold);
     font-weight: 800;
-    font-size: 15px;
+    font-size: 13px;
 }
 
-.header-col3 {
+.header-col2 {
     text-align: right;
 }
 
 .price-data-row {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 0.8fr;
-    gap: 15px;
-    padding: 14px 18px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 10px 15px;
     background: linear-gradient(135deg, rgba(80, 30, 30, 0.7), rgba(60, 20, 20, 0.7));
-    border-radius: 12px;
+    border-radius: 10px;
     color: var(--primary-light);
-    font-size: 15px;
+    font-size: 14px;
     transition: all 0.3s;
 }
 
@@ -1439,12 +1427,7 @@ body {
 }
 
 .price-data-row .col2 {
-    font-weight: 600;
-}
-
-.price-data-row .col3 {
+    font-weight: 700;
     text-align: right;
     color: var(--accent-gold);
-    font-weight: 800;
-    font-size: 17px;
 }
