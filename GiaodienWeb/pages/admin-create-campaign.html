@@ -120,17 +120,27 @@
 
             <form class="campaign-form" id="createCampaignForm">
                 <!-- Basic Info -->
-                <div class="form-section">
-                    <h3>Thông tin cơ bản</h3>
+                <div class="content-section">
+                    <div class="settings-section-header">
+                        <div class="settings-section-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="settings-section-title">Thông tin cơ bản</h2>
+                            <p class="settings-section-desc">Tên, nghệ sĩ, mô tả và hình ảnh sản phẩm</p>
+                        </div>
+                    </div>
                     <div class="form-grid">
                         <div class="form-group full-width">
                             <label>Tên chiến dịch *</label>
-                            <input type="text" placeholder="VD: ROSÉ X EXED" required>
+                            <input type="text" class="form-input" placeholder="VD: ROSÉ X EXED" required>
                         </div>
-                        
                         <div class="form-group">
                             <label>Nghệ sĩ Collab *</label>
-                            <select required>
+                            <select class="form-input" required>
                                 <option value="">Chọn nghệ sĩ</option>
                                 <option value="rose">ROSÉ</option>
                                 <option value="lisa">LISA</option>
@@ -139,145 +149,200 @@
                                 <option value="parkbogum">PARK BO GUM</option>
                             </select>
                         </div>
-                        
                         <div class="form-group">
                             <label>Danh mục *</label>
-                            <select required>
+                            <select class="form-input" required>
                                 <option value="">Chọn danh mục</option>
                                 <option value="sneaker">Giày Sneaker</option>
                                 <option value="tshirt">Áo thun</option>
                                 <option value="accessory">Phụ kiện</option>
                             </select>
                         </div>
-                        
                         <div class="form-group full-width">
                             <label>Mô tả sản phẩm</label>
-                            <textarea rows="4" placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
+                            <textarea class="form-input form-textarea" rows="3" placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
                         </div>
-                        
                         <div class="form-group full-width">
                             <label>Hình ảnh sản phẩm *</label>
-                            <div class="file-upload-area" id="fileUploadArea">
+                            <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
                                 <div class="upload-icon">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                         <polyline points="17 8 12 3 7 8"></polyline>
                                         <line x1="12" y1="3" x2="12" y2="15"></line>
                                     </svg>
                                 </div>
                                 <p class="upload-text">Kéo thả ảnh vào đây hoặc <span class="upload-link">chọn file</span></p>
-                                <p class="upload-hint">Hỗ trợ: JPG, PNG, GIF (Tối đa 5MB mỗi file)</p>
-                                <input type="file" accept="image/*" multiple id="fileInput" style="display: none;">
+                                <p class="upload-hint">JPG, PNG · Tối đa 5MB mỗi file</p>
+                                <input type="file" accept="image/*" multiple id="fileInput" style="display:none">
                             </div>
                             <div class="image-preview-grid" id="imagePreviewGrid"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pricing Config -->
-                <div class="form-section">
-                    <h3>Cấu hình giá bậc thang</h3>
-                    <div class="pricing-tiers">
-                        <div class="tier-row">
-                            <input type="number" placeholder="Từ số lượng" value="100">
-                            <input type="number" placeholder="Đến số lượng" value="499">
-                            <input type="number" placeholder="Giá (VNĐ)" value="25500000">
-                            <button type="button" class="btn-remove-tier">×</button>
+                <!-- Pricing -->
+                <div class="content-section">
+                    <div class="settings-section-header">
+                        <div class="settings-section-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
                         </div>
-                        <div class="tier-row">
-                            <input type="number" placeholder="Từ số lượng" value="500">
-                            <input type="number" placeholder="Đến số lượng" value="799">
-                            <input type="number" placeholder="Giá (VNĐ)" value="23550000">
-                            <button type="button" class="btn-remove-tier">×</button>
-                        </div>
-                        <div class="tier-row">
-                            <input type="number" placeholder="Từ số lượng" value="800">
-                            <input type="number" placeholder="Đến số lượng" value="999">
-                            <input type="number" placeholder="Giá (VNĐ)" value="21550000">
-                            <button type="button" class="btn-remove-tier">×</button>
-                        </div>
-                        <div class="tier-row">
-                            <input type="number" placeholder="Từ số lượng" value="1000">
-                            <input type="number" placeholder="Đến số lượng" value="1200">
-                            <input type="number" placeholder="Giá (VNĐ)" value="18550000">
-                            <button type="button" class="btn-remove-tier">×</button>
+                        <div>
+                            <h2 class="settings-section-title">Giá bậc thang</h2>
+                            <p class="settings-section-desc">Cấu hình mức giá theo số lượng đặt hàng</p>
                         </div>
                     </div>
-                    <button type="button" class="btn-add-tier">+ Thêm bậc giá</button>
+                    <div class="tier-table">
+                        <div class="tier-header">
+                            <span>Từ SL</span>
+                            <span>Đến SL</span>
+                            <span>Giá (VNĐ)</span>
+                            <span></span>
+                        </div>
+                        <div class="pricing-tiers" id="pricingTiers">
+                            <div class="tier-row">
+                                <input type="number" class="form-input" placeholder="100" value="100">
+                                <input type="number" class="form-input" placeholder="499" value="499">
+                                <input type="number" class="form-input" placeholder="Giá" value="25500000">
+                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                            <div class="tier-row">
+                                <input type="number" class="form-input" placeholder="500" value="500">
+                                <input type="number" class="form-input" placeholder="799" value="799">
+                                <input type="number" class="form-input" placeholder="Giá" value="23550000">
+                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                            <div class="tier-row">
+                                <input type="number" class="form-input" placeholder="800" value="800">
+                                <input type="number" class="form-input" placeholder="999" value="999">
+                                <input type="number" class="form-input" placeholder="Giá" value="21550000">
+                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                            <div class="tier-row">
+                                <input type="number" class="form-input" placeholder="1000" value="1000">
+                                <input type="number" class="form-input" placeholder="1200" value="1200">
+                                <input type="number" class="form-input" placeholder="Giá" value="18550000">
+                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-tier" id="addTierBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Thêm bậc giá
+                    </button>
                 </div>
 
                 <!-- Campaign Settings -->
-                <div class="form-section">
-                    <h3>Cài đặt chiến dịch</h3>
+                <div class="content-section">
+                    <div class="settings-section-header">
+                        <div class="settings-section-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="settings-section-title">Cài đặt chiến dịch</h2>
+                            <p class="settings-section-desc">Giá, số lượng, thời gian và trạng thái</p>
+                        </div>
+                    </div>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Giá bán lẻ cao nhất (VNĐ) *</label>
-                            <input type="number" placeholder="28850000" required>
+                            <input type="number" class="form-input" placeholder="28850000" required>
                         </div>
-                        
                         <div class="form-group">
-                            <label>Ngưỡng MOQ tối thiểu *</label>
-                            <input type="number" placeholder="100" required>
+                            <label>MOQ tối thiểu *</label>
+                            <input type="number" class="form-input" placeholder="100" required>
                         </div>
-                        
                         <div class="form-group">
                             <label>Phí tham gia (VNĐ) *</label>
-                            <input type="number" placeholder="500000" required>
+                            <input type="number" class="form-input" placeholder="500000" required>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Thời gian bắt đầu *</label>
-                            <input type="datetime-local" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Thời gian kết thúc *</label>
-                            <input type="datetime-local" required>
-                        </div>
-                        
                         <div class="form-group">
                             <label>Trạng thái</label>
-                            <select>
+                            <select class="form-input">
                                 <option value="draft">Nháp</option>
                                 <option value="active">Kích hoạt</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Thời gian bắt đầu *</label>
+                            <input type="datetime-local" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Thời gian kết thúc *</label>
+                            <input type="datetime-local" class="form-input" required>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Product Variants -->
-                <div class="form-section">
-                    <h3>Phân loại sản phẩm</h3>
+                <!-- Variants -->
+                <div class="content-section">
+                    <div class="settings-section-header">
+                        <div class="settings-section-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                                <rect x="1" y="3" width="22" height="5"></rect>
+                                <line x1="10" y1="12" x2="14" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="settings-section-title">Phân loại sản phẩm</h2>
+                            <p class="settings-section-desc">Size và màu sắc có sẵn</p>
+                        </div>
+                    </div>
                     <div class="variants-section">
                         <div class="variant-group">
                             <label>Size</label>
-                            <div class="variant-tags">
+                            <div class="variant-tags" id="sizeTags">
                                 <span class="tag">38 <button type="button">×</button></span>
                                 <span class="tag">39 <button type="button">×</button></span>
                                 <span class="tag">40 <button type="button">×</button></span>
                                 <span class="tag">41 <button type="button">×</button></span>
                                 <span class="tag">42 <button type="button">×</button></span>
-                                <input type="text" placeholder="Thêm size...">
+                                <input type="text" class="tag-input" placeholder="Thêm size...">
                             </div>
                         </div>
-                        
                         <div class="variant-group">
                             <label>Màu sắc</label>
-                            <div class="variant-tags">
+                            <div class="variant-tags" id="colorTags">
                                 <span class="tag">Đen <button type="button">×</button></span>
                                 <span class="tag">Trắng <button type="button">×</button></span>
                                 <span class="tag">Xanh <button type="button">×</button></span>
-                                <input type="text" placeholder="Thêm màu...">
+                                <input type="text" class="tag-input" placeholder="Thêm màu...">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="history.back()">Hủy</button>
-                    <button type="submit" class="btn-save-draft">Lưu nháp</button>
-                    <button type="submit" class="btn-publish">Xuất bản</button>
+                <!-- Actions -->
+                <div class="campaign-form-actions">
+                    <button type="button" class="btn-secondary-admin" onclick="history.back()">Hủy</button>
+                    <button type="button" class="btn-secondary-admin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        </svg>
+                        Lưu nháp
+                    </button>
+                    <button type="submit" class="btn-primary-admin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Xuất bản
+                    </button>
                 </div>
             </form>
         </main>
