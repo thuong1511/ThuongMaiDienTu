@@ -114,20 +114,124 @@ const prevBtn = document.querySelector('.slider-btn.prev');
 const nextBtn = document.querySelector('.slider-btn.next');
 
 if (prevBtn && nextBtn && artistsList) {
-    prevBtn.addEventListener('click', () => {
-        artistsList.scrollBy({
-            left: -300,
-            behavior: 'smooth'
+    const artists = document.querySelectorAll('.artist');
+    const artistsPerPage = 6;
+    let currentPage = 0;
+    const totalPages = Math.ceil(artists.length / artistsPerPage);
+
+    function showPage(page) {
+        // Hide all artists first with fade out
+        artists.forEach((artist) => {
+            artist.classList.remove('show');
         });
+
+        // Wait for fade out, then show new page with staggered animation
+        setTimeout(() => {
+            const startIndex = page * artistsPerPage;
+            const endIndex = startIndex + artistsPerPage;
+            
+            artists.forEach((artist, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    artist.style.display = 'flex';
+                    // Staggered animation
+                    setTimeout(() => {
+                        artist.classList.add('show');
+                    }, (index - startIndex) * 80);
+                } else {
+                    artist.style.display = 'none';
+                }
+            });
+        }, 200);
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+        } else {
+            // Loop to last page
+            currentPage = totalPages - 1;
+        }
+        showPage(currentPage);
     });
 
     nextBtn.addEventListener('click', () => {
-        artistsList.scrollBy({
-            left: 300,
-            behavior: 'smooth'
-        });
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+        } else {
+            // Loop back to first page
+            currentPage = 0;
+        }
+        showPage(currentPage);
     });
+
+    // Show first page initially with animation
+    setTimeout(() => {
+        showPage(currentPage);
+    }, 100);
 }
+
+// Reviews Slider
+const reviewsGrid = document.querySelector('.bidding-grid');
+const prevReviewBtn = document.querySelector('.review-btn.prev-review');
+const nextReviewBtn = document.querySelector('.review-btn.next-review');
+
+if (prevReviewBtn && nextReviewBtn && reviewsGrid) {
+    const reviews = document.querySelectorAll('.bidding-card');
+    const reviewsPerPage = 2;
+    let currentReviewPage = 0;
+    const totalReviewPages = Math.ceil(reviews.length / reviewsPerPage);
+
+    function showReviewPage(page) {
+        // Hide all reviews first with fade out
+        reviews.forEach((review) => {
+            review.classList.remove('show');
+        });
+
+        // Wait for fade out, then show new page with staggered animation
+        setTimeout(() => {
+            const startIndex = page * reviewsPerPage;
+            const endIndex = startIndex + reviewsPerPage;
+            
+            reviews.forEach((review, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    review.style.display = 'block';
+                    // Staggered animation
+                    setTimeout(() => {
+                        review.classList.add('show');
+                    }, (index - startIndex) * 150);
+                } else {
+                    review.style.display = 'none';
+                }
+            });
+        }, 200);
+    }
+
+    prevReviewBtn.addEventListener('click', () => {
+        if (currentReviewPage > 0) {
+            currentReviewPage--;
+        } else {
+            // Loop to last page
+            currentReviewPage = totalReviewPages - 1;
+        }
+        showReviewPage(currentReviewPage);
+    });
+
+    nextReviewBtn.addEventListener('click', () => {
+        if (currentReviewPage < totalReviewPages - 1) {
+            currentReviewPage++;
+        } else {
+            // Loop back to first page
+            currentReviewPage = 0;
+        }
+        showReviewPage(currentReviewPage);
+    });
+
+    // Show first page initially with animation
+    setTimeout(() => {
+        showReviewPage(currentReviewPage);
+    }, 100);
+}
+
 
 // Animate Vote Numbers
 function animateVoteNumbers() {
@@ -220,27 +324,6 @@ if (searchBtn && searchInput) {
                 alert(`Đang tìm kiếm: ${searchTerm}`);
             }
         }
-    });
-}
-
-// User button functionality
-const userBtn = document.querySelector('.user-btn');
-const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-if (dropdownItems.length > 0) {
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const text = item.querySelector('span').textContent;
-            
-            if (text === 'Đăng xuất') {
-                if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                    alert('Đã đăng xuất thành công!');
-                }
-            } else {
-                alert(`Chức năng "${text}" đang được phát triển!`);
-            }
-        });
     });
 }
 

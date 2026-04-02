@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo chiến dịch - Admin EXPED</title>
+    <title>Tạo chiến dịch - Admin EXED</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/admin-dashboard.css">
+    <link rel="stylesheet" href="../css/admin-dashboard.css?v=2000">
 </head>
 <body>
     <!-- Admin Header -->
     <header class="admin-header">
         <div class="admin-container">
             <div class="logo">
-                <img src="../images/logo_admin.png" alt="EXPED">
+                <img src="../images/logo_admin.png" alt="EXED">
                 <span class="admin-badge">ADMIN</span>
             </div>
             <div class="admin-actions">
@@ -108,7 +108,7 @@
         <!-- Main Content -->
         <main class="admin-main">
             <div class="page-header">
-                <h1>TẠO CHIẾN DỊCH MỚI</h1>
+                <h1 id="page-title">TẠO CHIẾN DỊCH MỚI</h1>
                 <button class="btn-back" onclick="history.back()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -290,8 +290,117 @@
         // Require admin access
         auth.requireAdmin();
         
-        // Admin create campaign page
-        console.log('Admin create campaign loaded');
+        // Mock campaign data
+        const mockCampaigns = {
+            'CD001': {
+                name: 'ROSÉ X EXED',
+                artist: 'ROSÉ',
+                category: 'fashion',
+                description: 'Chiến dịch hợp tác độc quyền với ROSÉ - Thành viên BLACKPINK. Bộ sưu tập thời trang cao cấp giới hạn.',
+                startDate: '2026-03-01',
+                endDate: '2026-04-15',
+                originalPrice: '28850000',
+                tiers: [
+                    { quantity: '100', price: '28850000', description: 'Mốc khởi điểm' },
+                    { quantity: '300', price: '26550000', description: 'Mốc phổ biến' },
+                    { quantity: '600', price: '24550000', description: 'Mốc ưu đãi' },
+                    { quantity: '1200', price: '23550000', description: 'Mốc tốt nhất' }
+                ],
+                colors: ['Đen', 'Trắng', 'Hồng'],
+                sizes: ['S', 'M', 'L', 'XL']
+            },
+            'CD003': {
+                name: 'LISA X EXED',
+                artist: 'LISA',
+                category: 'fashion',
+                description: 'Bộ sưu tập thời trang street style độc đáo cùng LISA.',
+                startDate: '2026-03-10',
+                endDate: '2026-04-20',
+                originalPrice: '27850000',
+                tiers: [
+                    { quantity: '100', price: '27850000', description: 'Mốc khởi điểm' },
+                    { quantity: '500', price: '25550000', description: 'Mốc phổ biến' },
+                    { quantity: '1000', price: '23850000', description: 'Mốc tốt nhất' }
+                ],
+                colors: ['Đen', 'Trắng', 'Xanh'],
+                sizes: ['S', 'M', 'L', 'XL']
+            }
+        };
+        
+        // Check if edit mode
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const campaignId = urlParams.get('id');
+
+        if (mode === 'edit' && campaignId) {
+            // Edit mode
+            document.getElementById('page-title').textContent = 'CHỈNH SỬA CHIẾN DỊCH';
+            document.title = 'Chỉnh sửa chiến dịch - Admin - EXED';
+            
+            console.log('Edit mode for campaign:', campaignId);
+            
+            // Load campaign data
+            const campaign = mockCampaigns[campaignId];
+            if (campaign) {
+                // Fill basic info
+                document.querySelector('input[placeholder="VD: ROSÉ X EXED"]').value = campaign.name;
+                document.querySelector('select').value = campaign.artist.toLowerCase();
+                document.querySelector('textarea').value = campaign.description;
+                document.querySelectorAll('input[type="date"]')[0].value = campaign.startDate;
+                document.querySelectorAll('input[type="date"]')[1].value = campaign.endDate;
+                document.querySelector('input[placeholder="VD: 28.850.000"]').value = campaign.originalPrice;
+                
+                // Fill pricing tiers
+                const tierContainer = document.querySelector('.pricing-tiers');
+                tierContainer.innerHTML = '';
+                campaign.tiers.forEach((tier, index) => {
+                    const tierRow = document.createElement('div');
+                    tierRow.className = 'tier-row';
+                    tierRow.innerHTML = `
+                        <input type="number" placeholder="Số lượng" value="${tier.quantity}" required>
+                        <input type="number" placeholder="Giá bán" value="${tier.price}" required>
+                        <input type="text" placeholder="Mô tả (tùy chọn)" value="${tier.description}">
+                        ${index > 0 ? '<button type="button" class="btn-remove-tier">×</button>' : '<div style="width: 40px;"></div>'}
+                    `;
+                    tierContainer.appendChild(tierRow);
+                });
+                
+                // Fill colors
+                const colorContainer = document.querySelector('.variant-tags');
+                colorContainer.innerHTML = '';
+                campaign.colors.forEach(color => {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = `${color} <button type="button">×</button>`;
+                    colorContainer.appendChild(tag);
+                });
+                const colorInput = document.createElement('input');
+                colorInput.type = 'text';
+                colorInput.placeholder = 'Thêm màu...';
+                colorContainer.appendChild(colorInput);
+                
+                // Fill sizes
+                const sizeContainer = document.querySelectorAll('.variant-tags')[1];
+                sizeContainer.innerHTML = '';
+                campaign.sizes.forEach(size => {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = `${size} <button type="button">×</button>`;
+                    sizeContainer.appendChild(tag);
+                });
+                const sizeInput = document.createElement('input');
+                sizeInput.type = 'text';
+                sizeInput.placeholder = 'Thêm size...';
+                sizeContainer.appendChild(sizeInput);
+                
+                console.log('Campaign data loaded:', campaign);
+            } else {
+                alert('Không tìm thấy chiến dịch với ID: ' + campaignId);
+            }
+        } else {
+            // Create mode
+            console.log('Create new campaign mode');
+        }
     </script>
 </body>
 </html>

@@ -129,6 +129,192 @@
     gap: 20px;
 }
 
+/* Address Selection */
+.address-selection {
+    margin-top: 20px;
+}
+
+.address-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid rgba(196, 168, 127, 0.3);
+}
+
+.address-tab {
+    padding: 12px 25px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(95, 7, 4, 0.6);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Nunito', sans-serif;
+    margin-bottom: -2px;
+}
+
+.address-tab:hover {
+    color: var(--primary-dark);
+}
+
+.address-tab.active {
+    color: var(--primary-dark);
+    border-bottom-color: var(--accent-gold);
+}
+
+.address-content {
+    display: none;
+}
+
+.address-content.active {
+    display: block;
+}
+
+.saved-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.address-card {
+    position: relative;
+    border: 2px solid rgba(196, 168, 127, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.address-card:hover {
+    border-color: var(--accent-gold);
+    background: rgba(236, 234, 229, 0.3);
+}
+
+.address-card.active,
+.address-card:has(input:checked) {
+    border-color: var(--accent-gold);
+    background: rgba(196, 168, 127, 0.1);
+    box-shadow: 0 4px 15px rgba(196, 168, 127, 0.2);
+}
+
+.address-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.address-card label {
+    cursor: pointer;
+    display: block;
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.address-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary-dark);
+}
+
+.address-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.address-badge.default {
+    background: var(--accent-gold);
+    color: var(--primary-dark);
+}
+
+.address-phone {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(95, 7, 4, 0.7);
+    margin-bottom: 6px;
+}
+
+.address-detail {
+    font-size: 14px;
+    color: rgba(95, 7, 4, 0.8);
+    line-height: 1.5;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 0;
+    line-height: 22px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-custom {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid var(--accent-gold);
+    border-radius: 6px;
+    background: #fff;
+    transition: all 0.3s;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.checkbox-label:hover .checkbox-custom {
+    border-color: #D4AF6A;
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ .checkbox-custom {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ .checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid var(--primary-dark);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary-dark);
+    user-select: none;
+    line-height: 22px;
+}
+
 /* Color Options */
 .color-options {
     display: flex;
@@ -233,19 +419,30 @@
     color: var(--primary-dark);
 }
 
+/* Hide number input arrows */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty-input[type=number] {
+    -moz-appearance: textfield;
+}
+
 /* Bet Explanation */
 .bet-explanation {
     display: flex;
     gap: 15px;
     padding: 20px;
-    background: rgba(255, 152, 0, 0.1);
+    background: rgba(33, 150, 243, 0.08);
     border-radius: 12px;
-    border: 2px solid rgba(255, 152, 0, 0.3);
+    border: 2px solid rgba(33, 150, 243, 0.3);
     margin-bottom: 25px;
 }
 
 .bet-explanation svg {
-    color: #e65100;
+    color: #1976d2;
     flex-shrink: 0;
 }
 
@@ -253,6 +450,114 @@
     font-size: 14px;
     line-height: 1.6;
     color: rgba(95, 7, 4, 0.8);
+}
+
+/* Bet Timer Warning */
+.bet-timer-warning {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 2px solid #ff9800;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    animation: pulse-warning 2s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 152, 0, 0); }
+}
+
+.bet-timer-warning svg {
+    flex-shrink: 0;
+    color: #f57c00;
+    margin-top: 2px;
+}
+
+.bet-timer-warning strong {
+    color: #e65100;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.bet-timer-warning p {
+    color: #5d4037;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.bet-timer-warning p strong {
+    display: inline;
+    white-space: nowrap;
+}
+
+/* Decision Timer */
+.bet-decision-timer {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.timer-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #1565c0;
+}
+
+.timer-header svg {
+    flex-shrink: 0;
+}
+
+.decision-countdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.time-box {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 70px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.time-box .time-value {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1565c0;
+    line-height: 1;
+}
+
+.time-box .time-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.time-sep {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1565c0;
+}
+
+.timer-note {
+    text-align: center;
+    color: #0d47a1;
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
 }
 
 /* Bet Options */
@@ -335,9 +640,39 @@
     margin-bottom: 8px;
 }
 
-.bet-votes {
-    font-size: 13px;
-    color: rgba(95, 7, 4, 0.6);
+/* Bet Progress Alert */
+.bet-progress-alert {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 20px;
+    animation: pulse-info 2s ease-in-out infinite;
+}
+
+@keyframes pulse-info {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(33, 150, 243, 0); }
+}
+
+.bet-progress-alert svg {
+    flex-shrink: 0;
+    color: #1976d2;
+}
+
+.bet-progress-alert p {
+    color: #0d47a1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.bet-progress-alert strong {
+    color: #1565c0;
+    font-weight: 800;
 }
 
 /* Order Summary */
@@ -437,29 +772,30 @@
 /* Refund Note */
 .refund-note {
     display: flex;
-    gap: 12px;
-    padding: 18px;
-    background: rgba(76, 175, 80, 0.1);
+    gap: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-left: 4px solid #4caf50;
     border-radius: 12px;
-    border: 2px solid rgba(76, 175, 80, 0.3);
     margin-bottom: 25px;
 }
 
 .refund-note svg {
-    color: #4caf50;
     flex-shrink: 0;
-}
-
-.refund-note strong {
     color: #2e7d32;
-    font-size: 14px;
+    margin-top: 2px;
 }
 
 .refund-note p {
-    font-size: 13px;
+    color: #2e7d32;
     line-height: 1.6;
-    color: rgba(95, 7, 4, 0.8);
-    margin-top: 5px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.refund-note strong {
+    color: #1b5e20;
+    font-size: 15px;
 }
 
 /* Payment Methods */

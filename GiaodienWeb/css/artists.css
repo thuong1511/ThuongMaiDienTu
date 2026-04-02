@@ -1,0 +1,328 @@
+/* Artists Page Styles */
+
+.artists-hero {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.artists-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/banner.jpg') center/cover;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.artists-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, #f8f8f8);
+    z-index: 1;
+}
+
+.artists-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.page-title {
+    font-size: 56px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.page-subtitle {
+    font-size: 20px;
+    color: #e0e0e0;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+/* Artists Grid Section */
+.artists-grid-section {
+    padding: 100px 0;
+    background: #f8f8f8;
+}
+
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.artist-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.artist-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(26,26,26,0.05) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.artist-card:hover::before {
+    opacity: 1;
+}
+
+.artist-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.artist-image {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.artist-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.artist-card:hover .artist-image::after {
+    opacity: 1;
+}
+
+.artist-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.artist-card:hover .artist-image img {
+    transform: scale(1.08);
+}
+
+.artist-info {
+    padding: 30px 25px;
+    position: relative;
+    z-index: 2;
+}
+
+.artist-info h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.artist-role {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.artist-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #666;
+    margin-bottom: 25px;
+    min-height: 75px;
+}
+
+.artist-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.artist-stats span {
+    font-size: 13px;
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+    padding: 8px 16px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #e8e8e8;
+}
+
+.artist-stats span:hover {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    border-color: #1a1a1a;
+}
+
+.artist-stats svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Decorative Elements */
+.artists-grid-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, #f8f8f8, transparent);
+    pointer-events: none;
+}
+
+/* Loading Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.artist-card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.artist-card:nth-child(1) { animation-delay: 0.1s; }
+.artist-card:nth-child(2) { animation-delay: 0.2s; }
+.artist-card:nth-child(3) { animation-delay: 0.3s; }
+.artist-card:nth-child(4) { animation-delay: 0.4s; }
+.artist-card:nth-child(5) { animation-delay: 0.5s; }
+.artist-card:nth-child(6) { animation-delay: 0.6s; }
+.artist-card:nth-child(7) { animation-delay: 0.7s; }
+.artist-card:nth-child(8) { animation-delay: 0.8s; }
+.artist-card:nth-child(9) { animation-delay: 0.9s; }
+.artist-card:nth-child(10) { animation-delay: 1s; }
+.artist-card:nth-child(11) { animation-delay: 1.1s; }
+.artist-card:nth-child(12) { animation-delay: 1.2s; }
+
+/* Responsive */
+@media (max-width: 1400px) {
+    .artists-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 35px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .artists-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 35px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .page-title {
+        font-size: 48px;
+    }
+    
+    .artists-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    
+    .artist-image {
+        height: 350px;
+    }
+    
+    .artist-info {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .artists-hero {
+        padding: 80px 0 60px;
+    }
+    
+    .page-title {
+        font-size: 36px;
+        letter-spacing: 2px;
+    }
+    
+    .page-subtitle {
+        font-size: 16px;
+    }
+    
+    .artists-grid-section {
+        padding: 60px 0;
+    }
+    
+    .artists-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+    
+    .artist-image {
+        height: 320px;
+    }
+    
+    .artist-info {
+        padding: 20px 18px;
+    }
+    
+    .artist-info h3 {
+        font-size: 20px;
+    }
+    
+    .artist-desc {
+        font-size: 14px;
+        min-height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .artists-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .artist-image {
+        height: 380px;
+    }
+    
+    .artist-card {
+        margin: 0 10px;
+    }
+}
