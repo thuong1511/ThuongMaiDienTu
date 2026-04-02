@@ -13,10 +13,7 @@
 
 body {
     font-family: 'Nunito', sans-serif;
-    background-image: url(../images/bg.jpg);
-    /* background-color: var(--primary-light); */
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: var(--primary-light);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -25,15 +22,45 @@ body {
     overflow: hidden;
 }
 
+.bow-top-left {
+    top: 50px;
+    left: 80px;
+    width: 120px;
+    height: 120px;
+}
+
+.bow-top-right {
+    top: 30px;
+    right: 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.bow-bottom-left {
+    bottom: 150px;
+    left: 60px;
+    width: 140px;
+    height: 140px;
+}
+
+.bow-bottom-right {
+    bottom: 200px;
+    right: 150px;
+    width: 110px;
+    height: 110px;
+}
+
 /* Auth Container */
 .auth-container {
-    background: #f1efe3;
+    background: white;
+    border: 3px solid var(--accent-pink);
     border-radius: 20px;
     padding: 50px 60px;
     width: 100%;
     max-width: 500px;
     box-shadow: 0 10px 40px rgba(95, 7, 4, 0.2);
-    margin: 20px auto;
+    position: relative;
+    z-index: 1;
 }
 
 .auth-title {
@@ -229,32 +256,16 @@ body {
     color: #8B0A06;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .auth-container {
-        padding: 40px 30px;
-        margin: 20px;
-    }
-
-    .auth-title {
-        font-size: 26px;
-    }
-
-    .social-buttons {
-        flex-direction: column;
-    }
-}
-
-/* OTP Input Container */
+/* OTP Inputs */
 .otp-container {
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-bottom: 30px;
+    margin: 30px 0;
 }
 
 .otp-input {
-    width: 50px;
+    width: 55px;
     height: 55px;
     text-align: center;
     font-size: 24px;
@@ -264,7 +275,6 @@ body {
     background-color: #fafafa;
     color: #2d2d2d;
     transition: all 0.3s;
-    font-family: 'Nunito', sans-serif;
 }
 
 .otp-input:focus {
@@ -274,21 +284,44 @@ body {
     box-shadow: 0 0 0 3px rgba(95, 7, 4, 0.1);
 }
 
-.otp-input::-webkit-outer-spin-button,
-.otp-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Responsive OTP */
+/* Responsive */
 @media (max-width: 768px) {
-    .otp-container {
-        gap: 8px;
+    .auth-container {
+        padding: 40px 30px;
+        margin: 20px;
     }
-    
+
+    .bow-top-left {
+        top: 20px;
+        left: 20px;
+    }
+
+    .bow-top-right {
+        top: 20px;
+        right: 20px;
+    }
+
+    .bow-bottom-left {
+        bottom: 80px;
+        left: 20px;
+    }
+
+    .bow-bottom-right {
+        bottom: 100px;
+        right: 20px;
+    }
+
+    .auth-title {
+        font-size: 26px;
+    }
+
+    .social-buttons {
+        flex-direction: column;
+    }
+
     .otp-input {
-        width: 42px;
-        height: 48px;
+        width: 45px;
+        height: 45px;
         font-size: 20px;
     }
 }
