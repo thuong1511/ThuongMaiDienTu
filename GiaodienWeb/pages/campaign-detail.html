@@ -263,31 +263,39 @@
                 <h2>ĐÁNH GIÁ TỪ KHÁCH HÀNG</h2>
                 <div class="review-stats">
                     <div class="rating-summary">
-                        <div class="rating-number">4.8</div>
-                        <div class="rating-stars">★★★★★</div>
-                        <div class="rating-count">1,208 đánh giá</div>
+                        <div>
+                            <div class="rating-number" id="ratingNumber">4.8</div>
+                            <div class="rating-stars" id="ratingStars">★★★★★</div>
+                        </div>
+                        <div class="rating-count" id="ratingCount">1,208 đánh giá</div>
+                    </div>
+                </div>
+
+                <div class="review-filter-bar">
+                    <div class="review-filter-group">
+                        <label for="timeFilter">Lọc theo thời gian</label>
+                        <select id="timeFilter" class="review-filter-select">
+                            <option value="all">Tất cả</option>
+                            <option value="30">30 ngày</option>
+                            <option value="90">3 tháng</option>
+                            <option value="180">6 tháng</option>
+                            <option value="365">1 năm</option>
+                        </select>
+                    </div>
+                    <div class="review-filter-group">
+                        <label for="ratingFilter">Lọc theo sao</label>
+                        <select id="ratingFilter" class="review-filter-select">
+                            <option value="all">Tất cả</option>
+                            <option value="5">5 sao</option>
+                            <option value="4">4 sao trở lên</option>
+                            <option value="3">3 sao trở lên</option>
+                            <option value="2">2 sao trở lên</option>
+                            <option value="1">1 sao trở lên</option>
+                        </select>
                     </div>
                 </div>
                 
-                <div class="review-list">
-                    <div class="review-item">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <img src="../images/rose.jpg" alt="User">
-                                <div>
-                                    <h4>Trần Văn A</h4>
-                                    <div class="review-stars">★★★★★</div>
-                                </div>
-                            </div>
-                            <span class="review-date">15/03/2026</span>
-                        </div>
-                        <p class="review-text">Sản phẩm chất lượng tuyệt vời! Đúng như mô tả, giao hàng nhanh. Rất hài lòng với lần mua này.</p>
-                        <div class="review-images">
-                            <img src="../images/review1.jpg" alt="Review">
-                            <img src="../images/review1.1.jpg" alt="Review">
-                        </div>
-                    </div>
-                </div>
+                <div class="review-list" id="reviewList"></div>
             </div>
         </div>
     </section>
@@ -382,6 +390,190 @@
                 mainImg.src = thumb.src;
             });
         });
+    </script>
+    <script>
+        const campaignReviews = [
+            {
+                id: 1,
+                name: 'Trần Văn A',
+                rating: 5,
+                comment: 'Sản phẩm chất lượng tuyệt vời! Đúng như mô tả, giao hàng nhanh. Rất hài lòng với lần mua này.',
+                images: ['../images/review1.jpg', '../images/review1.1.jpg'],
+                createdAt: '2026-03-15',
+                replies: [
+                    {
+                        author: 'EXED',
+                        message: 'Cảm ơn bạn đã tin tưởng và ủng hộ! Chúng tôi luôn nỗ lực để mang đến sản phẩm tốt nhất.',
+                        createdAt: '2026-03-16'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Nguyễn Thị B',
+                rating: 4,
+                comment: 'Thiết kế đẹp, chất liệu ưng ý nhưng giao hàng hơi chậm một chút.',
+                images: [],
+                createdAt: '2026-01-10',
+                replies: []
+            },
+            {
+                id: 3,
+                name: 'Lê Văn C',
+                rating: 3,
+                comment: 'Chất lượng tốt nhưng sizing hơi nhỏ, cần xem kỹ size chart trước khi đặt.',
+                images: [],
+                createdAt: '2025-11-05',
+                replies: [
+                    {
+                        author: 'EXED',
+                        message: 'Cảm ơn phản hồi của bạn! Chúng tôi sẽ cập nhật thông tin size chính xác hơn.',
+                        createdAt: '2025-11-06'
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: 'Phạm Thị D',
+                rating: 5,
+                comment: 'Mua tặng bạn và cả hai đều rất hài lòng. Sản phẩm xịn xò, logo và packaging rất đẹp.',
+                images: ['../images/review2.png'],
+                createdAt: '2025-09-02',
+                replies: []
+            }
+        ];
+
+        const reviewList = document.getElementById('reviewList');
+        const timeFilter = document.getElementById('timeFilter');
+        const ratingFilter = document.getElementById('ratingFilter');
+        const ratingNumber = document.getElementById('ratingNumber');
+        const ratingStars = document.getElementById('ratingStars');
+        const ratingCount = document.getElementById('ratingCount');
+
+        const renderStars = rating => '★'.repeat(rating) + '☆'.repeat(5 - rating);
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function renderReviewItem(review) {
+            const imagesMarkup = review.images.length
+                ? `<div class="review-images">${review.images.map(src => `<img src="${src}" alt="Review image">`).join('')}</div>`
+                : '';
+
+            const repliesMarkup = review.replies.length
+                ? `<div class="reply-list">${review.replies.map(reply => `
+                        <div class="reply-item">
+                            <h5>${reply.author} • ${formatDate(reply.createdAt)}</h5>
+                            <p>${reply.message}</p>
+                        </div>
+                    `).join('')}</div>`
+                : `<div class="reply-list"><div class="reply-item"><p>Chưa có phản hồi nào.</p></div></div>`;
+
+            return `
+                <div class="review-item" data-review-id="${review.id}">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <img src="../images/rose.jpg" alt="${review.name}">
+                            <div>
+                                <h4>${review.name}</h4>
+                                <div class="review-stars">${renderStars(review.rating)}</div>
+                            </div>
+                        </div>
+                        <span class="review-date">${formatDate(review.createdAt)}</span>
+                    </div>
+                    <p class="review-text">${review.comment}</p>
+                    ${imagesMarkup}
+                    <div class="review-actions">
+                        <button type="button" class="btn-reply" data-action="toggle-reply" data-id="${review.id}">Phản hồi</button>
+                    </div>
+                    ${repliesMarkup}
+                    <form class="reply-form" data-review-id="${review.id}" hidden>
+                        <textarea name="reply" placeholder="Viết phản hồi của bạn..." required></textarea>
+                        <button type="submit" class="btn-submit-reply">Gửi phản hồi</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function updateReviewStats(filteredReviews) {
+            const count = filteredReviews.length;
+            if (!count) {
+                ratingNumber.textContent = '0.0';
+                ratingStars.textContent = '☆☆☆☆☆';
+                ratingCount.textContent = '0 đánh giá';
+                return;
+            }
+            const average = filteredReviews.reduce((sum, review) => sum + review.rating, 0) / count;
+            const rounded = Math.round(average * 10) / 10;
+            ratingNumber.textContent = rounded.toFixed(1);
+            ratingStars.textContent = renderStars(Math.round(average));
+            ratingCount.textContent = `${count} đánh giá`;
+        }
+
+        function renderReviews(list) {
+            if (!list.length) {
+                reviewList.innerHTML = '<div class="empty-review">Không có đánh giá phù hợp với bộ lọc hiện tại.</div>';
+                return;
+            }
+            reviewList.innerHTML = list.map(renderReviewItem).join('');
+        }
+
+        function filterReviews() {
+            const now = new Date();
+            const daysValue = timeFilter.value;
+            const minRating = ratingFilter.value === 'all' ? 0 : Number(ratingFilter.value);
+
+            const filtered = campaignReviews.filter(review => {
+                const reviewDate = new Date(review.createdAt);
+                const timeMatch = daysValue === 'all'
+                    || (now - reviewDate) / (1000 * 60 * 60 * 24) <= Number(daysValue);
+
+                const ratingMatch = review.rating >= minRating;
+                return timeMatch && ratingMatch;
+            });
+
+            updateReviewStats(filtered);
+            renderReviews(filtered);
+        }
+
+        reviewList.addEventListener('click', event => {
+            const button = event.target.closest('[data-action="toggle-reply"]');
+            if (!button) return;
+            const reviewId = button.dataset.id;
+            const form = reviewList.querySelector(`.reply-form[data-review-id="${reviewId}"]`);
+            if (form) {
+                form.hidden = !form.hidden;
+            }
+        });
+
+        reviewList.addEventListener('submit', event => {
+            event.preventDefault();
+            const form = event.target.closest('.reply-form');
+            if (!form) return;
+            const reviewId = Number(form.dataset.reviewId);
+            const textarea = form.querySelector('textarea[name="reply"]');
+            const message = textarea.value.trim();
+            if (!message) return;
+
+            const review = campaignReviews.find(item => item.id === reviewId);
+            if (!review) return;
+
+            review.replies.unshift({
+                author: 'EXED',
+                message,
+                createdAt: new Date().toISOString().split('T')[0]
+            });
+            textarea.value = '';
+            form.hidden = true;
+            filterReviews();
+        });
+
+        timeFilter.addEventListener('change', filterReviews);
+        ratingFilter.addEventListener('change', filterReviews);
+
+        filterReviews();
     </script>
 </body>
 </html>

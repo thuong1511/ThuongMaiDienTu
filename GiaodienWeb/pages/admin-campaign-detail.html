@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -347,6 +347,222 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Reviews -->
+            <div class="content-section">
+                <div class="review-panel-header">
+                    <h2 class="section-title" style="margin:0;">Đánh giá từ khách hàng</h2>
+                    <div class="review-summary">
+                        <div class="review-score">
+                            <span class="review-score-num">4.7</span>
+                            <div class="review-stars">
+                                <span class="star filled">★</span><span class="star filled">★</span>
+                                <span class="star filled">★</span><span class="star filled">★</span>
+                                <span class="star half">★</span>
+                            </div>
+                            <span class="review-count">128 đánh giá</span>
+                        </div>
+                        <div class="review-bars">
+                            <div class="review-bar-row"><span>5★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:72%"></div></div><span>92</span></div>
+                            <div class="review-bar-row"><span>4★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:18%"></div></div><span>23</span></div>
+                            <div class="review-bar-row"><span>3★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:6%"></div></div><span>8</span></div>
+                            <div class="review-bar-row"><span>2★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:3%"></div></div><span>4</span></div>
+                            <div class="review-bar-row"><span>1★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:1%"></div></div><span>1</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="filter-bar-admin" style="margin-bottom:20px;">
+                    <div class="filter-group-admin">
+                        <label>Số sao</label>
+                        <select class="filter-select-admin" id="filterStar">
+                            <option value="">Tất cả</option>
+                            <option value="5">5 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="1">1 sao</option>
+                        </select>
+                    </div>
+                    <div class="filter-group-admin">
+                        <label>Thời gian</label>
+                        <select class="filter-select-admin" id="filterTime">
+                            <option value="">Tất cả</option>
+                            <option value="7">7 ngày qua</option>
+                            <option value="30">30 ngày qua</option>
+                            <option value="90">3 tháng qua</option>
+                        </select>
+                    </div>
+                    <div class="filter-group-admin">
+                        <label>Trạng thái</label>
+                        <select class="filter-select-admin">
+                            <option value="">Tất cả</option>
+                            <option value="replied">Đã phản hồi</option>
+                            <option value="pending">Chưa phản hồi</option>
+                        </select>
+                    </div>
+                    <button class="btn-secondary-admin">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Lọc
+                    </button>
+                </div>
+
+                <!-- Review list -->
+                <div class="review-list" id="reviewList">
+
+                    <!-- Review 1 -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-user">
+                                <img src="../images/rose.jpg" alt="User" class="review-avatar">
+                                <div>
+                                    <p class="review-username">Nguyễn Văn A</p>
+                                    <p class="review-date">25/03/2026 · Đơn #DH2024001</p>
+                                </div>
+                            </div>
+                            <div class="review-item-right">
+                                <div class="review-stars-sm">
+                                    <span class="star filled">★</span><span class="star filled">★</span>
+                                    <span class="star filled">★</span><span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                </div>
+                                <span class="review-replied-badge">Đã phản hồi</span>
+                            </div>
+                        </div>
+                        <p class="review-text">Sản phẩm chất lượng tuyệt vời! Đúng như mô tả, giao hàng nhanh. Rất hài lòng với chiến dịch này.</p>
+                        <div class="review-images">
+                            <img src="../images/chiendich1.jpg" alt="Review img">
+                            <img src="../images/chiendich2.jpg" alt="Review img">
+                        </div>
+                        <div class="review-reply-box replied">
+                            <div class="review-reply-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 17 4 12 9 7"></polyline>
+                                    <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                                </svg>
+                                Phản hồi của Admin · 26/03/2026
+                            </div>
+                            <p class="review-reply-text">Cảm ơn bạn đã tin tưởng và ủng hộ chiến dịch ROSÉ X EXED! Rất vui khi bạn hài lòng với sản phẩm.</p>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn-link" onclick="toggleReplyForm(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 17 4 12 9 7"></polyline>
+                                    <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                                </svg>
+                                Sửa phản hồi
+                            </button>
+                            <button class="btn-link" style="color:rgba(95,7,4,.4)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Ẩn đánh giá
+                            </button>
+                        </div>
+                        <div class="review-reply-form" style="display:none;">
+                            <textarea class="form-input form-textarea" rows="2" placeholder="Nhập phản hồi...">Cảm ơn bạn đã tin tưởng và ủng hộ chiến dịch ROSÉ X EXED! Rất vui khi bạn hài lòng với sản phẩm.</textarea>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <button class="btn-primary-admin" onclick="alert('Đã lưu phản hồi!')">Lưu</button>
+                                <button class="btn-secondary-admin" onclick="toggleReplyForm(this)">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-user">
+                                <img src="../images/lisa.jpg" alt="User" class="review-avatar">
+                                <div>
+                                    <p class="review-username">Trần Thị B</p>
+                                    <p class="review-date">20/03/2026 · Đơn #DH2024002</p>
+                                </div>
+                            </div>
+                            <div class="review-item-right">
+                                <div class="review-stars-sm">
+                                    <span class="star filled">★</span><span class="star filled">★</span>
+                                    <span class="star filled">★</span><span class="star filled">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                                <span class="review-pending-badge">Chưa phản hồi</span>
+                            </div>
+                        </div>
+                        <p class="review-text">Giày đẹp, chất lượng tốt. Tuy nhiên giao hàng hơi chậm so với dự kiến. Nhìn chung vẫn hài lòng.</p>
+                        <div class="review-actions">
+                            <button class="btn-link" onclick="toggleReplyForm(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 17 4 12 9 7"></polyline>
+                                    <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                                </svg>
+                                Phản hồi
+                            </button>
+                            <button class="btn-link" style="color:rgba(95,7,4,.4)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Ẩn đánh giá
+                            </button>
+                        </div>
+                        <div class="review-reply-form" style="display:none;">
+                            <textarea class="form-input form-textarea" rows="2" placeholder="Nhập phản hồi..."></textarea>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <button class="btn-primary-admin" onclick="alert('Đã gửi phản hồi!')">Gửi phản hồi</button>
+                                <button class="btn-secondary-admin" onclick="toggleReplyForm(this)">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-user">
+                                <img src="../images/jisoo.jpg" alt="User" class="review-avatar">
+                                <div>
+                                    <p class="review-username">Lê Văn C</p>
+                                    <p class="review-date">15/03/2026 · Đơn #DH2024003</p>
+                                </div>
+                            </div>
+                            <div class="review-item-right">
+                                <div class="review-stars-sm">
+                                    <span class="star filled">★</span><span class="star filled">★</span>
+                                    <span class="star filled">★</span><span class="star">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                                <span class="review-pending-badge">Chưa phản hồi</span>
+                            </div>
+                        </div>
+                        <p class="review-text">Sản phẩm ổn, nhưng màu thực tế hơi khác so với ảnh. Chất liệu tốt, đế giày êm.</p>
+                        <div class="review-actions">
+                            <button class="btn-link" onclick="toggleReplyForm(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 17 4 12 9 7"></polyline>
+                                    <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                                </svg>
+                                Phản hồi
+                            </button>
+                            <button class="btn-link" style="color:rgba(95,7,4,.4)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Ẩn đánh giá
+                            </button>
+                        </div>
+                        <div class="review-reply-form" style="display:none;">
+                            <textarea class="form-input form-textarea" rows="2" placeholder="Nhập phản hồi..."></textarea>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <button class="btn-primary-admin" onclick="alert('Đã gửi phản hồi!')">Gửi phản hồi</button>
+                                <button class="btn-secondary-admin" onclick="toggleReplyForm(this)">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </main>
     </div>
 
@@ -362,6 +578,13 @@
                 document.querySelector('.admin-profile img').src = user.avatar;
             }
         });
+
+        function toggleReplyForm(btn) {
+            const item = btn.closest('.review-item');
+            const form = item.querySelector('.review-reply-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>
+
