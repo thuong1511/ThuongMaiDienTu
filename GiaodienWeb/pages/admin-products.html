@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý chiến dịch - Admin EXED</title>
+    <title>Quản lý sản phẩm - Admin EXED</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -64,7 +64,7 @@
                     </svg>
                     <span>Dashboard</span>
                 </a>
-                <a href="admin-campaigns.html" class="nav-item active">
+                <a href="admin-campaigns.html" class="nav-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     </svg>
@@ -87,7 +87,7 @@
                     </svg>
                     <span>Quản lý đơn hàng</span>
                 </a>
-                <a href="admin-products.html" class="nav-item">
+                <a href="admin-products.html" class="nav-item active">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
@@ -115,13 +115,13 @@
         <!-- Main Content -->
         <main class="admin-main">
             <div class="page-header">
-                <h1>QUẢN LÝ CHIẾN DỊCH</h1>
-                <button class="btn-primary-admin" onclick="window.location.href='admin-create-campaign.html'">
+                <h1>QUẢN LÝ SẢN PHẨM</h1>
+                <button class="btn-primary-admin" onclick="window.location.href='admin-create-product.html'">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
-                    Tạo chiến dịch mới
+                    Thêm sản phẩm mới
                 </button>
             </div>
 
@@ -129,28 +129,16 @@
             <div class="content-section">
                 <div class="filter-bar-admin">
                     <div class="filter-group-admin">
-                        <label>Trạng thái</label>
+                        <label>Danh mục</label>
                         <select class="filter-select-admin">
                             <option value="">Tất cả</option>
-                            <option value="ongoing">Đang diễn ra</option>
-                            <option value="success">Thành công</option>
-                            <option value="failed">Thất bại</option>
-                            <option value="draft">Nháp</option>
-                        </select>
-                    </div>
-                    <div class="filter-group-admin">
-                        <label>Nghệ sĩ</label>
-                        <select class="filter-select-admin">
-                            <option value="">Tất cả</option>
-                            <option value="rose">ROSÉ</option>
-                            <option value="lisa">LISA</option>
-                            <option value="jisoo">JISOO</option>
-                            <option value="parkbogum">PARK BO GUM</option>
+                            <option value="ao">Áo</option>
+                            <option value="giay">Giày</option>
                         </select>
                     </div>
                     <div class="filter-group-admin">
                         <label>Tìm kiếm</label>
-                        <input type="text" placeholder="Tên chiến dịch..." class="filter-input-admin">
+                        <input type="text" placeholder="Tên sản phẩm..." class="filter-input-admin">
                     </div>
                     <button class="btn-secondary-admin">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -162,63 +150,55 @@
                 </div>
             </div>
 
-            <!-- Campaign Table -->
+            <!-- Product Table -->
             <div class="content-section">
                 <div class="table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Tên chiến dịch</th>
-                                <th>Nghệ sĩ</th>
-                                <th>Trạng thái</th>
-                                <th>Tiến độ</th>
-                                <th>Thời gian còn lại</th>
-                                <th>Doanh thu</th>
+                                <th>Mã SP</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Màu sắc</th>
+                                <th>Kích thước</th>
+                                <th>Số lượng hình ảnh</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>#CD001</td>
+                                <td><strong>SP001</strong></td>
                                 <td>
                                     <div class="campaign-cell">
-                                        <img src="../images/chiendich1.jpg" alt="Campaign">
-                                        <span>ROSÉ X EXED</span>
+                                        <img src="../images/chiendich1.jpg" alt="Product">
+                                        <span>Áo thun ROSÉ Limited Edition</span>
                                     </div>
                                 </td>
-                                <td>ROSÉ</td>
-                                <td><span class="status-badge ongoing">Đang diễn ra</span></td>
+                                <td>Áo</td>
                                 <td>
-                                    <div class="progress-mini">
-                                        <div class="progress-bar-mini" style="width: 77%"></div>
+                                    <div style="display: flex; gap: 4px;">
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #000; border-radius: 4px; border: 1px solid #ddd;" title="Đen"></span>
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #fff; border-radius: 4px; border: 1px solid #ddd;" title="Trắng"></span>
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #FFB6C1; border-radius: 4px; border: 1px solid #ddd;" title="Hồng"></span>
                                     </div>
-                                    <span class="progress-text">924/1200</span>
                                 </td>
-                                <td>3 ngày 14 giờ</td>
-                                <td>27.100.000.000 đ</td>
+                                <td>S, M, L, XL</td>
+                                <td>5 ảnh</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Chỉnh sửa" onclick="window.location.href='admin-create-campaign.html?id=CD001&mode=edit'">
+                                        <button class="btn-icon edit" title="Chỉnh sửa" onclick="window.location.href='admin-create-product.html?id=SP001&mode=edit'">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </button>
-                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-campaign-detail.html'">
+                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-product-detail.html?id=SP001'">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
                                         </button>
-                                        <button class="btn-icon export" title="Xuất danh sách">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="7 10 12 15 17 10"></polyline>
-                                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                                            </svg>
-                                        </button>
-                                        <button class="btn-icon delete" title="Xóa" onclick="if(confirm('Bạn có chắc muốn xóa chiến dịch này?')) alert('Đã xóa!')">
+                                        <button class="btn-icon delete" title="Xóa" onclick="if(confirm('Bạn có chắc muốn xóa sản phẩm này?')) alert('Đã xóa!')">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -228,81 +208,37 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>#CD002</td>
+                                <td><strong>SP002</strong></td>
                                 <td>
                                     <div class="campaign-cell">
-                                        <img src="../images/chiendich2.jpg" alt="Campaign">
-                                        <span>PARK BO GUM X EXED</span>
+                                        <img src="../images/chiendich2.jpg" alt="Product">
+                                        <span>Giày sneaker PARK BO GUM</span>
                                     </div>
                                 </td>
-                                <td>PARK BO GUM</td>
-                                <td><span class="status-badge success">Thành công</span></td>
+                                <td>Giày</td>
                                 <td>
-                                    <div class="progress-mini">
-                                        <div class="progress-bar-mini completed" style="width: 100%"></div>
-                                    </div>
-                                    <span class="progress-text">1208/1200</span>
-                                </td>
-                                <td>Đã kết thúc</td>
-                                <td>44.600.000.000 đ</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-campaign-detail.html'">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                            </svg>
-                                        </button>
-                                        <button class="btn-icon export" title="Xuất danh sách sản xuất">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="7 10 12 15 17 10"></polyline>
-                                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                                            </svg>
-                                        </button>
+                                    <div style="display: flex; gap: 4px;">
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #000; border-radius: 4px; border: 1px solid #ddd;" title="Đen"></span>
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #fff; border-radius: 4px; border: 1px solid #ddd;" title="Trắng"></span>
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>#CD003</td>
-                                <td>
-                                    <div class="campaign-cell">
-                                        <img src="../images/chiendich1.jpg" alt="Campaign">
-                                        <span>LISA X EXED</span>
-                                    </div>
-                                </td>
-                                <td>LISA</td>
-                                <td><span class="status-badge ongoing">Đang diễn ra</span></td>
-                                <td>
-                                    <div class="progress-mini">
-                                        <div class="progress-bar-mini" style="width: 65%"></div>
-                                    </div>
-                                    <span class="progress-text">650/1000</span>
-                                </td>
-                                <td>5 ngày 8 giờ</td>
-                                <td>18.200.000.000 đ</td>
+                                <td>38, 39, 40, 41, 42</td>
+                                <td>4 ảnh</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon edit" title="Chỉnh sửa" onclick="window.location.href='admin-create-campaign.html?id=CD003&mode=edit'">
+                                        <button class="btn-icon edit" title="Chỉnh sửa" onclick="window.location.href='admin-create-product.html?id=SP002&mode=edit'">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
                                         </button>
-                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-campaign-detail.html'">
+                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-product-detail.html?id=SP002'">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
                                         </button>
-                                        <button class="btn-icon export" title="Xuất danh sách">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="7 10 12 15 17 10"></polyline>
-                                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                                            </svg>
-                                        </button>
-                                        <button class="btn-icon delete" title="Xóa">
+                                        <button class="btn-icon delete" title="Xóa" onclick="if(confirm('Bạn có chắc muốn xóa sản phẩm này?')) alert('Đã xóa!')">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -312,32 +248,37 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>#CD004</td>
+                                <td><strong>SP003</strong></td>
                                 <td>
                                     <div class="campaign-cell">
-                                        <img src="../images/chiendich2.jpg" alt="Campaign">
-                                        <span>JISOO X EXED</span>
+                                        <img src="../images/chiendich1.jpg" alt="Product">
+                                        <span>Áo hoodie LISA Collection</span>
                                     </div>
                                 </td>
-                                <td>JISOO</td>
-                                <td><span class="status-badge failed">Thất bại</span></td>
+                                <td>Áo</td>
                                 <td>
-                                    <div class="progress-mini">
-                                        <div class="progress-bar-mini failed" style="width: 45%"></div>
+                                    <div style="display: flex; gap: 4px;">
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #000; border-radius: 4px; border: 1px solid #ddd;" title="Đen"></span>
+                                        <span style="display: inline-block; width: 20px; height: 20px; background: #808080; border-radius: 4px; border: 1px solid #ddd;" title="Xám"></span>
                                     </div>
-                                    <span class="progress-text">45/100</span>
                                 </td>
-                                <td>Đã kết thúc</td>
-                                <td>0 đ</td>
+                                <td>M, L, XL</td>
+                                <td>3 ảnh</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-campaign-detail.html'">
+                                        <button class="btn-icon edit" title="Chỉnh sửa" onclick="window.location.href='admin-create-product.html?id=SP003&mode=edit'">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-product-detail.html?id=SP003'">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
                                         </button>
-                                        <button class="btn-icon delete" title="Xóa">
+                                        <button class="btn-icon delete" title="Xóa" onclick="if(confirm('Bạn có chắc muốn xóa sản phẩm này?')) alert('Đã xóa!')">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -362,4 +303,3 @@
     </script>
 </body>
 </html>
-
