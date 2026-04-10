@@ -55,6 +55,54 @@
     display: block;
 }
 
+/* Registered Filter Container */
+.registered-filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(236, 234, 229, 0.5);
+    border-radius: 15px;
+    border: 2px solid rgba(196, 168, 127, 0.3);
+}
+
+.filter-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.filter-select {
+    padding: 12px 40px 12px 20px;
+    background: #fff;
+    color: var(--primary-dark);
+    border: 2px solid var(--accent-gold);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%235f0704' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    min-width: 200px;
+}
+
+.filter-select:hover {
+    border-color: var(--primary-dark);
+    box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(196, 168, 127, 0.2);
+}
+
 /* Filter Tabs */
 .filter-tabs {
     display: flex;
@@ -192,6 +240,12 @@
     background-color: rgba(156, 39, 176, 0.15);
     color: #6a1b9a;
     border: 2px solid #9c27b0;
+}
+
+.order-status.cancelled {
+    background-color: rgba(158, 158, 158, 0.15);
+    color: #616161;
+    border: 2px solid #9e9e9e;
 }
 
 /* Order Body */
@@ -398,6 +452,38 @@
     color: #e65100;
 }
 
+.payment-row.refund-status {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(196, 168, 127, 0.3);
+}
+
+.payment-row.refund-status.refunded {
+    background: rgba(76, 175, 80, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.payment-row.refund-status.not-refunded {
+    background: rgba(255, 152, 0, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.payment-row.refund-status span:first-child {
+    font-weight: 700;
+}
+
+.payment-row.refund-status.refunded .amount {
+    color: #2e7d32;
+}
+
+.payment-row.refund-status.not-refunded .amount {
+    color: #e65100;
+}
+
 .payment-row.total {
     border-top: 2px solid var(--accent-gold);
     margin-top: 10px;
@@ -535,6 +621,17 @@
 }
 
 @media (max-width: 768px) {
+    .registered-filter-container {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .filter-select {
+        width: 100%;
+        min-width: 100%;
+    }
+    
     .order-body {
         flex-direction: column;
         gap: 20px;

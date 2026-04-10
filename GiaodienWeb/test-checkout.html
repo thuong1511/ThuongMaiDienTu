@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout - EXED</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 10px;
+        }
+        .btn {
+            background: #8B4513;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #6d3410;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #8B4513;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Checkout Flow</h1>
+    
+    <div class="test-section">
+        <h2>1. Kiểm tra đăng nhập</h2>
+        <div class="info" id="loginInfo">Đang kiểm tra...</div>
+        <button class="btn" onclick="testLogin()">Test Login</button>
+        <button class="btn" onclick="goToLogin()">Đăng nhập</button>
+        <div class="result" id="loginResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Load Campaign Data</h2>
+        <div class="info">
+            Campaign ID: <input type="text" id="campaignId" value="CD001" style="padding: 5px;">
+        </div>
+        <button class="btn" onclick="testLoadCampaign()">Load Campaign</button>
+        <div class="result" id="campaignResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Load User Addresses</h2>
+        <button class="btn" onclick="testLoadAddresses()">Load Addresses</button>
+        <div class="result" id="addressResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Go to Checkout Page</h2>
+        <button class="btn" onclick="goToCheckout()">Mở trang Checkout</button>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth-manager.js"></script>
+    <script>
+        // Test login status
+        function testLogin() {
+            const user = AuthManager.getCurrentUser();
+            const loginInfo = document.getElementById('loginInfo');
+            const loginResult = document.getElementById('loginResult');
+            
+            if (user) {
+                loginInfo.innerHTML = `✅ Đã đăng nhập: <strong>${user.tenDangNhap}</strong> (${user.maNguoiDung})`;
+                loginResult.textContent = JSON.stringify(user, null, 2);
+            } else {
+                loginInfo.innerHTML = '❌ Chưa đăng nhập';
+                loginResult.textContent = 'Vui lòng đăng nhập để tiếp tục';
+            }
+        }
+        
+        function goToLogin() {
+            window.location.href = 'pages/login.html';
+        }
+        
+        // Test load campaign
+        async function testLoadCampaign() {
+            const campaignId = document.getElementById('campaignId').value;
+            const resultDiv = document.getElementById('campaignResult');
+            
+            try {
+                resultDiv.textContent = 'Đang tải...';
+                const response = await api.getChienDichById(campaignId);
+                resultDiv.textContent = JSON.stringify(response, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Lỗi: ' + error.message;
+            }
+        }
+        
+        // Test load addresses
+        async function testLoadAddresses() {
+            const user = AuthManager.getCurrentUser();
+            const resultDiv = document.getElementById('addressResult');
+            
+            if (!user) {
+                resultDiv.textContent = 'Vui lòng đăng nhập trước!';
+                return;
+            }
+            
+            try {
+                resultDiv.textContent = 'Đang tải...';
+                const response = await fetch(`http://localhost:8080/api/sodiachi/nguoidung/${user.maNguoiDung}`);
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'Lỗi: ' + error.message;
+            }
+        }
+        
+        // Go to checkout
+        function goToCheckout() {
+            const campaignId = document.getElementById('campaignId').value;
+            window.location.href = `pages/checkout.html?id=${campaignId}`;
+        }
+        
+        // Auto test on load
+        window.addEventListener('DOMContentLoaded', testLogin);
+    </script>
+</body>
+</html>

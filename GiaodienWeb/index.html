@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=2">
+    <link rel="stylesheet" href="css/styles.css?v=3">
 </head>
 <body>
     <!-- Header -->
@@ -117,7 +117,7 @@
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span>Kết thúc sau <strong>03 ngày : 14 giờ : 24 phút : 55 giây</strong></span>
+                    <span>Kết thúc sau <strong id="countdown-banner">Đang tải...</strong></span>
                 </div>
                 
                 <div class="info-row-compact">
@@ -187,13 +187,13 @@
             <div class="campaign-grid">
                 <div class="campaign-card">
                     <div class="campaign-image-wrapper">
-                        <img src="images/chiendich1.jpg" alt="SL 72 OG W">
+                        <img src="images/chiendich3.jpg" alt="SL 72 OG W">
                         <div class="campaign-badge-discount">-25.3 %</div>
                     </div>
                     <div class="campaign-info">
                         <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
                         <p class="campaign-status">Trạng thái: <span class="status-active">Đang diễn ra</span></p>
-                        <p class="campaign-participants">Người tham gia: <strong>9/11</strong></p>
+                        <p class="campaign-participants">Sản phẩm đăng ký: <strong>924</strong></p>
                         <p class="campaign-price">Giá hiện tại: <strong>21.550.000 đ</strong></p>
                         <div class="campaign-actions">
                             <div class="campaign-time">
@@ -209,13 +209,13 @@
                 </div>
                 <div class="campaign-card">
                     <div class="campaign-image-wrapper">
-                        <img src="images/chiendich2.jpg" alt="Gazelle">
+                        <img src="images/chiendich3.jpg" alt="Gazelle">
                         <div class="campaign-badge-discount">-41.5 %</div>
                     </div>
                     <div class="campaign-info">
                         <h3>CHIẾN DỊCH PARK BO GUM X EXED</h3>
                         <p class="campaign-status">Trạng thái: <span class="status-ended">Đã kết thúc</span></p>
-                        <p class="campaign-participants">Người tham gia: <strong>1208</strong></p>
+                        <p class="campaign-participants">Sản phẩm đăng ký: <strong>0</strong></p>
                         <p class="campaign-price">Giá cuối: <strong>18.790.000 đ</strong></p>
                         <div class="campaign-actions">
                             <div class="campaign-time empty"></div>
@@ -224,7 +224,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn-view-all">XEM THÊM</button>
+            <a href="pages/campaigns.html" class="btn-view-all">XEM THÊM</a>
         </div>
     </section>
 
@@ -524,8 +524,9 @@
         </div>
     </footer>
 
+    <script src="js/api.js"></script>
+    <script src="js/auth-manager.js"></script>
     <script src="js/data.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

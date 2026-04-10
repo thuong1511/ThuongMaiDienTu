@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API - EXED</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #5f0704;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #5f0704;
+            margin-top: 0;
+        }
+        button {
+            background: #5f0704;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #7a0905;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            color: #ff6b6b;
+            background: #ffe0e0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #ff6b6b;
+        }
+        .success {
+            color: #10b981;
+            background: #d1fae5;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #10b981;
+        }
+        .artist-card, .campaign-card {
+            display: inline-block;
+            width: 150px;
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .artist-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+        .campaign-card img {
+            width: 130px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .artist-card img.error, .campaign-card img.error {
+            border-color: red;
+        }
+        .artist-card h4, .campaign-card h4 {
+            margin: 10px 0 5px 0;
+            font-size: 13px;
+            color: #5f0704;
+        }
+        .artist-card p, .campaign-card p {
+            margin: 5px 0;
+            font-size: 11px;
+            color: #666;
+        }
+        #artists-grid, #campaigns-grid, #variants-grid {
+            margin-top: 15px;
+        }
+        .variant-item {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 4px solid #d4af37;
+        }
+        .stock-low {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .stock-out {
+            color: #999;
+            text-decoration: line-through;
+        }
+        input[type="text"], input[type="password"], input[type="email"], input[type="tel"], select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #5f0704;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test API Backend - EXED</h1>
+    
+    <!-- Auth API -->
+    <div class="section">
+        <h2>1. Test Auth API (Login & Register)</h2>
+        
+        <h3>Test Get All Users</h3>
+        <button onclick="testGetAllUsers()">👥 GET All Users</button>
+        <button onclick="testGetAllCustomers()">👤 GET All Customers Only</button>
+        
+        <h3>Test Login</h3>
+        <div class="form-group">
+            <label>Tên đăng nhập:</label>
+            <input type="text" id="loginUsername" value="beorom" placeholder="Tên đăng nhập hoặc email">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu:</label>
+            <input type="password" id="loginPassword" value="123456" placeholder="Mật khẩu">
+        </div>
+        <button onclick="testLogin()">🔐 Test Login</button>
+        <button onclick="testLoginWithEmail()">📧 Test Login with Email</button>
+        
+        <h3>Test Register</h3>
+        <div class="form-group">
+            <label>Tên đăng nhập:</label>
+            <input type="text" id="regUsername" value="testuser" placeholder="Tên đăng nhập">
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="regEmail" value="test@example.com" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại:</label>
+            <input type="tel" id="regPhone" value="0912345678" placeholder="Số điện thoại">
+        </div>
+        <div class="form-group">
+            <label>Giới tính:</label>
+            <select id="regGender">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu:</label>
+            <input type="password" id="regPassword" value="123456" placeholder="Mật khẩu">
+        </div>
+        <button onclick="testRegister()">📝 Test Register</button>
+        
+        <div id="auth-result"></div>
+        <div id="users-grid"></div>
+    </div>
+    
+    <!-- Nghệ Sĩ API -->
+    <div class="section">
+        <h2>2. Test Nghệ Sĩ API</h2>
+        <button onclick="testNgheSiAPI()">📋 GET All Nghệ Sĩ</button>
+        <button onclick="testNgheSiVisual()">🎨 Show Visual Grid</button>
+        <div id="nghesi-result"></div>
+        <div id="artists-grid"></div>
+    </div>
+    
+    <!-- Chiến Dịch API -->
+    <div class="section">
+        <h2>3. Test Chiến Dịch API</h2>
+        <button onclick="testChienDichAPI()">📋 GET All Chiến Dịch</button>
+        <button onclick="testActiveChienDichAPI()">✅ GET Active Chiến Dịch</button>
+        <button onclick="testChienDichImages()">🖼️ Test Images</button>
+        <div id="chiendich-result"></div>
+        <div id="campaigns-grid"></div>
+    </div>
+    
+    <!-- Product Variants API -->
+    <div class="section">
+        <h2>4. Test Product Variants (Colors & Sizes)</h2>
+        <button onclick="testVariantsAPI()">🎨 Load Variants</button>
+        <button onclick="testSingleCampaign('CD001')">Test CD001 (Rosé)</button>
+        <button onclick="testSingleCampaign('CD002')">Test CD002 (Jennie)</button>
+        <div id="variants-result"></div>
+        <div id="variants-grid"></div>
+    </div>
+
+    <!-- Registration & Payment API -->
+    <div class="section">
+        <h2>5. Test Thanh Toán & Đăng Ký Chiến Dịch</h2>
+        
+        <h3>5.1. Thanh Toán (ThanhToan)</h3>
+        <button onclick="testGetAllThanhToan()">💳 GET All Thanh Toán</button>
+        <button onclick="testGetThanhToanById(1)">GET Thanh Toán #1</button>
+        
+        <h4>Tạo Thanh Toán Mới</h4>
+        <div class="form-group">
+            <label>Họ tên người nhận:</label>
+            <input type="text" id="ttHoTen" value="Nguyễn Văn Test" placeholder="Họ tên">
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại:</label>
+            <input type="tel" id="ttSoDienThoai" value="0909123456" placeholder="Số điện thoại">
+        </div>
+        <div class="form-group">
+            <label>Địa chỉ giao hàng:</label>
+            <input type="text" id="ttDiaChi" value="123 Đường Test, Phường Test, TP.HCM" placeholder="Địa chỉ đầy đủ">
+        </div>
+        <div class="form-group">
+            <label>Số tiền:</label>
+            <input type="number" id="ttSoTien" value="25550000" placeholder="Số tiền">
+        </div>
+        <div class="form-group">
+            <label>Phương thức:</label>
+            <select id="ttPhuongThuc">
+                <option value="Chuyển khoản">Chuyển khoản</option>
+                <option value="Ví điện tử">Ví điện tử</option>
+                <option value="Tiền mặt">Tiền mặt</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Ghi chú:</label>
+            <input type="text" id="ttGhiChu" value="Thanh toán đăng ký chiến dịch" placeholder="Ghi chú">
+        </div>
+        <button onclick="testCreateThanhToan()">➕ Tạo Thanh Toán</button>
+        
+        <div id="thanhtoan-result"></div>
+        
+        <h3>5.2. Đăng Ký Chiến Dịch (DangKyChienDich)</h3>
+        <button onclick="testGetAllDangKy()">📋 GET All Đăng Ký</button>
+        <button onclick="testGetDangKyByNguoiDung('ND002')">GET Đăng Ký của ND002</button>
+        <button onclick="testGetDangKyByChienDich('CD001')">GET Đăng Ký của CD001</button>
+        
+        <h4>Tạo Đăng Ký Chiến Dịch</h4>
+        <div class="form-group">
+            <label>Mã thanh toán:</label>
+            <input type="number" id="dkMaThanhToan" value="1" placeholder="Mã thanh toán (vừa tạo)">
+        </div>
+        <div class="form-group">
+            <label>Mã mức giá:</label>
+            <input type="number" id="dkMaMucGia" value="1" placeholder="Mã mức giá (từ BangGiaBacThang)">
+        </div>
+        <div class="form-group">
+            <label>Mã người dùng:</label>
+            <input type="text" id="dkMaNguoiDung" value="ND002" placeholder="ND002">
+        </div>
+        <div class="form-group">
+            <label>Mã chiến dịch:</label>
+            <input type="text" id="dkMaChienDich" value="CD001" placeholder="CD001">
+        </div>
+        <div class="form-group">
+            <label>Tổng số lượng (1-2):</label>
+            <input type="number" id="dkTongSoLuong" value="2" min="1" max="2" placeholder="1 hoặc 2">
+        </div>
+        <button onclick="testCreateDangKy()">➕ Tạo Đăng Ký</button>
+        <button onclick="testHuyDangKy(1)">❌ Hủy Đăng Ký #1</button>
+        
+        <div id="dangky-result"></div>
+        
+        <h3>5.3. Chi Tiết Đăng Ký (PhieuChiTietDangKy)</h3>
+        <button onclick="testGetAllChiTiet()">📋 GET All Chi Tiết</button>
+        <button onclick="testGetChiTietByDangKy(1)">GET Chi Tiết của Đăng Ký #1</button>
+        
+        <h4>Tạo Chi Tiết Đăng Ký</h4>
+        <p style="background: #fff8e1; padding: 10px; border-radius: 5px; border-left: 4px solid #d4af37;">
+            <strong>💡 Lưu ý:</strong> Mỗi đăng ký có thể có tối đa 2 đôi giày. Mỗi đôi có thể chọn màu và size khác nhau.
+            <br>Ví dụ: Đôi 1 (Xanh Navy - Size 39), Đôi 2 (Đỏ - Size 40)
+        </p>
+        <div class="form-group">
+            <label>Mã đăng ký:</label>
+            <input type="number" id="ctMaDangKy" value="1" placeholder="Mã đăng ký (vừa tạo)">
+        </div>
+        <div class="form-group">
+            <label>Mã sản phẩm:</label>
+            <input type="text" id="ctMaSanPham" value="SP001" placeholder="SP001">
+        </div>
+        <div class="form-group">
+            <label>Mã màu:</label>
+            <select id="ctMaMau">
+                <option value="1">1 - Đen</option>
+                <option value="2">2 - Trắng</option>
+                <option value="3" selected>3 - Xanh Navy</option>
+                <option value="4">4 - Đỏ</option>
+                <option value="5">5 - Xám</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Mã size:</label>
+            <select id="ctMaSize">
+                <option value="5">5 - Size 38</option>
+                <option value="6" selected>6 - Size 39</option>
+                <option value="7">7 - Size 40</option>
+                <option value="8">8 - Size 41</option>
+                <option value="9">9 - Size 42</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Số lượng:</label>
+            <input type="number" id="ctSoLuong" value="1" min="1" max="1" placeholder="1 (mỗi chi tiết = 1 đôi)">
+            <span style="color: #666; font-size: 12px;">* Mỗi chi tiết = 1 đôi</span>
+        </div>
+        <button onclick="testCreateChiTiet()">➕ Thêm Đôi 1</button>
+        <button onclick="testCreateChiTietDoi2()">➕ Thêm Đôi 2 (màu/size khác)</button>
+        
+        <div id="chitiet-result"></div>
+        <div id="registration-grid"></div>
+    </div>
+
+    <!-- Address Management API -->
+    <div class="section">
+        <h2>6. Test Địa Chỉ API (TinhThanh, PhuongXa, SoDiaChi)</h2>
+        
+        <h3>Test Tỉnh/Thành</h3>
+        <button onclick="testGetAllTinhThanh()">🏙️ GET All Tỉnh/Thành</button>
+        <button onclick="testGetTinhThanhById('TT001')">GET Hà Nội (TT001)</button>
+        <div id="tinhthanh-result"></div>
+        
+        <h3>Test Phường/Xã</h3>
+        <button onclick="testGetAllPhuongXa()">🏘️ GET All Phường/Xã</button>
+        <button onclick="testGetPhuongXaByTinhThanh('TT001')">GET Phường/Xã của Hà Nội</button>
+        <button onclick="testGetPhuongXaByTinhThanh('TT002')">GET Phường/Xã của HCM</button>
+        <div id="phuongxa-result"></div>
+        
+        <h3>Test Sổ Địa Chỉ</h3>
+        <button onclick="testGetAllSoDiaChi()">📍 GET All Địa Chỉ</button>
+        <button onclick="testGetSoDiaChiByUser('ND002')">GET Địa Chỉ của ND002</button>
+        
+        <h4>Thêm Địa Chỉ Mới</h4>
+        <div class="form-group">
+            <label>Mã người dùng:</label>
+            <input type="text" id="addrMaNguoiDung" value="ND002" placeholder="ND002">
+        </div>
+        <div class="form-group">
+            <label>Tỉnh/Thành:</label>
+            <select id="addrTinhThanh" onchange="loadPhuongXaForAddress()">
+                <option value="">-- Chọn Tỉnh/Thành --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Phường/Xã:</label>
+            <select id="addrPhuongXa">
+                <option value="">-- Chọn Phường/Xã --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Họ tên:</label>
+            <input type="text" id="addrHoTen" value="Nguyễn Văn Test" placeholder="Họ tên người nhận">
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại:</label>
+            <input type="tel" id="addrSoDienThoai" value="0909123456" placeholder="Số điện thoại">
+        </div>
+        <div class="form-group">
+            <label>Địa chỉ chi tiết:</label>
+            <input type="text" id="addrChiTiet" value="123 Đường Test" placeholder="Số nhà, tên đường">
+        </div>
+        <div class="form-group">
+            <label>Đặt làm mặc định:</label>
+            <input type="checkbox" id="addrMacDinh" style="width: auto; margin-left: 10px;">
+        </div>
+        <button onclick="testCreateSoDiaChi()">➕ Thêm Địa Chỉ</button>
+        
+        <h4>Sửa/Xóa Địa Chỉ</h4>
+        <div class="form-group">
+            <label>Mã địa chỉ:</label>
+            <input type="text" id="addrMaSo" value="DC001" placeholder="DC001">
+        </div>
+        <button onclick="testSetDefaultAddress()">⭐ Đặt làm Mặc Định</button>
+        <button onclick="testUpdateSoDiaChi()">✏️ Sửa Địa Chỉ</button>
+        <button onclick="testDeleteSoDiaChi()">🗑️ Xóa Địa Chỉ</button>
+        
+        <div id="sodiachi-result"></div>
+        <div id="address-grid"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+
+        // ========== AUTH API TESTS ==========
+        async function testGetAllUsers() {
+            const resultDiv = document.getElementById('auth-result');
+            const gridDiv = document.getElementById('users-grid');
+            
+            resultDiv.innerHTML = '<p>Loading all users...</p>';
+            gridDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/nguoidung`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Found ${data.data.length} users</strong>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Display users in grid
+                    gridDiv.innerHTML = '<h3>Users List:</h3>' + data.data.map(user => `
+                        <div style="border: 2px solid #d4af37; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                            <strong>${user.tenDangNhap}</strong> (${user.vaiTro})
+                            <br>Email: ${user.email}
+                            <br>SĐT: ${user.soDienThoai || 'N/A'}
+                            <br>Giới tính: ${user.gioiTinh || 'N/A'}
+                            <br>Trạng thái: <span style="color: ${user.trangThai === 'Hoạt động' ? 'green' : 'red'}">${user.trangThai}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetAllCustomers() {
+            const resultDiv = document.getElementById('auth-result');
+            const gridDiv = document.getElementById('users-grid');
+            
+            resultDiv.innerHTML = '<p>Loading customers...</p>';
+            gridDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/nguoidung/customers`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Found ${data.data.length} customers</strong>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Display customers in grid
+                    gridDiv.innerHTML = '<h3>Customers List:</h3>' + data.data.map(user => `
+                        <div style="border: 2px solid #d4af37; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                            <strong>${user.tenDangNhap}</strong>
+                            <br>Email: ${user.email}
+                            <br>SĐT: ${user.soDienThoai || 'N/A'}
+                            <br>Giới tính: ${user.gioiTinh || 'N/A'}
+                            <br>Ngày tạo: ${new Date(user.ngayTao).toLocaleDateString('vi-VN')}
+                        </div>
+                    `).join('');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('auth-result');
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            resultDiv.innerHTML = '<p>Đang đăng nhập...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tenDangNhap: username, matKhau: password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Đăng nhập thành công!</strong>
+                            <p>Tên: ${data.data.tenDangNhap}</p>
+                            <p>Email: ${data.data.email}</p>
+                            <p>Số điện thoại: ${data.data.soDienThoai || 'N/A'}</p>
+                            <p>Giới tính: ${data.data.gioiTinh || 'N/A'}</p>
+                            <p>Vai trò: ${data.data.vaiTro}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testLoginWithEmail() {
+            const resultDiv = document.getElementById('auth-result');
+            const email = 'nguyenthu2018dn@gmail.com';
+            const password = '123456';
+            
+            resultDiv.innerHTML = '<p>Đang đăng nhập bằng email...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tenDangNhap: email, matKhau: password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Đăng nhập bằng email thành công!</strong>
+                            <p>Tên: ${data.data.tenDangNhap}</p>
+                            <p>Email: ${data.data.email}</p>
+                            <p>Số điện thoại: ${data.data.soDienThoai || 'N/A'}</p>
+                            <p>Giới tính: ${data.data.gioiTinh || 'N/A'}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testRegister() {
+            const resultDiv = document.getElementById('auth-result');
+            const userData = {
+                tenDangNhap: document.getElementById('regUsername').value,
+                email: document.getElementById('regEmail').value,
+                soDienThoai: document.getElementById('regPhone').value,
+                gioiTinh: document.getElementById('regGender').value,
+                matKhau: document.getElementById('regPassword').value
+            };
+            
+            resultDiv.innerHTML = '<p>Đang đăng ký...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Đăng ký thành công!</strong>
+                            <p>Mã người dùng: ${data.data.maNguoiDung}</p>
+                            <p>Tên: ${data.data.tenDangNhap}</p>
+                            <p>Email: ${data.data.email}</p>
+                            <p>Số điện thoại: ${data.data.soDienThoai}</p>
+                            <p>Giới tính: ${data.data.gioiTinh}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== NGHỆ SĨ API TESTS ==========
+        async function testNgheSiAPI() {
+            const resultDiv = document.getElementById('nghesi-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/nghesi`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} nghệ sĩ</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testNgheSiVisual() {
+            const gridDiv = document.getElementById('artists-grid');
+            const resultDiv = document.getElementById('nghesi-result');
+            
+            gridDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/nghesi`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="success">✓ Loaded ${data.data.length} nghệ sĩ</div>`;
+                    
+                    gridDiv.innerHTML = '';
+                    data.data.forEach(ngheSi => {
+                        const hasImages = ngheSi.hinhAnhNgheSis && ngheSi.hinhAnhNgheSis.length > 0;
+                        const imageUrl = hasImages ? ngheSi.hinhAnhNgheSis[0].duongDan : 'images/default-artist.jpg';
+                        
+                        const card = document.createElement('div');
+                        card.className = 'artist-card';
+                        card.innerHTML = `
+                            <img src="${imageUrl}" alt="${ngheSi.tenNgheSi}" 
+                                 onerror="this.classList.add('error'); this.src='images/default-artist.jpg';">
+                            <h4>${ngheSi.tenNgheSi}</h4>
+                            <p>${ngheSi.ngheNghiep || 'N/A'}</p>
+                            <p style="font-size: 10px; color: ${hasImages ? 'green' : 'red'};">
+                                ${hasImages ? `✓ ${ngheSi.hinhAnhNgheSis.length} ảnh` : '✗ Không có ảnh'}
+                            </p>
+                        `;
+                        gridDiv.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== CHIẾN DỊCH API TESTS ==========
+        async function testChienDichAPI() {
+            const resultDiv = document.getElementById('chiendich-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chiendich`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} chiến dịch</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testActiveChienDichAPI() {
+            const resultDiv = document.getElementById('chiendich-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chiendich/active`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} active chiến dịch</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testChienDichImages() {
+            const gridDiv = document.getElementById('campaigns-grid');
+            const resultDiv = document.getElementById('chiendich-result');
+            
+            gridDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chiendich/active`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="success">✓ Testing ${data.data.length} campaigns</div>`;
+                    
+                    gridDiv.innerHTML = '';
+                    data.data.forEach(chienDich => {
+                        const hasImages = chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0;
+                        const bannerImage = hasImages ? chienDich.hinhAnhChienDichs[0].duongDan : 'images/banner.jpg';
+                        
+                        const card = document.createElement('div');
+                        card.className = 'campaign-card';
+                        card.innerHTML = `
+                            <img src="${bannerImage}" alt="${chienDich.tenChienDich}" 
+                                 onerror="this.classList.add('error'); this.src='images/banner.jpg';">
+                            <h4>${chienDich.tenChienDich}</h4>
+                            <p>${chienDich.thoiDiem}</p>
+                            <p style="font-size: 10px; color: ${hasImages ? 'green' : 'red'};">
+                                ${hasImages ? `✓ ${chienDich.hinhAnhChienDichs.length} ảnh` : '✗ Không có ảnh'}
+                            </p>
+                        `;
+                        gridDiv.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== VARIANTS API TESTS ==========
+        async function testVariantsAPI() {
+            const resultDiv = document.getElementById('variants-result');
+            const gridDiv = document.getElementById('variants-grid');
+            
+            resultDiv.innerHTML = '<p>Loading variants...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chiendich`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayVariants(data.data);
+                    resultDiv.innerHTML = `<div class="success">✓ Loaded ${data.data.length} campaigns with variants</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testSingleCampaign(id) {
+            const resultDiv = document.getElementById('variants-result');
+            resultDiv.innerHTML = `<p>Loading campaign ${id}...</p>`;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chiendich/${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayVariants([data.data]);
+                    resultDiv.innerHTML = `<div class="success">✓ Loaded campaign ${id}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayVariants(campaigns) {
+            const gridDiv = document.getElementById('variants-grid');
+            
+            gridDiv.innerHTML = campaigns.map(campaign => {
+                const product = campaign.sanPham;
+                if (!product) return '<p class="error">No product data</p>';
+                
+                const colors = product.sanPhamMauSacs || [];
+                const sizes = product.sanPhamKichThuocs || [];
+                
+                return `
+                    <div style="border: 2px solid #d4af37; padding: 15px; margin: 10px 0; border-radius: 8px;">
+                        <h3 style="color: #5f0704;">${campaign.tenChienDich}</h3>
+                        <p><strong>Product:</strong> ${product.tenSanPham}</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                            <div>
+                                <h4>🎨 Colors (${colors.length})</h4>
+                                ${colors.map(c => {
+                                    const remaining = c.soLuongToiDa - c.soLuongDaDat;
+                                    const percentage = (c.soLuongDaDat / c.soLuongToiDa * 100).toFixed(1);
+                                    const stockClass = remaining === 0 ? 'stock-out' : (percentage >= 80 ? 'stock-low' : '');
+                                    
+                                    return `
+                                        <div class="variant-item">
+                                            <strong>${c.mauSac?.tenMau || 'Unknown'}</strong>
+                                            <div class="${stockClass}">
+                                                Đã đặt: ${c.soLuongDaDat}/${c.soLuongToiDa} (${percentage}%)
+                                                <br>Còn lại: ${remaining}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            
+                            <div>
+                                <h4>📏 Sizes (${sizes.length})</h4>
+                                ${sizes.map(s => `
+                                    <div class="variant-item">
+                                        <strong>Size ${s.kichThuoc?.tenSize || 'Unknown'}</strong>
+                                        <div>Type: ${s.kichThuoc?.loaiKichThuoc || 'N/A'}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== ADDRESS API TESTS ==========
+        async function testGetAllTinhThanh() {
+            const resultDiv = document.getElementById('tinhthanh-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tinhthanh`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} tỉnh/thành</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Populate dropdown
+                    const select = document.getElementById('addrTinhThanh');
+                    select.innerHTML = '<option value="">-- Chọn Tỉnh/Thành --</option>' +
+                        data.data.map(tt => `<option value="${tt.maTinhThanh}">${tt.tenTinhThanh}</option>`).join('');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetTinhThanhById(maTinhThanh) {
+            const resultDiv = document.getElementById('tinhthanh-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tinhthanh/${maTinhThanh}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found: ${data.data.tenTinhThanh}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetAllPhuongXa() {
+            const resultDiv = document.getElementById('phuongxa-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phuongxa`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} phường/xã</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetPhuongXaByTinhThanh(maTinhThanh) {
+            const resultDiv = document.getElementById('phuongxa-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phuongxa/tinhthanh/${maTinhThanh}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} phường/xã</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function loadPhuongXaForAddress() {
+            const maTinhThanh = document.getElementById('addrTinhThanh').value;
+            const select = document.getElementById('addrPhuongXa');
+            
+            if (!maTinhThanh) {
+                select.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phuongxa/tinhthanh/${maTinhThanh}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    select.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>' +
+                        data.data.map(px => `<option value="${px.maPhuongXa}">${px.tenPhuongXa}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading phuong xa:', error);
+            }
+        }
+
+        async function testGetAllSoDiaChi() {
+            const resultDiv = document.getElementById('sodiachi-result');
+            const gridDiv = document.getElementById('address-grid');
+            
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} địa chỉ</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Display addresses in grid
+                    gridDiv.innerHTML = '<h3>Danh sách địa chỉ:</h3>' + data.data.map(addr => `
+                        <div style="border: 2px solid ${addr.macDinh ? '#10b981' : '#d4af37'}; padding: 10px; margin: 10px 0; border-radius: 5px; background: ${addr.macDinh ? '#d1fae5' : 'white'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong>${addr.maSo}</strong> - ${addr.hoTen}
+                                ${addr.macDinh ? '<span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">✓ MẶC ĐỊNH</span>' : ''}
+                            </div>
+                            <br>📞 ${addr.soDienThoai}
+                            <br>📍 ${addr.diaChiChiTiet}
+                            <br>🏘️ ${addr.tenPhuongXa || 'N/A'}, ${addr.tenTinhThanh || 'N/A'}
+                        </div>
+                    `).join('');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetSoDiaChiByUser(maNguoiDung) {
+            const resultDiv = document.getElementById('sodiachi-result');
+            const gridDiv = document.getElementById('address-grid');
+            
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi/nguoidung/${maNguoiDung}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} địa chỉ của ${maNguoiDung}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Display addresses in grid
+                    gridDiv.innerHTML = '<h3>Địa chỉ của ' + maNguoiDung + ':</h3>' + data.data.map(addr => `
+                        <div style="border: 2px solid ${addr.macDinh ? '#10b981' : '#d4af37'}; padding: 10px; margin: 10px 0; border-radius: 5px; background: ${addr.macDinh ? '#d1fae5' : 'white'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong>${addr.maSo}</strong> - ${addr.hoTen}
+                                ${addr.macDinh ? '<span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">✓ MẶC ĐỊNH</span>' : ''}
+                            </div>
+                            <br>📞 ${addr.soDienThoai}
+                            <br>📍 ${addr.diaChiChiTiet}
+                            <br>🏘️ ${addr.tenPhuongXa || 'N/A'}, ${addr.tenTinhThanh || 'N/A'}
+                        </div>
+                    `).join('');
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCreateSoDiaChi() {
+            const resultDiv = document.getElementById('sodiachi-result');
+            
+            const addressData = {
+                maNguoiDung: document.getElementById('addrMaNguoiDung').value,
+                maPhuongXa: document.getElementById('addrPhuongXa').value,
+                hoTen: document.getElementById('addrHoTen').value,
+                soDienThoai: document.getElementById('addrSoDienThoai').value,
+                diaChiChiTiet: document.getElementById('addrChiTiet').value,
+                macDinh: document.getElementById('addrMacDinh').checked
+            };
+            
+            if (!addressData.maPhuongXa) {
+                resultDiv.innerHTML = '<div class="error">✗ Vui lòng chọn Phường/Xã</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>Đang thêm địa chỉ...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(addressData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Thêm địa chỉ thành công!</strong>
+                            <p>Mã địa chỉ: ${data.data.maSo}</p>
+                            <p>Họ tên: ${data.data.hoTen}</p>
+                            <p>SĐT: ${data.data.soDienThoai}</p>
+                            <p>Mặc định: ${data.data.macDinh ? '✓ Có' : '✗ Không'}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testUpdateSoDiaChi() {
+            const resultDiv = document.getElementById('sodiachi-result');
+            const maSo = document.getElementById('addrMaSo').value;
+            
+            const addressData = {
+                hoTen: document.getElementById('addrHoTen').value,
+                soDienThoai: document.getElementById('addrSoDienThoai').value,
+                diaChiChiTiet: document.getElementById('addrChiTiet').value
+            };
+            
+            // Only add maPhuongXa if selected
+            const maPhuongXa = document.getElementById('addrPhuongXa').value;
+            if (maPhuongXa) {
+                addressData.maPhuongXa = maPhuongXa;
+            }
+            
+            resultDiv.innerHTML = '<p>Đang cập nhật địa chỉ...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi/${maSo}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(addressData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Cập nhật địa chỉ thành công!</strong>
+                            <p>Mã địa chỉ: ${data.data.maSo}</p>
+                            <p>Mặc định: ${data.data.macDinh ? '✓ Có' : '✗ Không'}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testSetDefaultAddress() {
+            const resultDiv = document.getElementById('sodiachi-result');
+            const maSo = document.getElementById('addrMaSo').value;
+            
+            resultDiv.innerHTML = '<p>Đang đặt làm mặc định...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi/${maSo}/set-default`, {
+                    method: 'PUT'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Đặt địa chỉ mặc định thành công!</strong>
+                            <p>Mã địa chỉ: ${data.data.maSo}</p>
+                            <p>Họ tên: ${data.data.hoTen}</p>
+                            <p>Mặc định: ${data.data.macDinh ? '✓ Có' : '✗ Không'}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Refresh address list
+                    const maNguoiDung = document.getElementById('addrMaNguoiDung').value;
+                    if (maNguoiDung) {
+                        testGetSoDiaChiByUser(maNguoiDung);
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testDeleteSoDiaChi() {
+            const resultDiv = document.getElementById('sodiachi-result');
+            const maSo = document.getElementById('addrMaSo').value;
+            
+            if (!confirm(`Bạn có chắc muốn xóa địa chỉ ${maSo}?`)) {
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>Đang xóa địa chỉ...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/sodiachi/${maSo}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Xóa địa chỉ ${maSo} thành công!</strong>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== THANH TOÁN API TESTS ==========
+        async function testGetAllThanhToan() {
+            const resultDiv = document.getElementById('thanhtoan-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/thanhtoan`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} thanh toán</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetThanhToanById(maThanhToan) {
+            const resultDiv = document.getElementById('thanhtoan-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/thanhtoan/${maThanhToan}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found thanh toán #${maThanhToan}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCreateThanhToan() {
+            const resultDiv = document.getElementById('thanhtoan-result');
+            
+            const thanhToanData = {
+                hoTenNguoiNhan: document.getElementById('ttHoTen').value,
+                soDienThoaiNhan: document.getElementById('ttSoDienThoai').value,
+                diaChiGiaoHang: document.getElementById('ttDiaChi').value,
+                soTienThanhToan: parseFloat(document.getElementById('ttSoTien').value),
+                phuongThuc: document.getElementById('ttPhuongThuc').value,
+                ghiChu: document.getElementById('ttGhiChu').value
+            };
+            
+            resultDiv.innerHTML = '<p>Đang tạo thanh toán...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/thanhtoan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(thanhToanData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Tạo thanh toán thành công!</strong>
+                            <p>Mã thanh toán: ${data.data.maThanhToan}</p>
+                            <p>Số tiền: ${data.data.soTienThanhToan.toLocaleString('vi-VN')} VNĐ</p>
+                            <p>Phương thức: ${data.data.phuongThuc}</p>
+                            <p style="color: red; font-weight: bold;">
+                                ⚠️ Lưu mã thanh toán: ${data.data.maThanhToan} để tạo đăng ký chiến dịch!
+                            </p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Auto-fill mã thanh toán vào form đăng ký
+                    document.getElementById('dkMaThanhToan').value = data.data.maThanhToan;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== ĐĂNG KÝ CHIẾN DỊCH API TESTS ==========
+        async function testGetAllDangKy() {
+            const resultDiv = document.getElementById('dangky-result');
+            const gridDiv = document.getElementById('registration-grid');
+            
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/dangkychiendich`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} đăng ký</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Display registrations in grid with details
+                    gridDiv.innerHTML = '<h3>Danh sách đăng ký (Mỗi người tối đa 2 đôi/chiến dịch):</h3>';
+                    
+                    for (const dk of data.data) {
+                        // Fetch chi tiết for each registration
+                        try {
+                            const detailResponse = await fetch(`${API_BASE_URL}/phieuchitietdangky/dangky/${dk.maDangKy}`);
+                            const detailData = await detailResponse.json();
+                            
+                            const chiTietHTML = detailData.success && detailData.data.length > 0 
+                                ? detailData.data.map((ct, index) => `
+                                    <div style="background: #f9f9f9; padding: 8px; margin: 5px 0; border-radius: 4px;">
+                                        <strong>Đôi ${index + 1}:</strong> 
+                                        ${ct.sanPham?.tenSanPham || 'N/A'} - 
+                                        Màu: <span style="color: #5f0704;">${ct.mauSac?.tenMau || 'N/A'}</span> - 
+                                        Size: <span style="color: #5f0704;">${ct.kichThuoc?.tenSize || 'N/A'}</span> - 
+                                        SL: ${ct.soLuong}
+                                    </div>
+                                `).join('')
+                                : '<div style="color: #999; font-style: italic;">Chưa có chi tiết sản phẩm</div>';
+                            
+                            const cardHTML = `
+                                <div style="border: 2px solid #d4af37; padding: 15px; margin: 10px 0; border-radius: 8px; background: white;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                        <div>
+                                            <strong style="font-size: 16px; color: #5f0704;">Đăng ký #${dk.maDangKy}</strong>
+                                            <br><span style="color: #666;">👤 ${dk.nguoiDung?.tenDangNhap || 'N/A'} (${dk.nguoiDung?.email || 'N/A'})</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            ${dk.daHuy 
+                                                ? '<span style="background: #ff6b6b; color: white; padding: 4px 8px; border-radius: 4px;">❌ Đã hủy</span>' 
+                                                : '<span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px;">✅ Hoạt động</span>'}
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="background: #fff8e1; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                        <strong>🎯 Chiến dịch:</strong> ${dk.chienDich?.tenChienDich || 'N/A'}
+                                        <br><strong>💰 Mức giá:</strong> ${dk.bangGiaBacThang?.donGia?.toLocaleString('vi-VN') || 'N/A'} VNĐ/đôi
+                                        <br><strong>📦 Tổng số đôi:</strong> ${dk.tongSoLuong}/2 đôi
+                                        <br><strong>📅 Ngày đăng ký:</strong> ${new Date(dk.ngayDangKy).toLocaleString('vi-VN')}
+                                    </div>
+                                    
+                                    <div style="margin-top: 10px;">
+                                        <strong>Chi tiết sản phẩm đã chọn:</strong>
+                                        ${chiTietHTML}
+                                    </div>
+                                    
+                                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
+                                        💳 Thanh toán #${dk.thanhToan?.maThanhToan || 'N/A'} - 
+                                        ${dk.thanhToan?.phuongThuc || 'N/A'} - 
+                                        ${dk.thanhToan?.soTienThanhToan?.toLocaleString('vi-VN') || 'N/A'} VNĐ
+                                    </div>
+                                </div>
+                            `;
+                            
+                            gridDiv.innerHTML += cardHTML;
+                        } catch (error) {
+                            console.error('Error fetching details:', error);
+                        }
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetDangKyByNguoiDung(maNguoiDung) {
+            const resultDiv = document.getElementById('dangky-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/dangkychiendich/nguoidung/${maNguoiDung}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} đăng ký của ${maNguoiDung}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetDangKyByChienDich(maChienDich) {
+            const resultDiv = document.getElementById('dangky-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/dangkychiendich/chiendich/${maChienDich}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} đăng ký của ${maChienDich}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCreateDangKy() {
+            const resultDiv = document.getElementById('dangky-result');
+            
+            const dangKyData = {
+                maThanhToan: parseInt(document.getElementById('dkMaThanhToan').value),
+                maMucGia: parseInt(document.getElementById('dkMaMucGia').value),
+                maNguoiDung: document.getElementById('dkMaNguoiDung').value,
+                maChienDich: document.getElementById('dkMaChienDich').value,
+                tongSoLuong: parseInt(document.getElementById('dkTongSoLuong').value)
+            };
+            
+            resultDiv.innerHTML = '<p>Đang tạo đăng ký...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/dangkychiendich`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dangKyData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Đăng ký chiến dịch thành công!</strong>
+                            <p>Mã đăng ký: ${data.data.maDangKy}</p>
+                            <p>Chiến dịch: ${data.data.chienDich?.tenChienDich || 'N/A'}</p>
+                            <p>Tổng số lượng: ${data.data.tongSoLuong}</p>
+                            <p style="color: red; font-weight: bold;">
+                                ⚠️ Lưu mã đăng ký: ${data.data.maDangKy} để tạo chi tiết đăng ký!
+                            </p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Auto-fill mã đăng ký vào form chi tiết
+                    document.getElementById('ctMaDangKy').value = data.data.maDangKy;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testHuyDangKy(maDangKy) {
+            const resultDiv = document.getElementById('dangky-result');
+            
+            if (!confirm(`Bạn có chắc muốn hủy đăng ký #${maDangKy}?`)) {
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>Đang hủy đăng ký...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/dangkychiendich/${maDangKy}/huy`, {
+                    method: 'PUT'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Hủy đăng ký thành công!</strong>
+                            <p>Mã đăng ký: ${data.data.maDangKy}</p>
+                            <p>Đã hủy: ${data.data.daHuy ? 'Có' : 'Không'}</p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // ========== CHI TIẾT ĐĂNG KÝ API TESTS ==========
+        async function testGetAllChiTiet() {
+            const resultDiv = document.getElementById('chitiet-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phieuchitietdangky`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} chi tiết đăng ký</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testGetChiTietByDangKy(maDangKy) {
+            const resultDiv = document.getElementById('chitiet-result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phieuchitietdangky/dangky/${maDangKy}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✓ Found ${data.data.length} chi tiết của đăng ký #${maDangKy}</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCreateChiTiet() {
+            const resultDiv = document.getElementById('chitiet-result');
+            
+            const chiTietData = {
+                maDangKy: parseInt(document.getElementById('ctMaDangKy').value),
+                maSanPham: document.getElementById('ctMaSanPham').value,
+                maMau: parseInt(document.getElementById('ctMaMau').value),
+                maSize: parseInt(document.getElementById('ctMaSize').value),
+                soLuong: 1 // Luôn là 1 vì mỗi chi tiết = 1 đôi
+            };
+            
+            resultDiv.innerHTML = '<p>Đang thêm đôi 1...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phieuchitietdangky`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(chiTietData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const mauText = document.getElementById('ctMaMau').selectedOptions[0].text;
+                    const sizeText = document.getElementById('ctMaSize').selectedOptions[0].text;
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Thêm đôi 1 thành công!</strong>
+                            <p>📦 Sản phẩm: ${data.data.sanPham?.tenSanPham || 'N/A'}</p>
+                            <p>🎨 Màu: ${data.data.mauSac?.tenMau || mauText}</p>
+                            <p>📏 Size: ${data.data.kichThuoc?.tenSize || sizeText}</p>
+                            <p>📊 Số lượng: ${data.data.soLuong} đôi</p>
+                            <p style="color: #10b981; font-weight: bold;">
+                                ✅ Bạn có thể thêm đôi 2 với màu/size khác (nếu đăng ký 2 đôi)
+                            </p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCreateChiTietDoi2() {
+            const resultDiv = document.getElementById('chitiet-result');
+            
+            // Tự động chọn màu/size khác cho đôi 2
+            const mauSelect = document.getElementById('ctMaMau');
+            const sizeSelect = document.getElementById('ctMaSize');
+            
+            // Chọn màu khác (nếu đang chọn 3, chuyển sang 4)
+            const currentMau = parseInt(mauSelect.value);
+            mauSelect.value = currentMau === 3 ? '4' : '3';
+            
+            // Chọn size khác (nếu đang chọn 6, chuyển sang 7)
+            const currentSize = parseInt(sizeSelect.value);
+            sizeSelect.value = currentSize === 6 ? '7' : '6';
+            
+            const chiTietData = {
+                maDangKy: parseInt(document.getElementById('ctMaDangKy').value),
+                maSanPham: document.getElementById('ctMaSanPham').value,
+                maMau: parseInt(mauSelect.value),
+                maSize: parseInt(sizeSelect.value),
+                soLuong: 1
+            };
+            
+            resultDiv.innerHTML = '<p>Đang thêm đôi 2 (màu/size khác)...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/phieuchitietdangky`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(chiTietData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const mauText = mauSelect.selectedOptions[0].text;
+                    const sizeText = sizeSelect.selectedOptions[0].text;
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✓ Thêm đôi 2 thành công!</strong>
+                            <p>📦 Sản phẩm: ${data.data.sanPham?.tenSanPham || 'N/A'}</p>
+                            <p>🎨 Màu: ${data.data.mauSac?.tenMau || mauText}</p>
+                            <p>📏 Size: ${data.data.kichThuoc?.tenSize || sizeText}</p>
+                            <p>📊 Số lượng: ${data.data.soLuong} đôi</p>
+                            <p style="color: #10b981; font-weight: bold;">
+                                ✅ Đã đủ 2 đôi! Bạn có thể xem danh sách đăng ký để kiểm tra.
+                            </p>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-load tỉnh/thành when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            testGetAllTinhThanh();
+        });
+    </script>
+</body>
+</html>

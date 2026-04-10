@@ -110,6 +110,27 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Product Variants Section -->
+                    <div class="product-variants">
+                        <h3>MÀU SẮC & KÍCH THƯỚC</h3>
+                        
+                        <!-- Colors Section -->
+                        <div class="variant-section">
+                            <h4>Màu sắc có sẵn</h4>
+                            <div class="color-list" id="colorList">
+                                <!-- Colors will be loaded dynamically -->
+                            </div>
+                        </div>
+                        
+                        <!-- Sizes Section -->
+                        <div class="variant-section">
+                            <h4>Kích thước có sẵn</h4>
+                            <div class="size-list" id="sizeList">
+                                <!-- Sizes will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right: Campaign Info -->
@@ -363,10 +384,38 @@
         </div>
     </footer>
 
+    <script src="../js/api.js"></script>
+    <script src="../js/auth-manager.js"></script>
+    <script src="../js/campaign-detail.js"></script>
     <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/script.js"></script>
     <script>
+        // Check login before joining campaign
+        document.addEventListener('DOMContentLoaded', function() {
+            const joinBtn = document.querySelector('.btn-join-campaign');
+            
+            if (joinBtn) {
+                joinBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (!AuthManager.isLoggedIn()) {
+                        alert('Vui lòng đăng nhập để tham gia chiến dịch!');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    // Get campaign ID from URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const campaignId = urlParams.get('id');
+                    
+                    if (campaignId) {
+                        window.location.href = `checkout.html?id=${campaignId}`;
+                    } else {
+                        alert('Không tìm thấy thông tin chiến dịch!');
+                    }
+                });
+            }
+        });
+
         // Tier selection functionality
         const tierRows = document.querySelectorAll('.tier-row');
         

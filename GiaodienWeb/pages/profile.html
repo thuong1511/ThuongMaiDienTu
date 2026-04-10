@@ -106,21 +106,21 @@
                                 </svg>
                             </button>
                         </div>
-                        <h2>Nguyễn Văn A</h2>
-                        <p class="user-email">nguyenvana@email.com</p>
+                        <h2 id="displayName">Đang tải...</h2>
+                        <p class="user-email" id="displayEmail">Đang tải...</p>
                         <div class="user-stats">
                             <div class="stat-item">
-                                <span class="stat-number">12</span>
+                                <span class="stat-number" id="totalCampaigns">0</span>
                                 <span class="stat-label">Chiến dịch</span>
                             </div>
                             <div class="stat-divider"></div>
                             <div class="stat-item">
-                                <span class="stat-number">8</span>
+                                <span class="stat-number" id="successfulBets">0</span>
                                 <span class="stat-label">Cược đúng</span>
                             </div>
                             <div class="stat-divider"></div>
                             <div class="stat-item">
-                                <span class="stat-number">66.7%</span>
+                                <span class="stat-number" id="successRate">0%</span>
                                 <span class="stat-label">Tỷ lệ</span>
                             </div>
                         </div>
@@ -156,34 +156,28 @@
                     <!-- Tab: Personal Info -->
                     <div class="tab-content active" id="info">
                         <h2>THÔNG TIN CÁ NHÂN</h2>
-                        <form class="profile-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Họ và tên</label>
-                                    <input type="text" value="Nguyễn Văn A" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label>Số điện thoại</label>
-                                    <input type="tel" value="0912345678" class="form-input">
-                                </div>
+                        <form class="profile-form" id="profileForm">
+                            <div class="form-group">
+                                <label>Tên đăng nhập</label>
+                                <input type="text" id="tenDangNhap" class="form-input" readonly>
                             </div>
 
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" value="nguyenvana@email.com" class="form-input" disabled>
+                                <input type="email" id="email" class="form-input" disabled>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Ngày sinh</label>
-                                    <input type="date" value="1995-05-15" class="form-input">
+                                    <label>Số điện thoại</label>
+                                    <input type="tel" id="soDienThoai" class="form-input">
                                 </div>
                                 <div class="form-group">
                                     <label>Giới tính</label>
-                                    <select class="form-select">
-                                        <option>Nam</option>
-                                        <option>Nữ</option>
-                                        <option>Khác</option>
+                                    <select id="gioiTinh" class="form-select">
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                        <option value="Khác">Khác</option>
                                     </select>
                                 </div>
                             </div>
@@ -203,7 +197,7 @@
                     <div class="tab-content" id="address">
                         <div class="tab-header">
                             <h2>SỔ ĐỊA CHỈ</h2>
-                            <button class="btn-add">
+                            <button class="btn-add" onclick="showAddAddressModal()">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -212,52 +206,28 @@
                             </button>
                         </div>
 
-                        <div class="address-list">
-                            <div class="address-card">
-                                <div class="address-header">
-                                    <span class="address-name">Nguyễn Văn A</span>
-                                    <span class="default-badge">Mặc định</span>
-                                </div>
-                                <p class="address-phone">0912345678</p>
-                                <p class="address-detail">123 Đường ABC, Phường XYZ, Quận 1, TP. Hồ Chí Minh</p>
-                                <div class="address-actions">
-                                    <button class="btn-edit-address">Chỉnh sửa</button>
-                                    <button class="btn-delete-address">Xóa</button>
-                                </div>
-                            </div>
-
-                            <div class="address-card">
-                                <div class="address-header">
-                                    <span class="address-name">Nguyễn Văn A (Văn phòng)</span>
-                                </div>
-                                <p class="address-phone">0912345678</p>
-                                <p class="address-detail">456 Đường DEF, Phường UVW, Quận 3, TP. Hồ Chí Minh</p>
-                                <div class="address-actions">
-                                    <button class="btn-set-default">Đặt mặc định</button>
-                                    <button class="btn-edit-address">Chỉnh sửa</button>
-                                    <button class="btn-delete-address">Xóa</button>
-                                </div>
-                            </div>
+                        <div class="address-list" id="addressList">
+                            <p style="text-align: center; color: #999;">Đang tải...</p>
                         </div>
                     </div>
 
                     <!-- Tab: Security -->
                     <div class="tab-content" id="security">
                         <h2>BẢO MẬT TÀI KHOẢN</h2>
-                        <form class="profile-form">
+                        <form class="profile-form" id="securityForm">
                             <div class="form-group">
                                 <label>Mật khẩu hiện tại</label>
-                                <input type="password" placeholder="Nhập mật khẩu hiện tại" class="form-input">
+                                <input type="password" id="matKhauHienTai" placeholder="Nhập mật khẩu hiện tại" class="form-input" required>
                             </div>
 
                             <div class="form-group">
                                 <label>Mật khẩu mới</label>
-                                <input type="password" placeholder="Nhập mật khẩu mới" class="form-input">
+                                <input type="password" id="matKhauMoi" placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)" class="form-input" required minlength="6">
                             </div>
 
                             <div class="form-group">
                                 <label>Xác nhận mật khẩu mới</label>
-                                <input type="password" placeholder="Nhập lại mật khẩu mới" class="form-input">
+                                <input type="password" id="xacNhanMatKhauMoi" placeholder="Nhập lại mật khẩu mới" class="form-input" required minlength="6">
                             </div>
 
                             <button type="submit" class="btn-save">
@@ -337,6 +307,138 @@
         </div>
     </footer>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Address Modal -->
+    <div id="addressModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm địa chỉ mới</h3>
+                <button class="modal-close" onclick="closeAddressModal()">&times;</button>
+            </div>
+            <form id="addressForm" onsubmit="handleAddressSubmit(event)">
+                <input type="hidden" id="editAddressId">
+                
+                <div class="form-group">
+                    <label>Họ tên người nhận <span style="color: red;">*</span></label>
+                    <input type="text" id="addrHoTen" class="form-input" required placeholder="Nhập họ tên">
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại <span style="color: red;">*</span></label>
+                    <input type="tel" id="addrSoDienThoai" class="form-input" required placeholder="Nhập số điện thoại">
+                </div>
+
+                <div class="form-group">
+                    <label>Tỉnh/Thành phố <span style="color: red;">*</span></label>
+                    <select id="addrTinhThanh" class="form-select" required onchange="loadPhuongXa()">
+                        <option value="">-- Chọn Tỉnh/Thành --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Phường/Xã <span style="color: red;">*</span></label>
+                    <select id="addrPhuongXa" class="form-select" required>
+                        <option value="">-- Chọn Phường/Xã --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ chi tiết <span style="color: red;">*</span></label>
+                    <input type="text" id="addrChiTiet" class="form-input" required placeholder="Số nhà, tên đường">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddressModal()">Hủy</button>
+                    <button type="submit" class="btn-save">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Lưu địa chỉ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #5f0704;
+            font-size: 20px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #5f0704;
+        }
+        #addressForm {
+            padding: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+    </style>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth-manager.js"></script>
     <script src="../js/script.js"></script>
     <script src="../js/profile.js"></script>
 </body>

@@ -19,7 +19,8 @@
                 <input 
                     type="email" 
                     class="form-input" 
-                    placeholder="Nhập email hoặc tên đăng nhập"
+                    placeholder="Nhập email"
+                    name="email"
                     required
                 >
             </div>
@@ -29,6 +30,7 @@
                     type="password" 
                     class="form-input" 
                     placeholder="Nhập mật khẩu"
+                    name="password"
                     required
                 >
             </div>
@@ -69,25 +71,35 @@
         </p>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth-manager.js"></script>
     <script>
         // Handle login form
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = this.querySelector('input[type="email"]').value.trim();
-            const password = this.querySelector('input[type="password"]').value;
+            const email = this.querySelector('input[name="email"]').value.trim();
+            const password = this.querySelector('input[name="password"]').value;
             
-            console.log('Attempting login with:', email);
+            // Disable button
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang đăng nhập...';
             
-            const result = auth.login(email, password);
-            
-            if (result.success) {
-                alert('Đăng nhập thành công!');
-                window.location.href = result.redirect;
-            } else {
-                alert(result.message);
+            try {
+                const result = await authManager.loginByEmail(email, password);
+                
+                if (!result.success) {
+                    alert(result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+                // Nếu thành công, authManager.loginByEmail sẽ tự động redirect
+            } catch (error) {
+                alert('Lỗi kết nối đến server');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
         });
     </script>

@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="../css/checkout.css">
 </head>
 <body>
-    <!-- Header -->
+   <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
-                <img src="../images/logo.png" alt="EXED">
+                <img src="../images/logo.png" alt="EXPED">
             </div>
             <nav class="nav">
                 <a href="../index.html" class="nav-link">TRANG CHỦ</a>
@@ -24,6 +24,15 @@
                 <a href="artists.html" class="nav-link">NGHỆ SĨ COLLAB</a>
             </nav>
             <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
                 <div class="user-dropdown">
                     <button class="user-btn">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -35,14 +44,14 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">
+                        <a href="pages/profile.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span>Hồ sơ cá nhân</span>
                         </a>
-                        <a href="order-history.html" class="dropdown-item">
+                        <a href="pages/order-history.html" class="dropdown-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
@@ -50,8 +59,22 @@
                             </svg>
                             <span>Đơn hàng của tôi</span>
                         </a>
+                        <a href="pages/wallet.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            <span>Ví của tôi</span>
+                        </a>
+                        <a href="pages/notifications.html" class="dropdown-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            <span>Thông báo</span>
+                        </a>
                         <div class="dropdown-divider"></div>
-                        <a href="login.html" class="dropdown-item logout">
+                        <a href="pages/login.html" class="dropdown-item logout">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -81,44 +104,25 @@
                         </div>
                         
                         <div class="product-preview">
-                            <img src="../images/chiendich1.jpg" alt="ROSÉ X EXED">
+                            <img src="../images/chiendich1.jpg" alt="Campaign">
                             <div class="product-info">
-                                <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
-                                <p>Limited Edition Sneaker - Premium Collection</p>
+                                <h3>Loading...</h3>
+                                <h4 class="product-name">Loading...</h4>
+                                <p>Loading...</p>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none;">
                             <label>Màu sắc</label>
                             <div class="color-options">
-                                <div class="color-option active">
-                                    <div class="color-swatch" style="background: linear-gradient(135deg, #f5f5dc, #fff)"></div>
-                                    <span>Trắng Kem</span>
-                                </div>
-                                <div class="color-option">
-                                    <div class="color-swatch" style="background: linear-gradient(135deg, #000, #333)"></div>
-                                    <span>Đen</span>
-                                </div>
-                                <div class="color-option">
-                                    <div class="color-swatch" style="background: linear-gradient(135deg, #C4A87F, #D4AF6A)"></div>
-                                    <span>Vàng Gold</span>
-                                </div>
+                                <!-- Colors will be loaded dynamically -->
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none;">
                             <label>Kích thước (EU)</label>
                             <div class="size-options">
-                                <button class="size-btn">35</button>
-                                <button class="size-btn">36</button>
-                                <button class="size-btn">37</button>
-                                <button class="size-btn active">38</button>
-                                <button class="size-btn">39</button>
-                                <button class="size-btn">40</button>
-                                <button class="size-btn">41</button>
-                                <button class="size-btn">42</button>
-                                <button class="size-btn">43</button>
-                                <button class="size-btn">44</button>
+                                <!-- Sizes will be loaded dynamically -->
                             </div>
                         </div>
 
@@ -161,43 +165,7 @@
                         </div>
 
                         <div class="bet-options">
-                            <div class="bet-card">
-                                <input type="radio" name="bet" id="bet1" value="100-499">
-                                <label for="bet1">
-                                    <div class="bet-range">100 - 499</div>
-                                    <div class="bet-price">25.550.000 đ</div>
-                                    <div class="bet-discount">Giảm 11.4%</div>
-                                </label>
-                            </div>
-
-                            <div class="bet-card popular">
-                                <div class="popular-badge">PHỔ BIẾN</div>
-                                <input type="radio" name="bet" id="bet2" value="500-799" checked>
-                                <label for="bet2">
-                                    <div class="bet-range">500 - 799</div>
-                                    <div class="bet-price">23.550.000 đ</div>
-                                    <div class="bet-discount">Giảm 18.4%</div>
-                                </label>
-                            </div>
-
-                            <div class="bet-card">
-                                <input type="radio" name="bet" id="bet3" value="800-999">
-                                <label for="bet3">
-                                    <div class="bet-range">800 - 999</div>
-                                    <div class="bet-price">21.550.000 đ</div>
-                                    <div class="bet-discount">Giảm 25.3%</div>
-                                </label>
-                            </div>
-
-                            <div class="bet-card best">
-                                <div class="best-badge">GIÁ TỐT NHẤT</div>
-                                <input type="radio" name="bet" id="bet4" value="1000-1200">
-                                <label for="bet4">
-                                    <div class="bet-range">1000 - 1200</div>
-                                    <div class="bet-price">18.550.000 đ</div>
-                                    <div class="bet-discount">Giảm 35.7%</div>
-                                </label>
-                            </div>
+                            <!-- Bet tiers will be loaded dynamically -->
                         </div>
 
                         <div class="bet-progress-alert">
@@ -205,7 +173,7 @@
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                            <p>Chiến dịch hiện có <strong>924 người tham gia</strong>. Chỉ còn thiếu <strong>76 người</strong> để đạt mốc 1000!</p>
+                            <p>Loading...</p>
                         </div>
                     </div>
 
@@ -225,39 +193,7 @@
                             <!-- Saved Addresses -->
                             <div class="address-content active" id="saved-addresses">
                                 <div class="saved-address-list">
-                                    <div class="address-card active">
-                                        <input type="radio" name="address" id="addr1" checked>
-                                        <label for="addr1">
-                                            <div class="address-header">
-                                                <span class="address-name">Nguyễn Văn A</span>
-                                                <span class="address-badge default">Mặc định</span>
-                                            </div>
-                                            <div class="address-phone">0912345678</div>
-                                            <div class="address-detail">123 Lê Lợi, Phường Bến Nghé, Quận 1, Hồ Chí Minh</div>
-                                        </label>
-                                    </div>
-
-                                    <div class="address-card">
-                                        <input type="radio" name="address" id="addr2">
-                                        <label for="addr2">
-                                            <div class="address-header">
-                                                <span class="address-name">Nguyễn Văn A</span>
-                                            </div>
-                                            <div class="address-phone">0912345678</div>
-                                            <div class="address-detail">456 Trần Hưng Đạo, Phường 2, Quận 5, Hồ Chí Minh</div>
-                                        </label>
-                                    </div>
-
-                                    <div class="address-card">
-                                        <input type="radio" name="address" id="addr3">
-                                        <label for="addr3">
-                                            <div class="address-header">
-                                                <span class="address-name">Công ty ABC</span>
-                                            </div>
-                                            <div class="address-phone">0987654321</div>
-                                            <div class="address-detail">789 Nguyễn Huệ, Phường Bến Nghé, Quận 1, Hồ Chí Minh</div>
-                                        </label>
-                                    </div>
+                                    <!-- Addresses will be loaded dynamically -->
                                 </div>
                             </div>
 
@@ -265,35 +201,31 @@
                             <div class="address-content" id="new-address">
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label>Họ và tên</label>
-                                        <input type="text" placeholder="Nguyễn Văn A" class="form-input">
+                                        <label>Họ và tên <span style="color: red;">*</span></label>
+                                        <input type="text" id="new-hoTen" placeholder="Nguyễn Văn A" class="form-input" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Số điện thoại</label>
-                                        <input type="tel" placeholder="0912345678" class="form-input">
+                                        <label>Số điện thoại <span style="color: red;">*</span></label>
+                                        <input type="tel" id="new-soDienThoai" placeholder="0912345678" class="form-input" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Địa chỉ chi tiết</label>
-                                    <input type="text" placeholder="Số nhà, tên đường" class="form-input">
+                                    <label>Địa chỉ chi tiết <span style="color: red;">*</span></label>
+                                    <input type="text" id="new-diaChiChiTiet" placeholder="Số nhà, tên đường" class="form-input" required>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label>Tỉnh/Thành phố</label>
-                                        <select class="form-select">
-                                            <option>Hồ Chí Minh</option>
-                                            <option>Hà Nội</option>
-                                            <option>Đà Nẵng</option>
+                                        <label>Tỉnh/Thành phố <span style="color: red;">*</span></label>
+                                        <select id="new-tinhThanh" class="form-select" required>
+                                            <option value="">-- Chọn Tỉnh/Thành --</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Phường/Xã</label>
-                                        <select class="form-select">
-                                            <option>Phường Bến Nghé</option>
-                                            <option>Phường Bến Thành</option>
-                                            <option>Phường Nguyễn Thái Bình</option>
+                                        <label>Phường/Xã <span style="color: red;">*</span></label>
+                                        <select id="new-phuongXa" class="form-select" required>
+                                            <option value="">-- Chọn Phường/Xã --</option>
                                         </select>
                                     </div>
                                 </div>
@@ -301,16 +233,19 @@
                                 <div class="form-group">
                                     <div class="checkbox-wrapper">
                                         <label class="checkbox-label">
-                                            <input type="checkbox" id="save-address">
-                                            <span class="checkbox-custom"></span>
-                                            <span class="checkbox-text">Lưu vào sổ địa chỉ</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="set-default">
+                                            <input type="checkbox" id="new-macDinh">
                                             <span class="checkbox-custom"></span>
                                             <span class="checkbox-text">Đặt làm địa chỉ mặc định</span>
                                         </label>
                                     </div>
+                                    <button type="button" class="btn-save-address" onclick="saveNewAddress()">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                            <polyline points="7 3 7 8 15 8"></polyline>
+                                        </svg>
+                                        Lưu vào sổ địa chỉ
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -324,19 +259,19 @@
                     <div class="summary-section">
                         <h3>Sản phẩm</h3>
                         <div class="summary-item">
-                            <span>ROSÉ X EXED Sneaker</span>
+                            <span>Loading...</span>
                             <span>1x</span>
                         </div>
                         <div class="summary-detail">
-                            <span>Màu: Trắng Kem | Size: 38</span>
+                            <span>Màu: N/A | Size: N/A</span>
                         </div>
                     </div>
 
                     <div class="summary-section">
                         <h3>Mốc đặt cược</h3>
                         <div class="summary-item highlight">
-                            <span>500 - 799 sản phẩm</span>
-                            <span class="discount-tag">-18.4%</span>
+                            <span>Loading...</span>
+                            <span class="discount-tag">-0%</span>
                         </div>
                     </div>
 
@@ -344,16 +279,16 @@
                         <h3>Chi tiết thanh toán</h3>
                         <div class="summary-item">
                             <span>Giá gốc (1 sản phẩm)</span>
-                            <span>28.850.000 đ</span>
+                            <span>0 đ</span>
                         </div>
                         <div class="summary-item">
                             <span>Phí tham gia</span>
-                            <span>500.000 đ</span>
+                            <span>0 đ</span>
                         </div>
                         <div class="summary-divider"></div>
                         <div class="summary-item total">
                             <span>Tổng thanh toán</span>
-                            <span>29.350.000 đ</span>
+                            <span>0 đ</span>
                         </div>
                     </div>
 
@@ -396,7 +331,7 @@
                             <path d="M12 8h.01"></path>
                         </svg>
                         <div>
-                            <p><strong>Cơ chế hoàn tiền:</strong> Bạn thanh toán theo giá gốc. Nếu cược đúng (mốc đạt đủ số lượng trong thời gian quyết định), hệ thống sẽ tự động hoàn lại 5.300.000 đ sau khi chiến dịch kết thúc.</p>
+                            <p><strong>Cơ chế hoàn tiền:</strong> Bạn thanh toán theo giá gốc. Nếu cược đúng (mốc đạt đủ số lượng trong thời gian quyết định), hệ thống sẽ tự động hoàn lại tiền chênh lệch sau khi chiến dịch kết thúc.</p>
                         </div>
                     </div>
 
@@ -430,11 +365,7 @@
                         <label for="terms">Tôi đồng ý với <a href="#">Điều khoản và Điều kiện</a> của EXED</label>
                     </div>
 
-                    <a href="payment-success.html" class="btn-checkout">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14"></path>
-                            <path d="m12 5 7 7-7 7"></path>
-                        </svg>
+                    <a href="#" class="btn-checkout">
                         XÁC NHẬN THANH TOÁN
                     </a>
                 </div>
@@ -505,151 +436,8 @@
         </div>
     </footer>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/script.js"></script>
-    <script>
-        // Color selection
-        const colorOptions = document.querySelectorAll('.color-option');
-        colorOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                colorOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                updateSummary();
-            });
-        });
-
-        // Size selection
-        const sizeButtons = document.querySelectorAll('.size-btn');
-        sizeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                sizeButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                updateSummary();
-            });
-        });
-
-        // Quantity controls
-        const qtyInput = document.querySelector('.qty-input');
-        const minusBtn = document.querySelector('.qty-btn.minus');
-        const plusBtn = document.querySelector('.qty-btn.plus');
-
-        minusBtn.addEventListener('click', () => {
-            let value = parseInt(qtyInput.value);
-            if (value > 1) {
-                qtyInput.value = value - 1;
-                updateSummary();
-            }
-        });
-
-        plusBtn.addEventListener('click', () => {
-            let value = parseInt(qtyInput.value);
-            if (value < 10) {
-                qtyInput.value = value + 1;
-                updateSummary();
-            }
-        });
-
-        qtyInput.addEventListener('change', () => {
-            let value = parseInt(qtyInput.value);
-            if (value < 1) qtyInput.value = 1;
-            if (value > 10) qtyInput.value = 10;
-            updateSummary();
-        });
-
-        // Bet selection
-        const betCards = document.querySelectorAll('.bet-card input[type="radio"]');
-        const betPrices = {
-            '100-499': 25550000,
-            '500-799': 23550000,
-            '800-999': 21550000,
-            '1000-1200': 18550000
-        };
-        const betDiscounts = {
-            '100-499': '-11.4%',
-            '500-799': '-18.4%',
-            '800-999': '-25.3%',
-            '1000-1200': '-35.7%'
-        };
-
-        betCards.forEach(radio => {
-            radio.addEventListener('change', () => {
-                updateSummary();
-            });
-        });
-
-        // Update summary
-        function updateSummary() {
-            const selectedColor = document.querySelector('.color-option.active span').textContent;
-            const selectedSize = document.querySelector('.size-btn.active').textContent;
-            const quantity = parseInt(qtyInput.value);
-            const selectedBet = document.querySelector('input[name="bet"]:checked').value;
-            const betPrice = betPrices[selectedBet];
-            const betDiscount = betDiscounts[selectedBet];
-
-            // Update product info
-            document.querySelector('.summary-detail span').textContent = `Màu: ${selectedColor} | Size: ${selectedSize}`;
-            document.querySelector('.summary-item span:last-child').textContent = `${quantity}x`;
-
-            // Update bet info
-            document.querySelector('.summary-item.highlight span:first-child').textContent = `${selectedBet} sản phẩm`;
-            document.querySelector('.discount-tag').textContent = betDiscount;
-
-            // Calculate prices
-            const basePrice = 28850000;
-            const participationFee = 500000;
-            const totalBasePrice = basePrice * quantity;
-            const totalBetPrice = betPrice * quantity;
-            const totalPayment = totalBasePrice + participationFee;
-            const refundAmount = totalBasePrice - totalBetPrice;
-
-            // Update prices display
-            document.querySelector('.summary-section:nth-child(3) .summary-item:nth-child(2) span:last-child').textContent = 
-                totalBasePrice.toLocaleString('vi-VN') + ' đ';
-            document.querySelector('.summary-item.total span:last-child').textContent = 
-                totalPayment.toLocaleString('vi-VN') + ' đ';
-            
-            // Update refund note
-            const refundNote = document.querySelector('.refund-note p');
-            refundNote.innerHTML = `Bạn thanh toán theo giá gốc. Nếu cược đúng, hệ thống sẽ tự động hoàn lại <strong>${refundAmount.toLocaleString('vi-VN')} đ</strong> sau khi chiến dịch kết thúc.`;
-        }
-
-        // Initialize
-        updateSummary();
-
-        // Address tabs
-        const addressTabs = document.querySelectorAll('.address-tab');
-        const addressContents = document.querySelectorAll('.address-content');
-
-        addressTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                
-                // Update tabs
-                addressTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Update content
-                addressContents.forEach(content => {
-                    if (content.id === tabName + '-addresses' || content.id === tabName + '-address') {
-                        content.classList.add('active');
-                    } else {
-                        content.classList.remove('active');
-                    }
-                });
-            });
-        });
-
-        // Address card selection
-        const addressCards = document.querySelectorAll('.address-card');
-        addressCards.forEach(card => {
-            card.addEventListener('click', () => {
-                addressCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                const radio = card.querySelector('input[type="radio"]');
-                if (radio) radio.checked = true;
-            });
-        });
-    </script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth-manager.js"></script>
+    <script src="../js/checkout.js"></script>
 </body>
 </html>

@@ -30,7 +30,8 @@ function animateMainProgressBar() {
     }, 20);
 }
 
-// Real-time Countdown Timer
+// Real-time Countdown Timer - DISABLED (sử dụng countdown từ index.js thay thế)
+/*
 function updateCountdown() {
     const countdownElement = document.getElementById('countdown');
     const countdownFullElement = document.getElementById('countdown-full');
@@ -76,6 +77,7 @@ function updateCountdown() {
     update();
     setInterval(update, 1000);
 }
+*/
 
 // Animate Participant Count
 function animateParticipantCount() {
@@ -105,16 +107,28 @@ document.addEventListener('DOMContentLoaded', () => {
     animateMainProgressBar();
     animateVoteNumbers();
     animateParticipantCount();
-    updateCountdown();
+    // updateCountdown(); // DISABLED - sử dụng countdown từ index.js
 });
 
 // Artist Slider
-const artistsList = document.querySelector('.artists-list');
-const prevBtn = document.querySelector('.slider-btn.prev');
-const nextBtn = document.querySelector('.slider-btn.next');
+function initArtistSlider() {
+    const artistsList = document.querySelector('.artists-list');
+    const prevBtn = document.querySelector('.slider-btn.prev');
+    const nextBtn = document.querySelector('.slider-btn.next');
 
-if (prevBtn && nextBtn && artistsList) {
+    if (!prevBtn || !nextBtn || !artistsList) {
+        console.warn('Artist slider elements not found');
+        return;
+    }
+    
     const artists = document.querySelectorAll('.artist');
+    console.log(`Initializing artist slider with ${artists.length} artists`);
+    
+    if (artists.length === 0) {
+        console.warn('No artists found to initialize slider');
+        return;
+    }
+    
     const artistsPerPage = 6;
     let currentPage = 0;
     const totalPages = Math.ceil(artists.length / artistsPerPage);
@@ -144,7 +158,13 @@ if (prevBtn && nextBtn && artistsList) {
         }, 200);
     }
 
-    prevBtn.addEventListener('click', () => {
+    // Remove old event listeners by cloning buttons
+    const newPrevBtn = prevBtn.cloneNode(true);
+    const newNextBtn = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+
+    newPrevBtn.addEventListener('click', () => {
         if (currentPage > 0) {
             currentPage--;
         } else {
@@ -154,7 +174,7 @@ if (prevBtn && nextBtn && artistsList) {
         showPage(currentPage);
     });
 
-    nextBtn.addEventListener('click', () => {
+    newNextBtn.addEventListener('click', () => {
         if (currentPage < totalPages - 1) {
             currentPage++;
         } else {
@@ -168,6 +188,17 @@ if (prevBtn && nextBtn && artistsList) {
     setTimeout(() => {
         showPage(currentPage);
     }, 100);
+}
+
+// Export for use in other scripts
+window.initArtistSlider = initArtistSlider;
+
+// Initialize on DOM load
+const artistsList = document.querySelector('.artists-list');
+const prevBtn = document.querySelector('.slider-btn.prev');
+const nextBtn = document.querySelector('.slider-btn.next');
+if (prevBtn && nextBtn && artistsList) {
+    initArtistSlider();
 }
 
 // Reviews Slider

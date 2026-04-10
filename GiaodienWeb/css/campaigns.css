@@ -41,7 +41,7 @@
 }
 
 .filter-select {
-    padding: 12px 16px;
+    padding: 12px 40px 12px 16px;
     border: 2px solid rgba(196, 168, 127, 0.4);
     border-radius: 10px;
     font-size: 14px;
@@ -50,6 +50,10 @@
     font-weight: 600;
     transition: all 0.3s;
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%235F0704' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
 }
 
 .filter-select:focus {
@@ -94,7 +98,7 @@
 /* Campaign Grid */
 .campaign-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     margin-bottom: 50px;
 }
@@ -157,6 +161,11 @@
 
 .campaign-badge-status.ongoing {
     background: rgba(76, 175, 80, 0.95);
+    color: #fff;
+}
+
+.campaign-badge-status.upcoming {
+    background: rgba(33, 150, 243, 0.95);
     color: #fff;
 }
 
@@ -370,7 +379,7 @@
 
 @media (max-width: 1024px) {
     .campaign-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

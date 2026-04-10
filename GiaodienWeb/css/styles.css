@@ -248,8 +248,10 @@ body {
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(95, 7, 4, 0.3), rgba(95, 7, 4, 0.3)), url('../images/banner.jpg');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
+    background-color: #1a1a1a;
     min-height: 500px;
     position: relative;
     color: var(--primary-light);
@@ -278,14 +280,19 @@ body {
 }
 
 .hero-content {
-    max-width: 600px;
+    max-width: 500px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .hero-title {
-    font-size: 72px;
+    font-size: 48px;
     font-weight: 800;
-    margin-bottom: 30px;
-    letter-spacing: 4px;
+    margin-bottom: 0;
+    letter-spacing: 3px;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease;
 }
@@ -325,11 +332,11 @@ body {
 }
 
 .hero-price {
-    margin-top: 15px;
+    margin-top: 0;
     font-size: 18px;
     font-weight: 600;
-    color: var(--primary-light);
-    opacity: 0.9;
+    color: #EFCFA0;
+    opacity: 1;
 }
 
 .slider-dots {
@@ -801,6 +808,9 @@ body {
     transition: all 0.3s;
     font-family: 'Nunito', sans-serif;
     text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    width: fit-content;
 }
 
 .btn-view-all:hover {
@@ -821,7 +831,6 @@ body {
     display: block;
     margin: 0 auto;
 }
-
 /* Artists Section */
 .artists {
     padding: 50px 0 40px;
@@ -844,6 +853,9 @@ body {
     align-items: center;
     gap: 30px;
     padding: 0 10px;
+    overflow: hidden;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .slider-btn {
@@ -878,27 +890,32 @@ body {
 }
 
 .artists-list {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 30px;
-    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex: 1;
     padding: 20px 0;
     overflow: hidden;
+    justify-content: center;
+    flex-wrap: nowrap;
 }
 
 .artist {
     text-align: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     opacity: 0;
     transform: translateY(20px);
+    flex-shrink: 0;
+    min-width: 140px;
+    max-width: 140px;
 }
 
 .artist.show {
     opacity: 1;
     transform: translateY(0);
+    display: flex;
 }
 
 .artist:hover {
@@ -906,8 +923,8 @@ body {
 }
 
 .artist img {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
     border: 5px solid #8B4513;
@@ -924,7 +941,7 @@ body {
 .artist p {
     font-weight: 700;
     color: #5D3A1A;
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -953,13 +970,16 @@ body {
     gap: 30px;
     padding: 0 10px;
     margin-bottom: 40px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .bidding-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    width: 100%;
+    flex: 1;
     overflow: hidden;
 }
 
@@ -1329,7 +1349,7 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--primary-light);
     font-weight: 700;
     position: relative;
@@ -1340,6 +1360,8 @@ body {
     position: absolute;
     transform: translateX(-50%);
     top: 0;
+    white-space: nowrap;
+    z-index: 5;
 }
 
 .progress-bar-compact {
@@ -1379,7 +1401,8 @@ body {
     font-weight: 800;
     font-size: 14px;
     box-shadow: 0 2px 8px rgba(196, 168, 127, 0.5);
-    z-index: 3;
+    z-index: 10;
+    white-space: nowrap;
 }
 
 .price-right-box {
