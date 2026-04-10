@@ -634,7 +634,7 @@ INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongToiDa, soLuongDaDat) VALUES
 ('SP008', 2, 500, 430),  -- Trắng
 
 -- SP009 Vans Old Skool (Xanh Navy, Đen)
-('SP009', 3, 450, 10),   -- Xanh Navy - sắp bắt đầu
+('SP009', 3, 450, 0),   -- Xanh Navy - sắp bắt đầu
 ('SP009', 1, 350, 0),    -- Đen       - chưa có đơn
 
 -- SP010 New Balance Athletics Tee (Đen, Trắng, Xám)
@@ -647,8 +647,8 @@ INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongToiDa, soLuongDaDat) VALUES
 ('SP011', 4, 500, 350),  -- Đỏ
 
 -- SP012 Dickies Heavyweight (Đen, Xám)
-('SP012', 1, 300, 290),  -- Đen
-('SP012', 5, 200, 80);   -- Xám
+('SP012', 1, 300, 0),  -- Đen
+('SP012', 5, 200, 0);   -- Xám
 GO
 
 -- ============================================================
@@ -759,7 +759,7 @@ INSERT INTO ChienDich (
  N'Sắp bắt đầu', NULL,
  '2026-04-15 00:00:00', '2026-05-05 23:59:59',
  200, 800, 400000, 2100000,
- 10, 10),
+ 0, 0),
 -- CD011: Martin x Dickies Heavyweight
 ('CD011','SP012','NS012', N'MARTIN X EXED',
  N'Sắp bắt đầu', NULL,

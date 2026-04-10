@@ -47,8 +47,88 @@ async function loadCampaignDetail(campaignId) {
     updateProductVariants(campaign);
     updateProductDescription(campaign);
     
-    // Start countdown timer
-    startCountdownTimer(campaign.ngayKetThuc);
+    // Start countdown timer - use start date for upcoming campaigns
+    if (campaign.thoiDiem === 'Sắp bắt đầu') {
+        startCountdownTimer(campaign.ngayBatDau, true);
+    } else {
+        startCountdownTimer(campaign.ngayKetThuc, false);
+    }
+    
+    // Handle status-based UI changes
+    handleStatusBasedUI(campaign.thoiDiem);
+}
+
+// Handle UI changes based on campaign status
+function handleStatusBasedUI(status) {
+    const reviewsSection = document.getElementById('reviewsSection');
+    const joinBtn = document.getElementById('joinBtn');
+    const betWarningBox = document.querySelector('.bet-warning-box');
+    
+    console.log('Handling status-based UI for:', status);
+    
+    // Show reviews only for completed campaigns
+    if (status === 'Đã kết thúc') {
+        console.log('Showing reviews section');
+        if (reviewsSection) {
+            reviewsSection.style.display = 'block';
+            // Initialize review filters
+            if (typeof filterReviews === 'function') {
+                filterReviews();
+            }
+        }
+        
+        // Hide warning box for completed campaigns
+        if (betWarningBox) {
+            betWarningBox.style.display = 'none';
+        }
+    }
+    
+    // Hide join button for upcoming and completed campaigns
+    if (status === 'Sắp bắt đầu' || status === 'Đã kết thúc') {
+        console.log('Hiding join button');
+        if (joinBtn) {
+            joinBtn.style.display = 'none';
+        }
+    }
+    
+    // Change button for upcoming campaigns
+    if (status === 'Sắp bắt đầu' && joinBtn) {
+        joinBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            NHẮC NHỞ TÔI
+        `;
+        joinBtn.style.display = 'flex';
+        joinBtn.onclick = function(e) {
+            e.preventDefault();
+            alert('Chúng tôi sẽ gửi thông báo cho bạn khi chiến dịch bắt đầu!');
+        };
+    }
+    
+    // Setup join button click handler for active campaigns
+    if (joinBtn && status === 'Đang diễn ra') {
+        joinBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (!AuthManager.isLoggedIn()) {
+                alert('Vui lòng đăng nhập để tham gia chiến dịch!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Get campaign ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const campaignId = urlParams.get('id');
+            
+            if (campaignId) {
+                window.location.href = `checkout.html?id=${campaignId}`;
+            } else {
+                alert('Không tìm thấy thông tin chiến dịch!');
+            }
+        });
+    }
 }
 
 // Update campaign header
@@ -58,7 +138,7 @@ function updateCampaignHeader(campaign) {
     const productName = document.querySelector('.product-name');
     
     if (statusBadge) {
-        statusBadge.textContent = campaign.thoiDiem.toUpperCase();
+        statusBadge.textContent = campaign.thoiDiem;
         statusBadge.className = `status-badge ${getStatusClass(campaign.thoiDiem)}`;
     }
     
@@ -160,20 +240,26 @@ function updateArtistInfo(campaign) {
 function updateCountdown(campaign) {
     const countdownLabel = document.querySelector('.countdown-label span');
     if (countdownLabel) {
-        countdownLabel.textContent = campaign.thoiDiem === 'Đang diễn ra' ? 'Kết thúc sau:' : 'Đã kết thúc';
+        if (campaign.thoiDiem === 'Sắp bắt đầu') {
+            countdownLabel.textContent = 'Thời gian bắt đầu:';
+        } else if (campaign.thoiDiem === 'Đang diễn ra') {
+            countdownLabel.textContent = 'Kết thúc sau:';
+        } else {
+            countdownLabel.textContent = 'Đã kết thúc';
+        }
     }
 }
 
 // Start countdown timer
-function startCountdownTimer(endDate) {
+function startCountdownTimer(targetDate, isStartDate = false) {
     const timeUnits = document.querySelectorAll('.time-unit .time-value');
     
     if (timeUnits.length !== 4) return;
     
     function update() {
         const now = new Date();
-        const end = new Date(endDate);
-        const diff = end - now;
+        const target = new Date(targetDate);
+        const diff = target - now;
         
         if (diff <= 0) {
             timeUnits[0].textContent = '00';
@@ -315,6 +401,9 @@ function updateProductVariants(campaign) {
     const colorList = document.getElementById('colorList');
     const sizeList = document.getElementById('sizeList');
     
+    // Check if campaign is completed
+    const isCompleted = campaign.thoiDiem === 'Đã kết thúc';
+    
     // Color mapping for visual display
     const colorMap = {
         'Đen': '#000000',
@@ -342,6 +431,30 @@ function updateProductVariants(campaign) {
                 const remaining = color.soLuongToiDa - color.soLuongDaDat;
                 const percentage = (color.soLuongDaDat / color.soLuongToiDa) * 100;
                 
+                const colorName = color.mauSac?.tenMau || 'N/A';
+                const colorHex = colorMap[colorName] || '#cccccc';
+                const swatchStyle = colorName === 'Trắng' 
+                    ? `background: ${colorHex}; box-shadow: inset 0 0 0 1px #ddd;`
+                    : `background: ${colorHex};`;
+                
+                // For completed campaigns
+                if (isCompleted) {
+                    return `
+                        <div class="color-item">
+                            <div class="color-info">
+                                <div class="color-swatch" style="${swatchStyle}"></div>
+                                <div class="color-details">
+                                    <span class="color-name">${colorName}</span>
+                                    <span class="color-stock">
+                                        Đã bán: ${color.soLuongDaDat}/${color.soLuongToiDa}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // For ongoing/upcoming campaigns
                 let stockClass = '';
                 let badgeClass = '';
                 let badgeText = `${remaining} đôi`;
@@ -354,12 +467,6 @@ function updateProductVariants(campaign) {
                     stockClass = 'low-stock';
                     badgeClass = 'low';
                 }
-                
-                const colorName = color.mauSac?.tenMau || 'N/A';
-                const colorHex = colorMap[colorName] || '#cccccc';
-                const swatchStyle = colorName === 'Trắng' 
-                    ? `background: ${colorHex}; box-shadow: inset 0 0 0 1px #ddd;`
-                    : `background: ${colorHex};`;
                 
                 return `
                     <div class="color-item">

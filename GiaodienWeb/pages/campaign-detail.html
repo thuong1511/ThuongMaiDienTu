@@ -136,7 +136,7 @@
                 <!-- Right: Campaign Info -->
                 <div class="detail-right">
                     <div class="campaign-header">
-                        <span class="status-badge active">ĐANG DIỄN RA</span>
+                        <span class="status-badge active">Đang diễn ra</span>
                         <h1>CHIẾN DỊCH ROSÉ X EXED</h1>
                         <p class="product-name">Limited Edition Sneaker - Premium Collection</p>
                     </div>
@@ -243,8 +243,8 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <a href="checkout.html" class="btn-join-campaign">
+                    <div class="action-buttons" id="actionButtons">
+                        <a href="checkout.html" class="btn-join-campaign" id="joinBtn">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="9" cy="21" r="1"></circle>
                                 <circle cx="20" cy="21" r="1"></circle>
@@ -279,8 +279,8 @@
                 </ul>
             </div>
 
-            <!-- Reviews Section -->
-            <div class="reviews-section">
+            <!-- Reviews Section - Only show for completed campaigns -->
+            <div class="reviews-section" id="reviewsSection" style="display: none;">
                 <h2>ĐÁNH GIÁ TỪ KHÁCH HÀNG</h2>
                 <div class="review-stats">
                     <div class="rating-summary">
@@ -389,55 +389,10 @@
     <script src="../js/campaign-detail.js"></script>
     <script src="../js/data.js"></script>
     <script>
-        // Check login before joining campaign
+        // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            const joinBtn = document.querySelector('.btn-join-campaign');
-            
-            if (joinBtn) {
-                joinBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    if (!AuthManager.isLoggedIn()) {
-                        alert('Vui lòng đăng nhập để tham gia chiến dịch!');
-                        window.location.href = 'login.html';
-                        return;
-                    }
-                    
-                    // Get campaign ID from URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const campaignId = urlParams.get('id');
-                    
-                    if (campaignId) {
-                        window.location.href = `checkout.html?id=${campaignId}`;
-                    } else {
-                        alert('Không tìm thấy thông tin chiến dịch!');
-                    }
-                });
-            }
-        });
-
-        // Tier selection functionality
-        const tierRows = document.querySelectorAll('.tier-row');
-        
-        tierRows.forEach(row => {
-            row.addEventListener('click', () => {
-                // Remove highlight from all tiers
-                tierRows.forEach(r => r.classList.remove('highlight'));
-                // Add highlight to clicked tier
-                row.classList.add('highlight');
-            });
-        });
-
-        // Thumbnail gallery
-        const thumbs = document.querySelectorAll('.thumb');
-        const mainImg = document.getElementById('mainImg');
-        
-        thumbs.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                thumbs.forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                mainImg.src = thumb.src;
-            });
+            // Tier selection and thumbnail gallery are now handled in campaign-detail.js
+            // after data is loaded
         });
     </script>
     <script>
@@ -518,7 +473,7 @@
                             <p>${reply.message}</p>
                         </div>
                     `).join('')}</div>`
-                : `<div class="reply-list"><div class="reply-item"><p>Chưa có phản hồi nào.</p></div></div>`;
+                : '';
 
             return `
                 <div class="review-item" data-review-id="${review.id}">
@@ -534,14 +489,7 @@
                     </div>
                     <p class="review-text">${review.comment}</p>
                     ${imagesMarkup}
-                    <div class="review-actions">
-                        <button type="button" class="btn-reply" data-action="toggle-reply" data-id="${review.id}">Phản hồi</button>
-                    </div>
                     ${repliesMarkup}
-                    <form class="reply-form" data-review-id="${review.id}" hidden>
-                        <textarea name="reply" placeholder="Viết phản hồi của bạn..." required></textarea>
-                        <button type="submit" class="btn-submit-reply">Gửi phản hồi</button>
-                    </form>
                 </div>
             `;
         }
@@ -570,9 +518,11 @@
         }
 
         function filterReviews() {
+            if (!reviewList) return; // Guard clause if element doesn't exist
+            
             const now = new Date();
-            const daysValue = timeFilter.value;
-            const minRating = ratingFilter.value === 'all' ? 0 : Number(ratingFilter.value);
+            const daysValue = timeFilter ? timeFilter.value : 'all';
+            const minRating = ratingFilter && ratingFilter.value === 'all' ? 0 : Number(ratingFilter ? ratingFilter.value : 0);
 
             const filtered = campaignReviews.filter(review => {
                 const reviewDate = new Date(review.createdAt);
@@ -587,42 +537,13 @@
             renderReviews(filtered);
         }
 
-        reviewList.addEventListener('click', event => {
-            const button = event.target.closest('[data-action="toggle-reply"]');
-            if (!button) return;
-            const reviewId = button.dataset.id;
-            const form = reviewList.querySelector(`.reply-form[data-review-id="${reviewId}"]`);
-            if (form) {
-                form.hidden = !form.hidden;
-            }
-        });
-
-        reviewList.addEventListener('submit', event => {
-            event.preventDefault();
-            const form = event.target.closest('.reply-form');
-            if (!form) return;
-            const reviewId = Number(form.dataset.reviewId);
-            const textarea = form.querySelector('textarea[name="reply"]');
-            const message = textarea.value.trim();
-            if (!message) return;
-
-            const review = campaignReviews.find(item => item.id === reviewId);
-            if (!review) return;
-
-            review.replies.unshift({
-                author: 'EXED',
-                message,
-                createdAt: new Date().toISOString().split('T')[0]
-            });
-            textarea.value = '';
-            form.hidden = true;
-            filterReviews();
-        });
-
-        timeFilter.addEventListener('change', filterReviews);
-        ratingFilter.addEventListener('change', filterReviews);
-
-        filterReviews();
+        // Only add event listeners if elements exist
+        if (timeFilter) {
+            timeFilter.addEventListener('change', filterReviews);
+        }
+        if (ratingFilter) {
+            ratingFilter.addEventListener('change', filterReviews);
+        }
     </script>
 </body>
 </html>
