@@ -162,8 +162,10 @@ function createRegistrationCard(registration, details) {
             currentTierText = `Dưới ${min}`;
         }
         
-        // Check if current quantity is within user's bet range
-        if (bangGia && currentQty >= bangGia.soLuongToiThieu && currentQty <= bangGia.soLuongToiDa) {
+        // Check if user's bet is achieved:
+        // - If current quantity is within user's bet range, OR
+        // - If current quantity is ABOVE user's bet range (milestone achieved)
+        if (bangGia && currentQty >= bangGia.soLuongToiThieu) {
             isBetCorrect = true;
         }
     }

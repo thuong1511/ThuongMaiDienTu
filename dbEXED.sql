@@ -509,10 +509,10 @@ INSERT INTO ChienDich (maChienDich, maSanPham, maNgheSi, tenChienDich,
                        thoiDiem, ngayBatDau, ngayKetThuc,
                        nguongMOQ, nguongToiDa, phiThamGia, giaGoc, tongSoLuongHienTai, nguoiThamGia) VALUES
 ('CD001', 'SP001', 'NS001', N'ROSÉ X EXED', 
- N'Đang diễn ra', '2026-04-09 00:00:00', '2026-04-25 23:59:59', 
+ N'Đang diễn ra', '2026-05-05 14:00:00', '2026-05-15 23:59:59', 
  100, 1200, 500000, 28850000, 914,911),
  ('CD002', 'SP002', 'NS004', N'JENNIE X EXED', 
- N'Đang diễn ra', '2026-04-08 09:00:00', '2026-04-25 23:59:59', 
+ N'Đang diễn ra', '2026-05-05 09:00:00', '2026-05-25 23:59:59', 
  50, 1000, 500000, 15500000, 870,800); 
 GO
 
@@ -727,28 +727,28 @@ INSERT INTO ChienDich (
 -- CD006: Park Bo Gum x Fila Disruptor
 ('CD006','SP006','NS006', N'PARK BO GUM X EXED',
  N'Đang diễn ra', NULL,
- '2026-04-01 00:00:00', '2026-04-20 23:59:59',
+ '2026-05-01 00:00:00', '2026-05-20 23:59:59',
  200, 800, 400000, 1950000,
  25, 20),
 
 -- CD007: Go Youn Jung x Nike AF1 Shadow
 ('CD007','SP007','NS007', N'GO YOUN JUNG X EXED',
  N'Đang diễn ra', NULL,
- '2026-04-05 00:00:00', '2026-04-25 23:59:59',
+ '2026-05-03 00:00:00', '2026-05-25 23:59:59',
  500, 1000, 500000, 2800000,
  930, 900),
 
 -- CD008: Kim Ji Won x Converse Chuck 70
 ('CD008','SP008','NS008', N'KIM JI WON X EXED',
  N'Đang diễn ra', NULL,
- '2026-04-08 00:00:00', '2026-04-30 23:59:59',
+ '2026-05-04 00:00:00', '2026-05-30 23:59:59',
  400, 1000, 450000, 1750000,
  930, 880),
 
 -- CD009: Chương Nhược Nam x Li-Ning Wade
 ('CD009','SP011','NS011', N'CHƯƠNG NHƯỢC NAM X EXED',
  N'Đang diễn ra', NULL,
- '2026-04-05 00:00:00', '2026-04-20 23:59:59',
+ '2026-05-01 00:00:00', '2026-05-15 23:59:59',
  300, 1200, 350000, 650000,
  1030, 990),
 
@@ -757,13 +757,13 @@ INSERT INTO ChienDich (
 -- CD010: Namtan x Vans Old Skool
 ('CD010','SP009','NS009', N'NAMTAN X EXED',
  N'Sắp bắt đầu', NULL,
- '2026-04-15 00:00:00', '2026-05-05 23:59:59',
+ '2026-05-15 00:00:00', '2026-06-05 23:59:59',
  200, 800, 400000, 2100000,
  0, 0),
 -- CD011: Martin x Dickies Heavyweight
 ('CD011','SP012','NS012', N'MARTIN X EXED',
  N'Sắp bắt đầu', NULL,
- '2026-04-25 00:00:00', '2026-05-15 23:59:59',
+ '2026-05-25 00:00:00', '2026-06-15 23:59:59',
  150, 500, 250000, 550000,
  0, 0);
 GO
@@ -852,6 +852,8 @@ INSERT INTO HinhAnhChienDich (maChienDich, duongDan, thuTu) VALUES
 ('CD011', 'images/chiendichMartin1.jpg',         1),
 ('CD011', 'images/chiendichMartin2.jpg',         2);
 GO
+INSERT INTO SoDiaChi (maSo, maNguoiDung, maPhuongXa, hoTen, soDienThoai, diaChiChiTiet, macDinh)
+VALUES ('SO001', 'ND002', 'PX005', N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi', 1);
 select * from ThanhToan
 select * from HinhAnhChienDich
 select * from HinhAnhSanPham
