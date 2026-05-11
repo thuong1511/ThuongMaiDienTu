@@ -15,8 +15,10 @@
 
 .checkout-grid {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 /* Form Sections */
@@ -29,8 +31,10 @@
 .form-section {
     background: #fff;
     border-radius: 20px;
-    padding: 35px;
+    padding: 30px;
     border: 3px solid var(--accent-gold);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .section-header {
@@ -525,22 +529,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     margin-bottom: 15px;
 }
 
 .time-box {
     background: white;
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 8px 10px;
     text-align: center;
-    min-width: 70px;
+    min-width: 58px;
+    max-width: 58px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .time-box .time-value {
     display: block;
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 800;
     color: #1565c0;
     line-height: 1;
@@ -548,15 +553,16 @@
 
 .time-box .time-label {
     display: block;
-    font-size: 12px;
+    font-size: 10px;
     color: #666;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 .time-sep {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
     color: #1565c0;
+    margin: 0 2px;
 }
 
 .timer-note {
@@ -686,11 +692,12 @@
 .order-summary {
     background: #fff;
     border-radius: 20px;
-    padding: 35px;
+    padding: 30px;
     border: 3px solid var(--accent-gold);
     height: fit-content;
     position: sticky;
     top: 100px;
+    max-width: 400px;
 }
 
 .order-summary h2 {
@@ -1055,4 +1062,432 @@
 
 .checkbox-wrapper input[type="checkbox"] {
     display: none;
+}
+
+/* ========================================
+   PRODUCT MATRIX TABLE STYLES
+   ======================================== */
+
+.product-matrix-container {
+    margin-top: 25px;
+}
+
+.matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.matrix-header h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin: 0;
+}
+
+.btn-clear-matrix {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: transparent;
+    border: 2px solid rgba(255, 107, 107, 0.5);
+    border-radius: 10px;
+    color: #ff6b6b;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn-clear-matrix:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+    transform: translateY(-2px);
+}
+
+.btn-clear-matrix svg {
+    flex-shrink: 0;
+}
+
+.matrix-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 2px solid rgba(196, 168, 127, 0.3);
+    margin-bottom: 20px;
+    max-width: 100%;
+}
+
+.product-matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 14px;
+}
+
+.product-matrix-table thead {
+    background: linear-gradient(135deg, var(--accent-gold), #D4AF6A);
+}
+
+.product-matrix-table thead th {
+    padding: 15px 12px;
+    text-align: center;
+    font-weight: 800;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    font-size: 13px;
+    border-right: 1px solid rgba(95, 7, 4, 0.1);
+}
+
+.product-matrix-table thead th:last-child {
+    border-right: none;
+}
+
+.product-matrix-table thead th.color-column {
+    text-align: left;
+    min-width: 180px;
+}
+
+.product-matrix-table thead th.size-column {
+    min-width: 90px;
+}
+
+.product-matrix-table thead th.total-column {
+    min-width: 80px;
+    background: rgba(95, 7, 4, 0.1);
+}
+
+.product-matrix-table tbody tr {
+    border-bottom: 1px solid rgba(196, 168, 127, 0.2);
+    transition: all 0.3s;
+}
+
+.product-matrix-table tbody tr:hover {
+    background: rgba(236, 234, 229, 0.3);
+}
+
+.product-matrix-table tbody td {
+    padding: 12px;
+    text-align: center;
+    border-right: 1px solid rgba(196, 168, 127, 0.15);
+}
+
+.product-matrix-table tbody td:last-child {
+    border-right: none;
+}
+
+.color-cell {
+    text-align: left !important;
+}
+
+.color-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid rgba(95, 7, 4, 0.2);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.color-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary-dark);
+}
+
+.color-stock {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(95, 7, 4, 0.6);
+}
+
+.color-stock.low-stock {
+    color: #ff9800;
+}
+
+.color-stock.out-of-stock {
+    color: #ff6b6b;
+}
+
+.size-cell {
+    padding: 8px !important;
+}
+
+.matrix-input {
+    width: 100%;
+    max-width: 80px;
+    padding: 10px 8px;
+    border: 2px solid rgba(196, 168, 127, 0.3);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s;
+}
+
+.matrix-input:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(196, 168, 127, 0.15);
+}
+
+.matrix-input:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
+
+.matrix-input.error {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.05);
+}
+
+.matrix-input.warning {
+    border-color: #ff9800;
+    background: rgba(255, 152, 0, 0.05);
+}
+
+/* Hide number input arrows */
+.matrix-input::-webkit-outer-spin-button,
+.matrix-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.matrix-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.total-cell {
+    background: rgba(236, 234, 229, 0.5);
+    font-weight: 800;
+    color: var(--primary-dark);
+    font-size: 16px;
+}
+
+.row-total {
+    display: inline-block;
+    min-width: 30px;
+}
+
+.product-matrix-table tfoot {
+    background: linear-gradient(135deg, rgba(196, 168, 127, 0.2), rgba(196, 168, 127, 0.1));
+    border-top: 3px solid var(--accent-gold);
+}
+
+.product-matrix-table tfoot td {
+    padding: 15px 12px;
+    text-align: center;
+    font-weight: 800;
+    color: var(--primary-dark);
+    font-size: 15px;
+    border-right: 1px solid rgba(196, 168, 127, 0.2);
+}
+
+.product-matrix-table tfoot td:first-child {
+    text-align: left;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.product-matrix-table tfoot td:last-child {
+    border-right: none;
+    background: rgba(196, 168, 127, 0.3);
+    font-size: 18px;
+    color: var(--accent-gold);
+}
+
+.total-row strong {
+    font-size: 16px;
+}
+
+.matrix-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.summary-info {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(33, 150, 243, 0.08);
+    border-radius: 10px;
+    border: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.summary-info svg {
+    flex-shrink: 0;
+    color: #1976d2;
+    margin-top: 2px;
+}
+
+.summary-info span {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(95, 7, 4, 0.8);
+}
+
+/* Toast Notification for Stock Warning */
+.stock-warning-toast {
+    position: fixed;
+    top: 120px;
+    right: -400px;
+    width: 350px;
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 2px solid #ff9800;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+    z-index: 10000;
+    transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.stock-warning-toast.show {
+    right: 30px;
+}
+
+.stock-warning-toast svg {
+    flex-shrink: 0;
+    color: #f57c00;
+    width: 24px;
+    height: 24px;
+}
+
+.stock-warning-toast span {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #e65100;
+    font-weight: 700;
+    flex: 1;
+}
+
+.stock-warning {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255, 152, 0, 0.08);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 152, 0, 0.3);
+    animation: pulse-warning 2s ease-in-out infinite;
+}
+
+.stock-warning svg {
+    flex-shrink: 0;
+    color: #f57c00;
+    margin-top: 2px;
+}
+
+.stock-warning span {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e65100;
+    font-weight: 600;
+}
+
+/* Responsive Design for Matrix Table */
+@media (max-width: 1024px) {
+    .matrix-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .btn-clear-matrix {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .product-matrix-table {
+        font-size: 13px;
+    }
+    
+    .product-matrix-table thead th {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+    
+    .product-matrix-table tbody td {
+        padding: 10px 6px;
+    }
+    
+    .matrix-input {
+        max-width: 70px;
+        padding: 8px 6px;
+        font-size: 14px;
+    }
+    
+    .color-preview {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .color-name {
+        font-size: 14px;
+    }
+    
+    .color-stock {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 768px) {
+    .matrix-table-wrapper {
+        border-radius: 8px;
+    }
+    
+    .product-matrix-table {
+        font-size: 12px;
+    }
+    
+    .product-matrix-table thead th.color-column {
+        min-width: 140px;
+    }
+    
+    .product-matrix-table thead th.size-column {
+        min-width: 70px;
+    }
+    
+    .matrix-input {
+        max-width: 60px;
+        padding: 6px 4px;
+        font-size: 13px;
+    }
+    
+    .color-info {
+        gap: 8px;
+    }
+    
+    .color-preview {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .color-name {
+        font-size: 13px;
+    }
+    
+    .color-stock {
+        font-size: 10px;
+    }
 }

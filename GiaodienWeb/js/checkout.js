@@ -1,6 +1,6 @@
-// Checkout Page JavaScript - Version 2 with Multiple Products Support
+// Checkout Page JavaScript - Version 3 with Product Matrix Support
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🚀 Checkout page loaded (v2)');
+    console.log('🚀 Checkout page loaded (v3 - Matrix)');
     
     // Check authentication
     currentUser = AuthManager.getCurrentUser();
@@ -32,10 +32,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 let currentUser = null;
 let currentCampaign = null;
 let userAddresses = [];
-let selectedProducts = [
-    { color: null, size: null, colorName: '', sizeName: '' }, // Đôi 1
-    { color: null, size: null, colorName: '', sizeName: '' }  // Đôi 2
-];
+let productMatrix = {}; // { colorId: { sizeId: quantity } }
 
 // Load all checkout data
 async function loadCheckoutData(campaignId, userId) {
@@ -60,6 +57,9 @@ async function loadCheckoutData(campaignId, userId) {
     updateAddressList();
     initializeEventHandlers();
     updateOrderSummary();
+    
+    // Start countdown timer based on campaign end time
+    startDecisionCountdown();
     
     // Load address form data
     await loadAddressFormData();
@@ -122,33 +122,115 @@ function updateCampaignInfo() {
     }
 }
 
-// Render product selection forms based on quantity
+// Render product matrix table
 function renderProductSelectionForms() {
-    const quantity = parseInt(document.querySelector('.qty-input')?.value || 1);
+    console.log('📊 Rendering product matrix table...');
     
-    // Ensure selectedProducts array has enough elements
-    while (selectedProducts.length < quantity) {
-        selectedProducts.push({ color: null, size: null, colorName: '', sizeName: '' });
+    const matrixBody = document.getElementById('product-matrix-body');
+    const matrixTable = document.querySelector('.product-matrix-table');
+    
+    if (!matrixBody || !matrixTable) {
+        console.error('Cannot find matrix table elements');
+        return;
     }
     
-    // Find or create container
-    let container = document.querySelector('.product-selection-container');
-    if (!container) {
-        // Insert before the quantity selector
-        const qtyGroup = document.querySelector('.form-group:has(.quantity-selector)');
-        if (qtyGroup) {
-            container = document.createElement('div');
-            container.className = 'product-selection-container';
-            qtyGroup.parentNode.insertBefore(container, qtyGroup);
-        } else {
-            console.error('Cannot find quantity selector');
-            return;
+    const colors = currentCampaign.sanPham?.sanPhamMauSacs || [];
+    const sizes = currentCampaign.sanPham?.sanPhamKichThuocs || [];
+    
+    if (colors.length === 0 || sizes.length === 0) {
+        console.error('No colors or sizes available');
+        return;
+    }
+    
+    // Update table header with actual sizes from database
+    const thead = matrixTable.querySelector('thead tr');
+    if (thead) {
+        thead.innerHTML = `
+            <th class="color-column">Màu sắc</th>
+            ${sizes.map(size => `<th class="size-column">Size ${size.kichThuoc?.tenSize || 'N/A'}</th>`).join('')}
+            <th class="total-column">Tổng</th>
+        `;
+    }
+    
+    // Update table footer with actual sizes from database
+    const tfoot = matrixTable.querySelector('tfoot tr');
+    if (tfoot) {
+        tfoot.innerHTML = `
+            <td><strong>TỔNG CỘNG</strong></td>
+            ${sizes.map(size => `<td><span id="total-size-${size.maSize}">0</span></td>`).join('')}
+            <td><strong id="grand-total">0</strong></td>
+        `;
+    }
+    
+    // Initialize product matrix if empty
+    colors.forEach(color => {
+        if (!productMatrix[color.maMau]) {
+            productMatrix[color.maMau] = {};
+            sizes.forEach(size => {
+                productMatrix[color.maMau][size.maSize] = 0;
+            });
         }
-    }
+    });
     
-    // Clear container
-    container.innerHTML = '';
+    // Render table rows
+    matrixBody.innerHTML = colors.map(color => {
+        const colorName = color.mauSac?.tenMau || 'N/A';
+        const colorHex = getColorHex(colorName);
+        const totalStock = color.soLuongToiDa - color.soLuongDaDat;
+        const stockClass = totalStock <= 0 ? 'out-of-stock' : (totalStock < 50 ? 'low-stock' : '');
+        
+        return `
+            <tr data-color-id="${color.maMau}">
+                <td class="color-cell">
+                    <div class="color-info">
+                        <div class="color-preview" style="background: ${colorHex};"></div>
+                        <div class="color-details">
+                            <span class="color-name">${colorName}</span>
+                            <span class="color-stock ${stockClass}">Còn: ${totalStock} đôi</span>
+                        </div>
+                    </div>
+                </td>
+                ${sizes.map(size => {
+                    const sizeName = size.kichThuoc?.tenSize || 'N/A';
+                    const maxStock = Math.min(totalStock, 999999); // Giới hạn tối đa
+                    const isDisabled = totalStock <= 0;
+                    const currentValue = productMatrix[color.maMau]?.[size.maSize] || 0;
+                    
+                    return `
+                        <td class="size-cell">
+                            <input type="number" 
+                                   class="matrix-input" 
+                                   data-color-id="${color.maMau}" 
+                                   data-size-id="${size.maSize}"
+                                   data-color-name="${colorName}"
+                                   data-size-name="${sizeName}"
+                                   data-max-stock="${totalStock}"
+                                   min="0" 
+                                   max="${maxStock}" 
+                                   value="${currentValue}" 
+                                   placeholder="0"
+                                   ${isDisabled ? 'disabled' : ''}>
+                        </td>
+                    `;
+                }).join('')}
+                <td class="total-cell">
+                    <span class="row-total" data-color-id="${color.maMau}">0</span>
+                </td>
+            </tr>
+        `;
+    }).join('');
     
+    // Attach event listeners to inputs
+    attachMatrixInputHandlers();
+    
+    // Calculate initial totals
+    calculateTotals();
+    
+    console.log('✅ Product matrix rendered');
+}
+
+// Get color hex code
+function getColorHex(colorName) {
     const colorMap = {
         'Đen': 'linear-gradient(135deg, #000, #333)',
         'Trắng': 'linear-gradient(135deg, #f5f5f5, #fff)',
@@ -165,103 +247,177 @@ function renderProductSelectionForms() {
         'Nâu': 'linear-gradient(135deg, #8B4513, #A0522D)',
         'Tím': 'linear-gradient(135deg, #9370DB, #B19CD9)'
     };
-    
-    const colors = currentCampaign.sanPham?.sanPhamMauSacs || [];
+    return colorMap[colorName] || 'linear-gradient(135deg, #ccc, #eee)';
+}
+
+// This function is no longer needed - we use color total stock instead
+
+// Attach event handlers to matrix inputs
+function attachMatrixInputHandlers() {
+    document.querySelectorAll('.matrix-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            const colorId = e.target.dataset.colorId;
+            const sizeId = e.target.dataset.sizeId;
+            const maxStock = parseInt(e.target.dataset.maxStock) || 0;
+            let value = parseInt(e.target.value) || 0;
+            
+            // Validate value against color stock (not individual size stock)
+            if (value < 0) {
+                value = 0;
+                e.target.value = 0;
+            }
+            
+            // Check if total for this color exceeds stock
+            const currentColorTotal = getCurrentColorTotal(colorId, sizeId, value);
+            if (currentColorTotal > maxStock) {
+                const allowedValue = Math.max(0, maxStock - (currentColorTotal - value));
+                value = allowedValue;
+                e.target.value = allowedValue;
+                showStockWarning(`Màu ${e.target.dataset.colorName} chỉ còn ${maxStock} đôi!`);
+            }
+            
+            // Update matrix
+            if (!productMatrix[colorId]) productMatrix[colorId] = {};
+            productMatrix[colorId][sizeId] = value;
+            
+            // Recalculate totals
+            calculateTotals();
+            
+            // Update order summary
+            updateOrderSummary();
+        });
+        
+        // Prevent negative values and invalid characters
+        input.addEventListener('keydown', (e) => {
+            if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '.') {
+                e.preventDefault();
+            }
+        });
+        
+        // Validate on blur
+        input.addEventListener('blur', (e) => {
+            const value = parseInt(e.target.value) || 0;
+            if (value < 0) {
+                e.target.value = 0;
+                const colorId = e.target.dataset.colorId;
+                const sizeId = e.target.dataset.sizeId;
+                productMatrix[colorId][sizeId] = 0;
+                calculateTotals();
+                updateOrderSummary();
+            }
+        });
+    });
+}
+
+// Get current total for a color (excluding the current input being changed)
+function getCurrentColorTotal(colorId, excludeSizeId, newValue) {
+    let total = 0;
+    if (productMatrix[colorId]) {
+        Object.keys(productMatrix[colorId]).forEach(sizeId => {
+            if (sizeId === excludeSizeId) {
+                total += newValue;
+            } else {
+                total += productMatrix[colorId][sizeId] || 0;
+            }
+        });
+    }
+    return total;
+}
+
+// Calculate all totals
+function calculateTotals() {
     const sizes = currentCampaign.sanPham?.sanPhamKichThuocs || [];
     
-    // Find first available color and default size
-    const firstAvailableColorIndex = colors.findIndex(c => (c.soLuongToiDa - c.soLuongDaDat) > 0);
-    let defaultSizeIndex = sizes.findIndex(s => s.kichThuoc?.tenSize === '38');
-    // If size 38 not found, use first size
-    if (defaultSizeIndex === -1) {
-        defaultSizeIndex = 0;
-    }
-    
-    console.log('🎨 First available color index:', firstAvailableColorIndex);
-    console.log('📏 Default size index:', defaultSizeIndex);
-    
-    // Render forms for each pair
-    for (let i = 0; i < quantity; i++) {
-        const pairNum = i + 1;
+    // Calculate row totals (total for each color)
+    document.querySelectorAll('.row-total').forEach(totalSpan => {
+        const colorId = totalSpan.dataset.colorId;
+        let rowTotal = 0;
         
-        // Set default values if not already set
-        if (!selectedProducts[i].color && firstAvailableColorIndex >= 0) {
-            const defaultColor = colors[firstAvailableColorIndex];
-            selectedProducts[i].color = String(defaultColor.maMau);
-            selectedProducts[i].colorName = defaultColor.mauSac?.tenMau || 'N/A';
-            console.log(`   Set default color for pair ${pairNum}:`, selectedProducts[i].color, selectedProducts[i].colorName);
+        if (productMatrix[colorId]) {
+            Object.values(productMatrix[colorId]).forEach(qty => {
+                rowTotal += qty || 0;
+            });
         }
         
-        if (!selectedProducts[i].size && defaultSizeIndex >= 0 && sizes[defaultSizeIndex]) {
-            const defaultSize = sizes[defaultSizeIndex];
-            selectedProducts[i].size = String(defaultSize.maSize); // Changed from maKichThuoc to maSize
-            selectedProducts[i].sizeName = defaultSize.kichThuoc?.tenSize || 'N/A';
-            console.log(`   Set default size for pair ${pairNum}:`, selectedProducts[i].size, selectedProducts[i].sizeName);
-        }
-        
-        const pairDiv = document.createElement('div');
-        pairDiv.className = 'pair-selection';
-        pairDiv.id = `pair-${pairNum}`;
-        pairDiv.style.cssText = 'margin-bottom: 25px; padding: 20px; background: rgba(236, 234, 229, 0.3); border-radius: 12px; border: 2px solid var(--accent-gold);';
-        
-        pairDiv.innerHTML = `
-            <h4 style="color: var(--primary-dark); margin-bottom: 15px; font-size: 16px;">
-                ${quantity > 1 ? `Đôi ${pairNum}` : 'Lựa chọn của bạn'}
-            </h4>
-            
-            <div class="form-group">
-                <label>Màu sắc</label>
-                <div class="color-options" data-pair="${pairNum}">
-                    ${colors.map((c, index) => {
-                        const colorName = c.mauSac?.tenMau || 'N/A';
-                        const colorGradient = colorMap[colorName] || 'linear-gradient(135deg, #ccc, #eee)';
-                        const remaining = c.soLuongToiDa - c.soLuongDaDat;
-                        const isOutOfStock = remaining <= 0;
-                        // Check if this is the selected color for this pair
-                        const isActive = String(c.maMau) === selectedProducts[i].color;
-                        
-                        return `
-                            <div class="color-option ${isActive ? 'active' : ''} ${isOutOfStock ? 'out-of-stock' : ''}" 
-                                 data-color-id="${c.maMau}"
-                                 data-color-name="${colorName}"
-                                 ${isOutOfStock ? 'style="opacity: 0.5; cursor: not-allowed;"' : ''}>
-                                <div class="color-swatch" style="background: ${colorGradient}"></div>
-                                <span>${colorName}</span>
-                                <small style="display: block; font-size: 11px; color: ${isOutOfStock ? '#ff6b6b' : '#999'};">
-                                    ${isOutOfStock ? 'Hết hàng' : `Còn ${remaining} đôi`}
-                                </small>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Kích thước (EU)</label>
-                <div class="size-options" data-pair="${pairNum}">
-                    ${sizes.map((s, index) => {
-                        const sizeName = s.kichThuoc?.tenSize || 'N/A';
-                        // Check if this is the selected size for this pair
-                        const isActive = String(s.maSize) === selectedProducts[i].size;
-                        
-                        return `
-                            <button class="size-btn ${isActive ? 'active' : ''}" 
-                                    data-size-id="${s.maSize}"
-                                    data-size-name="${sizeName}">
-                                ${sizeName}
-                            </button>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(pairDiv);
-    }
+        totalSpan.textContent = rowTotal;
+    });
     
-    console.log(`✅ Rendered ${quantity} pair selection form(s)`);
-    console.log('Default selections:', selectedProducts.slice(0, quantity));
+    // Calculate column totals (total for each size)
+    sizes.forEach(size => {
+        const sizeId = size.maSize;
+        let columnTotal = 0;
+        
+        Object.keys(productMatrix).forEach(colorId => {
+            if (productMatrix[colorId] && productMatrix[colorId][sizeId]) {
+                columnTotal += productMatrix[colorId][sizeId] || 0;
+            }
+        });
+        
+        const totalSpan = document.getElementById(`total-size-${sizeId}`);
+        if (totalSpan) {
+            totalSpan.textContent = columnTotal;
+        }
+    });
+    
+    // Calculate grand total
+    let grandTotal = 0;
+    Object.keys(productMatrix).forEach(colorId => {
+        if (productMatrix[colorId]) {
+            Object.values(productMatrix[colorId]).forEach(qty => {
+                grandTotal += qty || 0;
+            });
+        }
+    });
+    
+    const grandTotalSpan = document.getElementById('grand-total');
+    if (grandTotalSpan) {
+        grandTotalSpan.textContent = grandTotal;
+    }
 }
+
+// Show stock warning with toast notification
+function showStockWarning(message = 'Một số màu/size đã hết hàng hoặc không đủ số lượng') {
+    const toast = document.getElementById('stock-warning-toast');
+    const messageSpan = document.getElementById('stock-warning-message');
+    
+    if (toast && messageSpan) {
+        messageSpan.textContent = message;
+        toast.classList.add('show');
+        
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+}
+
+// Clear all selections
+function clearAllSelections() {
+    // Reset matrix
+    Object.keys(productMatrix).forEach(colorId => {
+        Object.keys(productMatrix[colorId]).forEach(sizeId => {
+            productMatrix[colorId][sizeId] = 0;
+        });
+    });
+    
+    // Reset inputs
+    document.querySelectorAll('.matrix-input').forEach(input => {
+        if (!input.disabled) {
+            input.value = 0;
+        }
+    });
+    
+    // Recalculate totals
+    calculateTotals();
+    
+    // Update order summary
+    updateOrderSummary();
+    
+    console.log('🧹 All selections cleared');
+}
+
+// Make clearAllSelections available globally
+window.clearAllSelections = clearAllSelections;
 
 // Update pricing tiers
 function updatePricingTiers() {
@@ -380,48 +536,6 @@ function updateAddressList() {
 
 // Initialize event handlers
 function initializeEventHandlers() {
-    // Quantity controls
-    const qtyInput = document.querySelector('.qty-input');
-    const minusBtn = document.querySelector('.qty-btn.minus');
-    const plusBtn = document.querySelector('.qty-btn.plus');
-    
-    minusBtn.addEventListener('click', () => {
-        let value = parseInt(qtyInput.value);
-        if (value > 1) {
-            qtyInput.value = value - 1;
-            renderProductSelectionForms();
-            attachProductSelectionHandlers();
-            updateOrderSummary();
-        }
-    });
-    
-    plusBtn.addEventListener('click', () => {
-        let value = parseInt(qtyInput.value);
-        if (value < 2) {
-            qtyInput.value = value + 1;
-            renderProductSelectionForms();
-            attachProductSelectionHandlers();
-            updateOrderSummary();
-        } else {
-            alert('Mỗi người chỉ được đăng ký tối đa 2 sản phẩm!');
-        }
-    });
-    
-    qtyInput.addEventListener('change', () => {
-        let value = parseInt(qtyInput.value);
-        if (value < 1) qtyInput.value = 1;
-        if (value > 2) {
-            qtyInput.value = 2;
-            alert('Mỗi người chỉ được đăng ký tối đa 2 sản phẩm!');
-        }
-        renderProductSelectionForms();
-        attachProductSelectionHandlers();
-        updateOrderSummary();
-    });
-    
-    // Attach handlers for product selection
-    attachProductSelectionHandlers();
-    
     // Bet selection
     document.querySelectorAll('.bet-card input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', updateOrderSummary);
@@ -482,53 +596,18 @@ function initializeEventHandlers() {
     }
 }
 
-// Attach handlers for product selection (colors and sizes)
-function attachProductSelectionHandlers() {
-    // Color selection for each pair
-    document.querySelectorAll('.color-option').forEach(option => {
-        option.addEventListener('click', () => {
-            if (option.classList.contains('out-of-stock')) {
-                alert('Màu này đã hết hàng. Vui lòng chọn màu khác!');
-                return;
-            }
-            
-            const pairNum = option.closest('.color-options').dataset.pair;
-            const colorOptions = document.querySelector(`.color-options[data-pair="${pairNum}"]`);
-            colorOptions.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            
-            // Save selection
-            const pairIndex = parseInt(pairNum) - 1;
-            selectedProducts[pairIndex].color = option.dataset.colorId;
-            selectedProducts[pairIndex].colorName = option.dataset.colorName;
-            
-            updateOrderSummary();
-        });
-    });
-    
-    // Size selection for each pair
-    document.querySelectorAll('.size-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const pairNum = btn.closest('.size-options').dataset.pair;
-            const sizeOptions = document.querySelector(`.size-options[data-pair="${pairNum}"]`);
-            sizeOptions.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Save selection
-            const pairIndex = parseInt(pairNum) - 1;
-            selectedProducts[pairIndex].size = btn.dataset.sizeId;
-            selectedProducts[pairIndex].sizeName = btn.dataset.sizeName;
-            
-            updateOrderSummary();
-        });
-    });
-}
-
 // Update order summary
 function updateOrderSummary() {
     if (!currentCampaign) return;
     
-    const quantity = parseInt(document.querySelector('.qty-input')?.value || 1);
+    // Calculate total quantity from matrix
+    let totalQuantity = 0;
+    Object.keys(productMatrix).forEach(colorId => {
+        Object.values(productMatrix[colorId]).forEach(qty => {
+            totalQuantity += qty;
+        });
+    });
+    
     const selectedBet = document.querySelector('input[name="bet"]:checked')?.value || '';
     
     if (!selectedBet) return;
@@ -542,13 +621,13 @@ function updateOrderSummary() {
     
     const basePrice = currentCampaign.giaGoc || 0;
     const tierPrice = selectedTier.donGia || 0;
-    const participationFee = currentCampaign.phiThamGia || 0; // Phí tham gia tính 1 lần
+    const participationFee = currentCampaign.phiThamGia || 0;
     const discountPercent = basePrice > 0 ? ((basePrice - tierPrice) / basePrice * 100).toFixed(1) : 0;
     
     // Calculate prices
-    const totalBasePrice = basePrice * quantity; // Giá gốc tính theo số đôi
-    const totalBetPrice = tierPrice * quantity;
-    const totalPayment = totalBasePrice + participationFee; // Phí tham gia chỉ tính 1 lần
+    const totalBasePrice = basePrice * totalQuantity;
+    const totalBetPrice = tierPrice * totalQuantity;
+    const totalPayment = totalBasePrice + participationFee;
     const refundAmount = totalBasePrice - totalBetPrice;
     
     const summarySections = document.querySelectorAll('.order-summary .summary-section');
@@ -563,19 +642,29 @@ function updateOrderSummary() {
             productNameSpan.textContent = currentCampaign.sanPham?.tenSanPham || 'Sản phẩm';
         }
         if (productQtySpan) {
-            productQtySpan.textContent = `${quantity}x`;
+            productQtySpan.textContent = `${totalQuantity}x`;
         }
         if (summaryDetail) {
-            if (quantity === 1) {
-                const pair1 = selectedProducts[0];
-                summaryDetail.textContent = `Màu: ${pair1.colorName || 'N/A'} | Size: ${pair1.sizeName || 'N/A'}`;
+            // Build detail string from matrix
+            const details = [];
+            Object.keys(productMatrix).forEach(colorId => {
+                Object.keys(productMatrix[colorId]).forEach(sizeId => {
+                    const qty = productMatrix[colorId][sizeId];
+                    if (qty > 0) {
+                        const input = document.querySelector(`.matrix-input[data-color-id="${colorId}"][data-size-id="${sizeId}"]`);
+                        if (input) {
+                            const colorName = input.dataset.colorName;
+                            const sizeName = input.dataset.sizeName;
+                            details.push(`${colorName} - Size ${sizeName}: ${qty} đôi`);
+                        }
+                    }
+                });
+            });
+            
+            if (details.length > 0) {
+                summaryDetail.innerHTML = details.join('<br>');
             } else {
-                const pair1 = selectedProducts[0];
-                const pair2 = selectedProducts[1];
-                summaryDetail.innerHTML = `
-                    Đôi 1: ${pair1.colorName || 'N/A'} - Size ${pair1.sizeName || 'N/A'}<br>
-                    Đôi 2: ${pair2.colorName || 'N/A'} - Size ${pair2.sizeName || 'N/A'}
-                `;
+                summaryDetail.textContent = 'Chưa chọn sản phẩm';
             }
         }
     }
@@ -607,10 +696,9 @@ function updateOrderSummary() {
             if (priceSpan) {
                 priceSpan.textContent = formatCurrency(totalBasePrice);
             }
-            // Update label
             const labelSpan = priceItems[0].querySelector('span:first-child');
             if (labelSpan) {
-                labelSpan.textContent = `Giá gốc (${quantity} sản phẩm)`;
+                labelSpan.textContent = `Giá gốc (${totalQuantity} sản phẩm)`;
             }
         }
         
@@ -644,47 +732,47 @@ async function handleCheckout(e) {
         return;
     }
     
-    const quantity = parseInt(document.querySelector('.qty-input').value);
-    const selectedBet = document.querySelector('input[name="bet"]:checked')?.value;
-    const selectedBetRadio = document.querySelector('input[name="bet"]:checked');
-    const selectedAddressId = document.querySelector('input[name="address"]:checked')?.dataset.addressId;
-    const selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
+    // Calculate total quantity from product matrix
+    let totalQuantity = 0;
+    const selectedProducts = []; // Array to store {colorId, sizeId, quantity, colorName, sizeName}
     
-    // Validate and ensure all pairs have color and size selected (use defaults if not)
-    for (let i = 0; i < quantity; i++) {
-        // If color not selected, use the active color option
-        if (!selectedProducts[i].color || selectedProducts[i].color === 'undefined') {
-            const activeColor = document.querySelector(`.color-options[data-pair="${i + 1}"] .color-option.active`);
-            if (activeColor) {
-                selectedProducts[i].color = activeColor.dataset.colorId;
-                selectedProducts[i].colorName = activeColor.dataset.colorName;
+    Object.keys(productMatrix).forEach(colorId => {
+        Object.keys(productMatrix[colorId]).forEach(sizeId => {
+            const qty = productMatrix[colorId][sizeId] || 0;
+            if (qty > 0) {
+                totalQuantity += qty;
+                const input = document.querySelector(`.matrix-input[data-color-id="${colorId}"][data-size-id="${sizeId}"]`);
+                if (input) {
+                    selectedProducts.push({
+                        colorId: colorId,
+                        sizeId: sizeId,
+                        quantity: qty,
+                        colorName: input.dataset.colorName,
+                        sizeName: input.dataset.sizeName
+                    });
+                }
             }
-        }
-        
-        // If size not selected, use the active size button
-        if (!selectedProducts[i].size || selectedProducts[i].size === 'undefined') {
-            const activeSize = document.querySelector(`.size-options[data-pair="${i + 1}"] .size-btn.active`);
-            if (activeSize) {
-                selectedProducts[i].size = activeSize.dataset.sizeId;
-                selectedProducts[i].sizeName = activeSize.dataset.sizeName;
-            }
-        }
-        
-        // Final validation - ensure values are valid
-        if (!selectedProducts[i].color || selectedProducts[i].color === 'undefined' || 
-            !selectedProducts[i].size || selectedProducts[i].size === 'undefined') {
-            alert(`Vui lòng chọn đầy đủ màu sắc và kích thước cho đôi ${i + 1}!`);
-            console.error('Invalid product selection:', selectedProducts[i]);
-            return;
-        }
+        });
+    });
+    
+    console.log('📦 Selected products:', selectedProducts);
+    console.log('📊 Total quantity:', totalQuantity);
+    
+    // Validation
+    if (totalQuantity === 0) {
+        alert('Vui lòng chọn ít nhất 1 sản phẩm!');
+        return;
     }
     
-    console.log('✅ Validated products:', selectedProducts.slice(0, quantity));
+    const selectedBet = document.querySelector('input[name="bet"]:checked')?.value;
+    const selectedBetRadio = document.querySelector('input[name="bet"]:checked');
     
     if (!selectedBet) {
         alert('Vui lòng chọn mốc đặt cược!');
         return;
     }
+    
+    const selectedAddressId = document.querySelector('input[name="address"]:checked')?.dataset.addressId;
     
     if (!selectedAddressId) {
         alert('Vui lòng chọn địa chỉ giao hàng!');
@@ -699,6 +787,7 @@ async function handleCheckout(e) {
     }
     
     // Get payment method name
+    const selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
     const paymentMethodMap = {
         'momo': 'Ví điện tử',
         'vnpay': 'Ví điện tử',
@@ -716,7 +805,7 @@ async function handleCheckout(e) {
     // Calculate total payment
     const basePrice = currentCampaign.giaGoc || 0;
     const participationFee = currentCampaign.phiThamGia || 0;
-    const totalBasePrice = basePrice * quantity;
+    const totalBasePrice = basePrice * totalQuantity;
     const totalPayment = totalBasePrice + participationFee;
     
     // Disable checkout button to prevent double submission
@@ -760,7 +849,7 @@ async function handleCheckout(e) {
             maMucGia: maMucGia,
             maNguoiDung: currentUser.maNguoiDung,
             maChienDich: currentCampaign.maChienDich,
-            tongSoLuong: quantity
+            tongSoLuong: totalQuantity
         };
         
         const dangKyResponse = await fetch(`${API_BASE_URL}/dangkychiendich`, {
@@ -778,28 +867,30 @@ async function handleCheckout(e) {
         const maDangKy = dangKyResult.data.maDangKy;
         console.log('✅ Campaign registration created successfully. ID:', maDangKy);
         
-        // STEP 3: Create PhieuChiTietDangKy (Registration Details) for each pair
-        console.log('📝 Step 3: Creating registration details for each pair...');
+        // STEP 3: Create PhieuChiTietDangKy (Registration Details) for each color-size combination
+        console.log('📝 Step 3: Creating registration details...');
         
-        for (let i = 0; i < quantity; i++) {
+        for (let i = 0; i < selectedProducts.length; i++) {
             const product = selectedProducts[i];
-            const pairNum = i + 1;
             
-            console.log(`   Creating detail for pair ${pairNum}:`, product);
+            console.log(`   Creating detail ${i + 1}/${selectedProducts.length}:`, product);
             
             // Ensure IDs are integers
-            const maMau = parseInt(product.color);
-            const maSize = parseInt(product.size);
+            const maMau = parseInt(product.colorId);
+            const maSize = parseInt(product.sizeId);
+            const soLuong = parseInt(product.quantity);
             
             // Validate IDs
-            if (isNaN(maMau) || isNaN(maSize) || !maMau || !maSize) {
-                console.error(`Invalid data for pair ${pairNum}:`, {
-                    originalColor: product.color,
-                    originalSize: product.size,
+            if (isNaN(maMau) || isNaN(maSize) || isNaN(soLuong) || !maMau || !maSize || soLuong <= 0) {
+                console.error(`Invalid data for product ${i + 1}:`, {
+                    originalColorId: product.colorId,
+                    originalSizeId: product.sizeId,
+                    originalQuantity: product.quantity,
                     parsedMaMau: maMau,
-                    parsedMaSize: maSize
+                    parsedMaSize: maSize,
+                    parsedSoLuong: soLuong
                 });
-                throw new Error(`Dữ liệu không hợp lệ cho đôi ${pairNum}. Vui lòng chọn lại màu sắc và kích thước!`);
+                throw new Error(`Dữ liệu không hợp lệ cho sản phẩm ${product.colorName} - Size ${product.sizeName}!`);
             }
             
             const chiTietData = {
@@ -807,7 +898,7 @@ async function handleCheckout(e) {
                 maSanPham: currentCampaign.sanPham.maSanPham,
                 maMau: maMau,
                 maSize: maSize,
-                soLuong: 1 // Mỗi chi tiết = 1 đôi
+                soLuong: soLuong
             };
             
             console.log(`   Sending data:`, chiTietData);
@@ -821,32 +912,16 @@ async function handleCheckout(e) {
             const chiTietResult = await chiTietResponse.json();
             
             if (!chiTietResult.success) {
-                throw new Error(`Không thể tạo chi tiết đôi ${pairNum}: ${chiTietResult.message}`);
+                throw new Error(`Không thể tạo chi tiết cho ${product.colorName} - Size ${product.sizeName}: ${chiTietResult.message}`);
             }
             
-            console.log(`   ✅ Detail for pair ${pairNum} created successfully`);
+            console.log(`   ✅ Detail ${i + 1} created successfully`);
         }
         
         console.log('🎉 All steps completed successfully!');
         
-        // Store checkout data for payment success page
-        const checkoutData = {
-            campaignId: currentCampaign.maChienDich,
-            products: selectedProducts.slice(0, quantity),
-            quantity: quantity,
-            betTier: selectedBet,
-            addressId: selectedAddressId,
-            paymentMethod: paymentMethod,
-            maThanhToan: maThanhToan,
-            maDangKy: maDangKy,
-            totalPayment: totalPayment
-        };
-        
-        sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
-        sessionStorage.setItem('campaignData', JSON.stringify(currentCampaign));
-        
-        // Redirect to payment success page
-        window.location.href = 'payment-success.html';
+        // Redirect to payment success page with maDangKy
+        window.location.href = `payment-success.html?maDangKy=${maDangKy}`;
         
     } catch (error) {
         console.error('❌ Checkout error:', error);
@@ -1003,3 +1078,83 @@ async function saveNewAddress() {
 
 // Make saveNewAddress available globally
 window.saveNewAddress = saveNewAddress;
+
+// Start decision countdown timer
+function startDecisionCountdown() {
+    if (!currentCampaign || !currentCampaign.ngayKetThuc) {
+        console.warn('⚠️ No campaign end date available');
+        return;
+    }
+    
+    const endDate = new Date(currentCampaign.ngayKetThuc);
+    const now = new Date();
+    
+    // Calculate time remaining in milliseconds
+    let timeRemaining = endDate - now;
+    
+    // If campaign has ended, show zeros
+    if (timeRemaining <= 0) {
+        updateCountdownDisplay(0, 0, 0, 0);
+        return;
+    }
+    
+    // Calculate if more than 2 days remaining
+    const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
+    
+    if (timeRemaining > twoDaysInMs) {
+        // Show fixed 2 days
+        updateCountdownDisplay(2, 0, 0, 0);
+        console.log('⏰ Campaign has more than 2 days remaining - showing fixed 2 days');
+        return;
+    }
+    
+    // Less than or equal to 2 days - start real countdown
+    console.log('⏰ Starting real countdown - time remaining:', timeRemaining);
+    
+    function updateTimer() {
+        const now = new Date();
+        timeRemaining = endDate - now;
+        
+        if (timeRemaining <= 0) {
+            updateCountdownDisplay(0, 0, 0, 0);
+            clearInterval(timerInterval);
+            return;
+        }
+        
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+        
+        updateCountdownDisplay(days, hours, minutes, seconds);
+    }
+    
+    // Update immediately
+    updateTimer();
+    
+    // Update every second
+    const timerInterval = setInterval(updateTimer, 1000);
+}
+
+// Update countdown display
+function updateCountdownDisplay(days, hours, minutes, seconds) {
+    const timeBoxes = document.querySelectorAll('.decision-countdown .time-box');
+    
+    if (timeBoxes.length >= 4) {
+        // Days
+        const daysValue = timeBoxes[0].querySelector('.time-value');
+        if (daysValue) daysValue.textContent = String(days).padStart(2, '0');
+        
+        // Hours
+        const hoursValue = timeBoxes[1].querySelector('.time-value');
+        if (hoursValue) hoursValue.textContent = String(hours).padStart(2, '0');
+        
+        // Minutes
+        const minutesValue = timeBoxes[2].querySelector('.time-value');
+        if (minutesValue) minutesValue.textContent = String(minutes).padStart(2, '0');
+        
+        // Seconds
+        const secondsValue = timeBoxes[3].querySelector('.time-value');
+        if (secondsValue) secondsValue.textContent = String(seconds).padStart(2, '0');
+    }
+}

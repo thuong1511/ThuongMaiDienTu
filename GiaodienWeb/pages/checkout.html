@@ -90,6 +90,16 @@
 
     <!-- Checkout Section -->
     <section class="checkout-section">
+        <!-- Toast Notification for Stock Warning -->
+        <div class="stock-warning-toast" id="stock-warning-toast">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span id="stock-warning-message">Một số màu/size đã hết hàng hoặc không đủ số lượng</span>
+        </div>
+        
         <div class="container">
             <h1 class="page-title">ĐĂNG KÝ THAM GIA CHIẾN DỊCH</h1>
             
@@ -112,26 +122,112 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="display: none;">
-                            <label>Màu sắc</label>
-                            <div class="color-options">
-                                <!-- Colors will be loaded dynamically -->
+                        <!-- Product Matrix Table -->
+                        <div class="product-matrix-container">
+                            <div class="matrix-header">
+                                <h3>Chọn sản phẩm theo màu và size</h3>
+                                <button type="button" class="btn-clear-matrix" onclick="clearAllSelections()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                    Xóa tất cả
+                                </button>
                             </div>
-                        </div>
 
-                        <div class="form-group" style="display: none;">
-                            <label>Kích thước (EU)</label>
-                            <div class="size-options">
-                                <!-- Sizes will be loaded dynamically -->
+                            <div class="matrix-table-wrapper">
+                                <table class="product-matrix-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="color-column">Màu sắc</th>
+                                            <th class="size-column">Size 38</th>
+                                            <th class="size-column">Size 39</th>
+                                            <th class="size-column">Size 40</th>
+                                            <th class="size-column">Size 41</th>
+                                            <th class="size-column">Size 42</th>
+                                            <th class="total-column">Tổng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="product-matrix-body">
+                                        <!-- Rows will be loaded dynamically from API -->
+                                        <!-- Example structure:
+                                        <tr data-color-id="1">
+                                            <td class="color-cell">
+                                                <div class="color-info">
+                                                    <div class="color-preview" style="background-color: #001f3f;"></div>
+                                                    <div class="color-details">
+                                                        <span class="color-name">Xanh Navy</span>
+                                                        <span class="color-stock">Còn: 286 đôi</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="size-cell">
+                                                <input type="number" class="matrix-input" 
+                                                       data-color-id="1" data-size="38" 
+                                                       min="0" max="100" value="0" 
+                                                       placeholder="0">
+                                            </td>
+                                            <td class="size-cell">
+                                                <input type="number" class="matrix-input" 
+                                                       data-color-id="1" data-size="39" 
+                                                       min="0" max="100" value="0" 
+                                                       placeholder="0">
+                                            </td>
+                                            <td class="size-cell">
+                                                <input type="number" class="matrix-input" 
+                                                       data-color-id="1" data-size="40" 
+                                                       min="0" max="86" value="0" 
+                                                       placeholder="0">
+                                            </td>
+                                            <td class="size-cell">
+                                                <input type="number" class="matrix-input" 
+                                                       data-color-id="1" data-size="41" 
+                                                       min="0" max="100" value="0" 
+                                                       placeholder="0">
+                                            </td>
+                                            <td class="size-cell">
+                                                <input type="number" class="matrix-input" 
+                                                       data-color-id="1" data-size="42" 
+                                                       min="0" max="0" value="0" 
+                                                       placeholder="0" disabled>
+                                            </td>
+                                            <td class="total-cell">
+                                                <span class="row-total">0</span>
+                                            </td>
+                                        </tr>
+                                        -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="total-row">
+                                            <td><strong>TỔNG CỘNG</strong></td>
+                                            <td><span id="total-size-38">0</span></td>
+                                            <td><span id="total-size-39">0</span></td>
+                                            <td><span id="total-size-40">0</span></td>
+                                            <td><span id="total-size-41">0</span></td>
+                                            <td><span id="total-size-42">0</span></td>
+                                            <td><strong id="grand-total">0</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Số lượng</label>
-                            <div class="quantity-selector">
-                                <button class="qty-btn minus">-</button>
-                                <input type="number" value="1" min="1" max="10" class="qty-input">
-                                <button class="qty-btn plus">+</button>
+                            <div class="matrix-summary">
+                                <div class="summary-info">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 16v-4"></path>
+                                        <path d="M12 8h.01"></path>
+                                    </svg>
+                                    <span>Nhập số lượng vào từng ô. Hệ thống sẽ tự động tính tổng và chọn mốc giá phù hợp.</span>
+                                </div>
+                                <div class="stock-warning" id="stock-warning" style="display: none;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    <span>Một số màu/size đã hết hàng hoặc không đủ số lượng</span>
+                                </div>
                             </div>
                         </div>
                     </div>
