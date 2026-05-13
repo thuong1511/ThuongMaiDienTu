@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <div class="order-product-row">
-                        <img src="../images/chiendichRose1.jpg" alt="Product" class="order-product-img">
+                        <img src="../images/chiendichRose1.jpg" alt="Product" class="order-product-img" id="order-product-img">
                         <div class="order-product-info">
                             <p class="order-product-name">ROSÉ X EXED</p>
                             <p class="order-product-meta">Màu: Đen · Size: M · SL: 2</p>
@@ -368,10 +368,117 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>auth.requireAdmin();</script>
+    <script src="../js/admin-api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const adminProfile = document.querySelector('.admin-profile');
+        if (adminProfile) {
+            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
+            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (!id) return;
+
+        // ── Load chi tiết đơn hàng ─────────────────────────────
+        try {
+            const res = await adminApi.getDonHangById(id);
+            if (!res.success) { showToast(res.message, 'error'); return; }
+            const dk = res.data;
+            const tt = dk.thanhToan || {};
+            const cd = dk.chienDich || {};
+            const nd = dk.nguoiDung || {};
+            const bg = dk.bangGiaBacThang || {};
+
+            // Header
+            document.querySelector('.page-header h1').textContent = 'CHI TIẾT ĐƠN HÀNG';
+            const subTitle = document.querySelector('.page-header p');
+            if (subTitle) subTitle.textContent = `#DK${dk.maDangKy} · Đặt lúc ${fmtDateTime(dk.ngayDangKy)}`;
+
+            // Ảnh chiến dịch
+            const productImg = document.getElementById('order-product-img');
+            if (productImg) {
+                productImg.src = imgChienDich(cd);
+                productImg.onerror = () => { productImg.src = '../images/banner.jpg'; };
+            }
+
+            // Tên chiến dịch
+            const productName = document.querySelector('.order-product-name');
+            if (productName) productName.textContent = cd.tenChienDich || cd.maChienDich || '—';
+            const productMeta = document.querySelector('.order-product-meta');
+            if (productMeta) productMeta.textContent = `Mốc cược: ${bg.soLuongToiThieu || '—'}–${bg.soLuongToiDa || '—'} · SL: ${dk.tongSoLuong}`;
+
+            // Giá
+            const priceRows = document.querySelectorAll('.order-price-row span:last-child');
+            if (priceRows[0]) priceRows[0].textContent = `${dk.tongSoLuong} × ${fmtMoney(cd.giaGoc)}`;
+            if (priceRows[1]) priceRows[1].textContent = fmtMoney(cd.phiThamGia);
+            if (priceRows[3]) priceRows[3].textContent = fmtMoney(tt.soTienThanhToan);
+            if (priceRows[4]) priceRows[4].textContent = dk.trangThaiHoanTien ? fmtMoney(tt.soTienThanhToan) : '—';
+
+            // Khách hàng
+            const cusName = document.querySelector('.order-customer-name');
+            if (cusName) cusName.textContent = nd.tenDangNhap || '—';
+            const cusId = document.querySelector('.order-customer-id');
+            if (cusId) cusId.textContent = '#' + (nd.maNguoiDung || '—');
+            const infoItems = document.querySelectorAll('.order-info-item span');
+            if (infoItems[0]) infoItems[0].textContent = nd.email || '—';
+            if (infoItems[1]) infoItems[1].textContent = nd.soDienThoai || '—';
+            if (infoItems[2]) infoItems[2].textContent = tt.diaChiGiaoHang || '—';
+
+            // Link xem hồ sơ
+            const linkCus = document.querySelector('a[href="admin-customer-detail.html"]');
+            if (linkCus && nd.maNguoiDung) linkCus.href = `admin-customer-detail.html?id=${nd.maNguoiDung}`;
+
+            // Trạng thái
+            const statusCls = dk.daHuy ? 'failed' : 'success';
+            const statusTxt = dk.daHuy ? 'Đã hủy' : (dk.trangThaiHoanTien ? 'Đã hoàn tiền' : 'Đang xử lý');
+            const activeTimeline = document.querySelector('.timeline-item.active .timeline-title');
+            if (activeTimeline) activeTimeline.textContent = statusTxt;
+
+            // Nút hủy / hoàn tiền
+            const btnHuy = document.querySelector('.btn-primary-admin[onclick*="cập nhật"]');
+            if (!dk.daHuy) {
+                const huyBtn = document.createElement('button');
+                huyBtn.className = 'btn-secondary-admin';
+                huyBtn.style.cssText = 'color:#f44336;border-color:#f44336;margin-top:8px;';
+                huyBtn.innerHTML = '❌ Hủy đơn hàng';
+                huyBtn.onclick = async () => {
+                    if (!confirm('Hủy đơn hàng này?')) return;
+                    const r = await adminApi.huyDonHang(id);
+                    if (r.success) { showToast('Đã hủy đơn'); location.reload(); }
+                    else showToast(r.message, 'error');
+                };
+                document.querySelector('.form-actions')?.appendChild(huyBtn);
+            } else if (!dk.trangThaiHoanTien) {
+                const hoanBtn = document.createElement('button');
+                hoanBtn.className = 'btn-primary-admin';
+                hoanBtn.style.marginTop = '8px';
+                hoanBtn.innerHTML = '💰 Xác nhận hoàn tiền';
+                hoanBtn.onclick = async () => {
+                    if (!confirm('Xác nhận hoàn tiền?')) return;
+                    const r = await adminApi.xacNhanHoanTien(id);
+                    if (r.success) { showToast('Đã xác nhận hoàn tiền'); location.reload(); }
+                    else showToast(r.message, 'error');
+                };
+                document.querySelector('.form-actions')?.appendChild(hoanBtn);
+            }
+        } catch (e) { console.error(e); }
+
+        // ── Load chi tiết sản phẩm trong đơn ──────────────────
+        try {
+            const res = await adminApi.getChiTietDonHang(id);
+            if (!res.success || !res.data.length) return;
+            const items = res.data;
+            const productMeta2 = document.querySelectorAll('.order-product-meta');
+            if (productMeta2[0]) {
+                productMeta2[0].textContent = items.map(ct =>
+                    `${ct.mauSac?.tenMau || '—'} · ${ct.kichThuoc?.tenSize || '—'} · SL: ${ct.soLuong}`
+                ).join(' | ');
+            }
+        } catch (e) { console.error(e); }
+    });
+    </script>
+
 </body>
 </html>
-

@@ -1615,5 +1615,362 @@
             testGetAllTinhThanh();
         });
     </script>
+
+    <!-- ===== ADMIN API SECTION ===== -->
+    <div class="section" style="border-top: 4px solid #5f0704; margin-top: 40px;">
+        <h2 style="color: #5f0704; font-size: 22px;">🔐 ADMIN API</h2>
+        <p style="background: #fff8e1; padding: 10px; border-radius: 5px; border-left: 4px solid #d4af37;">
+            <strong>Base URL:</strong> <code>/api/admin/</code> — Các API dành riêng cho Admin quản lý hệ thống.
+        </p>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="section">
+        <h2>🅐1. Admin Dashboard & Thống kê</h2>
+        <button onclick="adminGetDashboard()">📊 GET Dashboard</button>
+        <div id="admin-dashboard-result"></div>
+    </div>
+
+    <!-- Admin Chiến dịch -->
+    <div class="section">
+        <h2>🅐2. Admin Quản lý Chiến dịch</h2>
+        <button onclick="adminGetAllChienDich()">📋 GET All Chiến Dịch</button>
+        <button onclick="adminGetChienDichByThoiDiem('Đang diễn ra')">✅ Đang diễn ra</button>
+        <button onclick="adminGetChienDichByThoiDiem('Sắp bắt đầu')">🕐 Sắp bắt đầu</button>
+        <button onclick="adminGetChienDichByThoiDiem('Đã kết thúc')">🏁 Đã kết thúc</button>
+
+        <h4>Chi tiết / Đăng ký của chiến dịch</h4>
+        <div class="form-group">
+            <label>Mã chiến dịch:</label>
+            <input type="text" id="adminCdId" value="CD001">
+        </div>
+        <button onclick="adminGetChienDichById()">🔍 GET Chi Tiết</button>
+        <button onclick="adminGetDangKyChienDich()">👥 GET Đăng Ký</button>
+
+        <h4>Tạo chiến dịch mới</h4>
+        <div class="form-group"><label>Mã CD:</label><input type="text" id="newCdMa" value="CD010"></div>
+        <div class="form-group"><label>Tên CD:</label><input type="text" id="newCdTen" value="Chiến dịch test"></div>
+        <div class="form-group"><label>Mã sản phẩm:</label><input type="text" id="newCdSP" value="SP001"></div>
+        <div class="form-group"><label>Mã nghệ sĩ:</label><input type="text" id="newCdNS" value="NS001"></div>
+        <div class="form-group"><label>Ngưỡng MOQ:</label><input type="number" id="newCdMOQ" value="100"></div>
+        <div class="form-group"><label>Ngưỡng tối đa:</label><input type="number" id="newCdMax" value="1000"></div>
+        <div class="form-group"><label>Phí tham gia:</label><input type="number" id="newCdPhi" value="50000"></div>
+        <div class="form-group"><label>Giá gốc:</label><input type="number" id="newCdGia" value="500000"></div>
+        <button onclick="adminCreateChienDich()">➕ Tạo Chiến Dịch</button>
+
+        <h4>Cập nhật trạng thái</h4>
+        <div class="form-group"><label>Mã CD:</label><input type="text" id="patchCdId" value="CD001"></div>
+        <div class="form-group">
+            <label>Thời điểm:</label>
+            <select id="patchCdThoiDiem">
+                <option value="Sắp bắt đầu">Sắp bắt đầu</option>
+                <option value="Đang diễn ra">Đang diễn ra</option>
+                <option value="Đã kết thúc">Đã kết thúc</option>
+            </select>
+        </div>
+        <button onclick="adminUpdateTrangThaiCD()">✏️ Cập nhật trạng thái</button>
+
+        <div id="admin-chiendich-result"></div>
+    </div>
+
+    <!-- Admin Khách hàng -->
+    <div class="section">
+        <h2>🅐3. Admin Quản lý Khách hàng</h2>
+        <button onclick="adminGetAllKhachHang()">👥 GET All Người Dùng</button>
+        <button onclick="adminGetKhachHangByVaiTro('Khách hàng')">👤 Khách hàng</button>
+        <button onclick="adminGetKhachHangByVaiTro('Admin')">🔑 Admin</button>
+
+        <h4>Chi tiết & Lịch sử</h4>
+        <div class="form-group"><label>Mã người dùng:</label><input type="text" id="adminKhId" value="ND002"></div>
+        <button onclick="adminGetKhachHangById()">🔍 GET Chi Tiết</button>
+        <button onclick="adminGetLichSuDangKy()">📜 Lịch Sử Đăng Ký</button>
+        <button onclick="adminToggleTrangThai()">🔒 Khóa / Mở Khóa</button>
+
+        <div id="admin-khachhang-result"></div>
+    </div>
+
+    <!-- Admin Đơn hàng -->
+    <div class="section">
+        <h2>🅐4. Admin Quản lý Đơn hàng</h2>
+        <button onclick="adminGetAllDonHang()">📋 GET All Đơn Hàng</button>
+
+        <h4>Tìm theo ID / Chiến dịch / Khách hàng</h4>
+        <div class="form-group"><label>Mã đơn hàng:</label><input type="number" id="adminDhId" value="1"></div>
+        <button onclick="adminGetDonHangById()">🔍 GET Chi Tiết</button>
+        <button onclick="adminGetChiTietDonHang()">📦 GET Phiếu Chi Tiết</button>
+        <button onclick="adminHuyDonHang()">❌ Hủy Đơn</button>
+        <button onclick="adminHoanTien()">💰 Xác Nhận Hoàn Tiền</button>
+
+        <div class="form-group"><label>Mã chiến dịch:</label><input type="text" id="adminDhCd" value="CD001"></div>
+        <button onclick="adminGetDonHangByChienDich()">📋 Đơn theo Chiến Dịch</button>
+        <button onclick="adminThongKeDonHang()">📊 Thống Kê Đơn</button>
+
+        <div class="form-group"><label>Mã khách hàng:</label><input type="text" id="adminDhKh" value="ND002"></div>
+        <button onclick="adminGetDonHangByKhachHang()">📋 Đơn theo Khách Hàng</button>
+
+        <div id="admin-donhang-result"></div>
+    </div>
+
+    <!-- Admin Nghệ sĩ -->
+    <div class="section">
+        <h2>🅐5. Admin Nghệ sĩ Collab</h2>
+        <button onclick="adminGetAllNgheSi()">🎤 GET All Nghệ Sĩ</button>
+
+        <h4>Chi tiết</h4>
+        <div class="form-group"><label>Mã nghệ sĩ:</label><input type="text" id="adminNsId" value="NS001"></div>
+        <button onclick="adminGetNgheSiById()">🔍 GET Chi Tiết</button>
+
+        <h4>Thêm nghệ sĩ mới</h4>
+        <div class="form-group"><label>Mã NS:</label><input type="text" id="newNsMa" value="NS010"></div>
+        <div class="form-group"><label>Tên NS:</label><input type="text" id="newNsTen" value="Nghệ sĩ Test"></div>
+        <div class="form-group"><label>Nghề nghiệp:</label><input type="text" id="newNsNghe" value="Ca sĩ"></div>
+        <div class="form-group"><label>Link MXH:</label><input type="text" id="newNsLink" value="https://instagram.com/test"></div>
+        <div class="form-group"><label>Mô tả:</label><input type="text" id="newNsMoTa" value="Nghệ sĩ test"></div>
+        <button onclick="adminCreateNgheSi()">➕ Thêm Nghệ Sĩ</button>
+
+        <h4>Cập nhật / Xóa</h4>
+        <div class="form-group"><label>Mã NS cần sửa/xóa:</label><input type="text" id="editNsId" value="NS010"></div>
+        <div class="form-group"><label>Tên mới:</label><input type="text" id="editNsTen" value="Nghệ sĩ Updated"></div>
+        <button onclick="adminUpdateNgheSi()">✏️ Cập Nhật</button>
+        <button onclick="adminDeleteNgheSi()">🗑️ Xóa</button>
+
+        <div id="admin-nghesi-result"></div>
+    </div>
+
+    <!-- Admin Sản phẩm -->
+    <div class="section">
+        <h2>🅐6. Admin Quản lý Sản phẩm</h2>
+        <button onclick="adminGetAllSanPham()">📦 GET All Sản Phẩm</button>
+
+        <div class="form-group"><label>Mã sản phẩm:</label><input type="text" id="adminSpId" value="SP001"></div>
+        <button onclick="adminGetSanPhamById()">🔍 GET Chi Tiết</button>
+
+        <div class="form-group"><label>Mã danh mục:</label><input type="text" id="adminSpDm" value="DM001"></div>
+        <button onclick="adminGetSanPhamByDanhMuc()">📂 Lọc theo Danh Mục</button>
+
+        <div id="admin-sanpham-result"></div>
+    </div>
+
+    <script>
+        const ADMIN_API = 'http://localhost:8080/api/admin';
+
+        function showResult(divId, data) {
+            const div = document.getElementById(divId);
+            if (data.success) {
+                const count = data.total !== undefined ? ` (${data.total} records)` : '';
+                div.innerHTML = `<div class="success">✓ Thành công${count}</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } else {
+                div.innerHTML = `<div class="error">✗ ${data.message || JSON.stringify(data)}</div>`;
+            }
+        }
+
+        async function adminFetch(url, options = {}) {
+            const res = await fetch(url, options);
+            return res.json();
+        }
+
+        // ===== DASHBOARD =====
+        async function adminGetDashboard() {
+            const data = await adminFetch(`${ADMIN_API}/dashboard`);
+            showResult('admin-dashboard-result', data);
+        }
+
+        // ===== CHIẾN DỊCH =====
+        async function adminGetAllChienDich() {
+            const data = await adminFetch(`${ADMIN_API}/chiendich`);
+            showResult('admin-chiendich-result', data);
+        }
+
+        async function adminGetChienDichByThoiDiem(thoiDiem) {
+            const data = await adminFetch(`${ADMIN_API}/chiendich/thoiDiem/${encodeURIComponent(thoiDiem)}`);
+            showResult('admin-chiendich-result', data);
+        }
+
+        async function adminGetChienDichById() {
+            const id = document.getElementById('adminCdId').value;
+            const data = await adminFetch(`${ADMIN_API}/chiendich/${id}`);
+            showResult('admin-chiendich-result', data);
+        }
+
+        async function adminGetDangKyChienDich() {
+            const id = document.getElementById('adminCdId').value;
+            const data = await adminFetch(`${ADMIN_API}/chiendich/${id}/dangky`);
+            showResult('admin-chiendich-result', data);
+        }
+
+        async function adminCreateChienDich() {
+            const body = {
+                maChienDich: document.getElementById('newCdMa').value,
+                tenChienDich: document.getElementById('newCdTen').value,
+                maSanPham: document.getElementById('newCdSP').value,
+                maNgheSi: document.getElementById('newCdNS').value,
+                thoiDiem: 'Sắp bắt đầu',
+                nguongMOQ: parseInt(document.getElementById('newCdMOQ').value),
+                nguongToiDa: parseInt(document.getElementById('newCdMax').value),
+                nguoiThamGia: 0,
+                phiThamGia: parseFloat(document.getElementById('newCdPhi').value),
+                giaGoc: parseFloat(document.getElementById('newCdGia').value),
+                ngayBatDau: new Date().toISOString(),
+                ngayKetThuc: new Date(Date.now() + 30 * 24 * 3600000).toISOString()
+            };
+            const data = await adminFetch(`${ADMIN_API}/chiendich`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            showResult('admin-chiendich-result', data);
+        }
+
+        async function adminUpdateTrangThaiCD() {
+            const id = document.getElementById('patchCdId').value;
+            const thoiDiem = document.getElementById('patchCdThoiDiem').value;
+            const data = await adminFetch(
+                `${ADMIN_API}/chiendich/${id}/trangthai?thoiDiem=${encodeURIComponent(thoiDiem)}`,
+                { method: 'PATCH' }
+            );
+            showResult('admin-chiendich-result', data);
+        }
+
+        // ===== KHÁCH HÀNG =====
+        async function adminGetAllKhachHang() {
+            const data = await adminFetch(`${ADMIN_API}/khachhang`);
+            showResult('admin-khachhang-result', data);
+        }
+
+        async function adminGetKhachHangByVaiTro(vaiTro) {
+            const data = await adminFetch(`${ADMIN_API}/khachhang/vaitro/${encodeURIComponent(vaiTro)}`);
+            showResult('admin-khachhang-result', data);
+        }
+
+        async function adminGetKhachHangById() {
+            const id = document.getElementById('adminKhId').value;
+            const data = await adminFetch(`${ADMIN_API}/khachhang/${id}`);
+            showResult('admin-khachhang-result', data);
+        }
+
+        async function adminGetLichSuDangKy() {
+            const id = document.getElementById('adminKhId').value;
+            const data = await adminFetch(`${ADMIN_API}/khachhang/${id}/lichsu`);
+            showResult('admin-khachhang-result', data);
+        }
+
+        async function adminToggleTrangThai() {
+            const id = document.getElementById('adminKhId').value;
+            const data = await adminFetch(`${ADMIN_API}/khachhang/${id}/toggle`, { method: 'PATCH' });
+            showResult('admin-khachhang-result', data);
+        }
+
+        // ===== ĐƠN HÀNG =====
+        async function adminGetAllDonHang() {
+            const data = await adminFetch(`${ADMIN_API}/donhang`);
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminGetDonHangById() {
+            const id = document.getElementById('adminDhId').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/${id}`);
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminGetChiTietDonHang() {
+            const id = document.getElementById('adminDhId').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/${id}/chitiet`);
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminHuyDonHang() {
+            const id = document.getElementById('adminDhId').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/${id}/huy`, { method: 'PATCH' });
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminHoanTien() {
+            const id = document.getElementById('adminDhId').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/${id}/hoantien`, { method: 'PATCH' });
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminGetDonHangByChienDich() {
+            const id = document.getElementById('adminDhCd').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/chiendich/${id}`);
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminThongKeDonHang() {
+            const id = document.getElementById('adminDhCd').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/chiendich/${id}/thongke`);
+            showResult('admin-donhang-result', data);
+        }
+
+        async function adminGetDonHangByKhachHang() {
+            const id = document.getElementById('adminDhKh').value;
+            const data = await adminFetch(`${ADMIN_API}/donhang/khachhang/${id}`);
+            showResult('admin-donhang-result', data);
+        }
+
+        // ===== NGHỆ SĨ =====
+        async function adminGetAllNgheSi() {
+            const data = await adminFetch(`${ADMIN_API}/nghesi`);
+            showResult('admin-nghesi-result', data);
+        }
+
+        async function adminGetNgheSiById() {
+            const id = document.getElementById('adminNsId').value;
+            const data = await adminFetch(`${ADMIN_API}/nghesi/${id}`);
+            showResult('admin-nghesi-result', data);
+        }
+
+        async function adminCreateNgheSi() {
+            const body = {
+                maNgheSi: document.getElementById('newNsMa').value,
+                tenNgheSi: document.getElementById('newNsTen').value,
+                ngheNghiep: document.getElementById('newNsNghe').value,
+                linkMXH: document.getElementById('newNsLink').value,
+                moTa: document.getElementById('newNsMoTa').value
+            };
+            const data = await adminFetch(`${ADMIN_API}/nghesi`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            showResult('admin-nghesi-result', data);
+        }
+
+        async function adminUpdateNgheSi() {
+            const id = document.getElementById('editNsId').value;
+            const body = { tenNgheSi: document.getElementById('editNsTen').value };
+            const data = await adminFetch(`${ADMIN_API}/nghesi/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            showResult('admin-nghesi-result', data);
+        }
+
+        async function adminDeleteNgheSi() {
+            const id = document.getElementById('editNsId').value;
+            if (!confirm(`Xóa nghệ sĩ ${id}?`)) return;
+            const data = await adminFetch(`${ADMIN_API}/nghesi/${id}`, { method: 'DELETE' });
+            showResult('admin-nghesi-result', data);
+        }
+
+        // ===== SẢN PHẨM =====
+        async function adminGetAllSanPham() {
+            const data = await adminFetch(`${ADMIN_API}/sanpham`);
+            showResult('admin-sanpham-result', data);
+        }
+
+        async function adminGetSanPhamById() {
+            const id = document.getElementById('adminSpId').value;
+            const data = await adminFetch(`${ADMIN_API}/sanpham/${id}`);
+            showResult('admin-sanpham-result', data);
+        }
+
+        async function adminGetSanPhamByDanhMuc() {
+            const id = document.getElementById('adminSpDm').value;
+            const data = await adminFetch(`${ADMIN_API}/sanpham/danhmuc/${id}`);
+            showResult('admin-sanpham-result', data);
+        }
+    </script>
 </body>
 </html>

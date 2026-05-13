@@ -10,9 +10,16 @@ public class CorsConfig implements WebMvcConfigurer {
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // API endpoints
         registry.addMapping("/api/**")
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*");
+
+        // Static images — cho phép FE (Live Server) load ảnh từ BE
+        registry.addMapping("/images/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "OPTIONS")
                 .allowedHeaders("*");
     }
     

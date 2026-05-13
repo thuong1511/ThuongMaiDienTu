@@ -143,77 +143,132 @@
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#CUS001</td>
-                            <td>
-                                <div class="campaign-cell">
-                                    <img src="../images/rose.jpg" alt="User">
-                                    <span>Nguyễn Văn A</span>
-                                </div>
-                            </td>
-                            <td>customer@example.com</td>
-                            <td>0901234567</td>
-                            <td>5</td>
-                            <td>125.000.000 đ</td>
-                            <td><span class="status-badge success">Hoạt động</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-customer-detail.html'">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                    <button class="btn-icon delete" title="Khóa tài khoản" onclick="if(confirm('Khóa tài khoản này?')) alert('Đã khóa!')">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#CUS002</td>
-                            <td>
-                                <div class="campaign-cell">
-                                    <img src="../images/lisa.jpg" alt="User">
-                                    <span>Trần Thị B</span>
-                                </div>
-                            </td>
-                            <td>tran.b@example.com</td>
-                            <td>0912345678</td>
-                            <td>3</td>
-                            <td>68.500.000 đ</td>
-                            <td><span class="status-badge success">Hoạt động</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view" title="Xem chi tiết">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                    <button class="btn-icon delete" title="Khóa tài khoản">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="customers-tbody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;">Đang tải...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>auth.requireAdmin();</script>
+    <script src="../js/admin-api.js"></script>
+    <script>
+    let allKhachHang = [];
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        const adminProfile = document.querySelector('.admin-profile');
+        if (adminProfile) {
+            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
+            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+        }
+        await loadKhachHang();
+        setupFilters();
+    });
+
+    async function loadKhachHang() {
+        const tbody = document.getElementById('customers-tbody');
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">Đang tải...</td></tr>';
+        try {
+            const res = await adminApi.getAllKhachHang();
+            if (!res.success) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:red;">${res.message}</td></tr>`;
+                return;
+            }
+            allKhachHang = res.data.filter(nd => nd.vaiTro === 'Khách hàng');
+            renderTable(allKhachHang);
+        } catch (e) {
+            document.getElementById('customers-tbody').innerHTML =
+                `<tr><td colspan="8" style="text-align:center;color:red;">Lỗi kết nối BE: ${e.message}</td></tr>`;
+        }
+    }
+
+    function renderTable(list) {
+        const tbody = document.getElementById('customers-tbody');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">Không có dữ liệu</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(nd => `
+            <tr>
+                <td>#${nd.maNguoiDung}</td>
+                <td>
+                    <div class="campaign-cell">
+                        <img src="../images/avt_rose.jpg" alt="${nd.tenDangNhap}" onerror="this.src='../images/avt_rose.jpg'">
+                        <span>${nd.tenDangNhap}</span>
+                    </div>
+                </td>
+                <td>${nd.email}</td>
+                <td>${nd.soDienThoai || '—'}</td>
+                <td>—</td>
+                <td>—</td>
+                <td>${trangThaiBadge(nd.trangThai)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon view" title="Xem chi tiết"
+                            onclick="window.location.href='admin-customer-detail.html?id=${nd.maNguoiDung}'">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        <button class="btn-icon delete"
+                            title="${nd.trangThai === 'Hoạt động' ? 'Khóa' : 'Mở khóa'} tài khoản"
+                            onclick="toggleKhachHang('${nd.maNguoiDung}', '${nd.trangThai}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function applyFiltersKH() {
+        const trangThai = document.getElementById('sel-trangthai')?.value || '';
+        const q = document.getElementById('inp-search-kh')?.value.toLowerCase() || '';
+        const filtered = allKhachHang.filter(nd => {
+            if (trangThai && nd.trangThai !== trangThai) return false;
+            if (q && !nd.tenDangNhap?.toLowerCase().includes(q) &&
+                     !nd.email?.toLowerCase().includes(q) &&
+                     !nd.soDienThoai?.includes(q)) return false;
+            return true;
+        });
+        renderTable(filtered);
+    }
+
+    function setupFilters() {
+        const selects = document.querySelectorAll('.filter-select-admin');
+        if (selects[0]) selects[0].id = 'sel-trangthai';
+        const input = document.querySelector('.filter-input-admin');
+        if (input) input.id = 'inp-search-kh';
+        const btn = document.querySelector('.btn-secondary-admin');
+        if (btn) btn.id = 'btn-search-kh';
+
+        const selTrangThai = document.getElementById('sel-trangthai');
+        if (selTrangThai) {
+            selTrangThai.innerHTML = `
+                <option value="">Tất cả</option>
+                <option value="Hoạt động">Hoạt động</option>
+                <option value="Bị khóa">Bị khóa</option>
+            `;
+            selTrangThai.addEventListener('change', applyFiltersKH);
+        }
+        document.getElementById('btn-search-kh')?.addEventListener('click', applyFiltersKH);
+        document.getElementById('inp-search-kh')?.addEventListener('keydown', e => {
+            if (e.key === 'Enter') applyFiltersKH();
+        });
+    }
+
+    async function toggleKhachHang(id, trangThai) {
+        const action = trangThai === 'Hoạt động' ? 'khóa' : 'mở khóa';
+        if (!confirm(`Bạn có chắc muốn ${action} tài khoản này?`)) return;
+        try {
+            const res = await adminApi.toggleTrangThaiKhachHang(id);
+            if (res.success) { showToast(`Đã ${action} tài khoản`); await loadKhachHang(); }
+            else showToast(res.message, 'error');
+        } catch (e) { showToast('Lỗi kết nối', 'error'); }
+    }
+    </script>
 </body>
 </html>
-

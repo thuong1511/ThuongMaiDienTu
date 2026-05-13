@@ -103,7 +103,7 @@
             <!-- Profile panel ngang -->
             <div class="content-section cus-profile-card">
                 <div class="cus-avatar-wrap">
-                    <img src="../images/rose.jpg" alt="Avatar" class="cus-avatar">
+                    <img src="../images/avt_rose.jpg" alt="Avatar" class="cus-avatar" id="cus-avatar-img">
                     <span class="status-badge success">Hoạt động</span>
                 </div>
                 <div class="cus-profile-info">
@@ -281,10 +281,91 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>auth.requireAdmin();</script>
+    <script src="../js/admin-api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const adminProfile = document.querySelector('.admin-profile');
+        if (adminProfile) {
+            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
+            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (!id) return;
+
+        // ── Load thông tin khách hàng ──────────────────────────
+        try {
+            const res = await adminApi.getKhachHangById(id);
+            if (!res.success) { showToast(res.message, 'error'); return; }
+            const nd = res.data;
+
+            document.querySelector('.cus-name').textContent = nd.tenDangNhap;
+            document.querySelector('.cus-id').textContent = '#' + nd.maNguoiDung;
+            document.querySelector('.cus-info-item:nth-child(1) span').textContent = nd.email;
+            document.querySelector('.cus-info-item:nth-child(2) span').textContent = nd.soDienThoai || '—';
+            document.querySelector('.cus-info-item:nth-child(3) span').textContent =
+                'Tham gia: ' + fmtDate(nd.ngayTao);
+            document.querySelector('.status-badge').outerHTML = trangThaiBadge(nd.trangThai);
+
+            // Nút khóa/mở khóa
+            const btnToggle = document.querySelector('.btn-secondary-admin[onclick*="Khóa"]');
+            if (btnToggle) {
+                const action = nd.trangThai === 'Hoạt động' ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+                btnToggle.querySelector('span') && (btnToggle.querySelector('span').textContent = action);
+                btnToggle.onclick = async () => {
+                    if (!confirm(`${action}?`)) return;
+                    const r = await adminApi.toggleTrangThaiKhachHang(id);
+                    if (r.success) { showToast('Đã cập nhật'); location.reload(); }
+                    else showToast(r.message, 'error');
+                };
+            }
+        } catch (e) { console.error(e); }
+
+        // ── Load lịch sử đăng ký ──────────────────────────────
+        try {
+            const res = await adminApi.getLichSuDangKy(id);
+            if (!res.success) return;
+            const list = res.data;
+
+            // Cập nhật stats
+            const active = list.filter(dk => !dk.daHuy);
+            const tongTien = active.reduce((s, dk) => s + (dk.thanhToan?.soTienThanhToan || 0), 0);
+            const tongHoan = list.filter(dk => dk.trangThaiHoanTien)
+                .reduce((s, dk) => s + (dk.thanhToan?.soTienThanhToan || 0), 0);
+
+            const statVals = document.querySelectorAll('.stat-value');
+            if (statVals[0]) statVals[0].textContent = list.length;
+            if (statVals[1]) statVals[1].textContent = fmtMoney(tongTien);
+            if (statVals[2]) statVals[2].textContent = list.length > 0
+                ? Math.round(active.length / list.length * 100) + '%' : '0%';
+            if (statVals[3]) statVals[3].textContent = fmtMoney(tongHoan);
+
+            // Bảng lịch sử
+            const tbody = document.querySelector('.admin-table tbody');
+            if (!tbody) return;
+            if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;">Chưa có đơn hàng</td></tr>'; return; }
+            tbody.innerHTML = list.map(dk => {
+                const tt = dk.thanhToan || {};
+                const cd = dk.chienDich || {};
+                const bg = dk.bangGiaBacThang || {};
+                const statusCls = dk.daHuy ? 'failed' : 'success';
+                const statusTxt = dk.daHuy ? 'Đã hủy' : 'Đang xử lý';
+                return `
+                <tr>
+                    <td><strong>#DK${dk.maDangKy}</strong></td>
+                    <td>${cd.tenChienDich || cd.maChienDich || '—'}</td>
+                    <td>${bg.soLuongToiThieu || '—'}–${bg.soLuongToiDa || '—'}</td>
+                    <td>${dk.tongSoLuong}</td>
+                    <td>${fmtMoney(tt.soTienThanhToan)}</td>
+                    <td>${dk.trangThaiHoanTien ? fmtMoney(tt.soTienThanhToan) : '—'}</td>
+                    <td>${fmtDate(dk.ngayDangKy)}</td>
+                    <td><span class="status-badge ${statusCls}">${statusTxt}</span></td>
+                </tr>`;
+            }).join('');
+        } catch (e) { console.error(e); }
+    });
+    </script>
+
 </body>
 </html>
-

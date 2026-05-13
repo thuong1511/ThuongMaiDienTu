@@ -76,6 +76,26 @@ const api = {
   // Sản phẩm APIs
   async getSanPhamById(id) {
     return this.fetchData(`/sanpham/${id}`);
+  },
+
+  // ── Admin APIs ──────────────────────────────────────────────
+  async adminGetDashboard() {
+    return this.fetchData('/admin/dashboard');
+  },
+  async adminGetAllChienDich() {
+    return this.fetchData('/admin/chiendich');
+  },
+  async adminGetAllKhachHang() {
+    return this.fetchData('/admin/khachhang');
+  },
+  async adminGetAllDonHang() {
+    return this.fetchData('/admin/donhang');
+  },
+  async adminGetAllNgheSi() {
+    return this.fetchData('/admin/nghesi');
+  },
+  async adminGetAllSanPham() {
+    return this.fetchData('/admin/sanpham');
   }
 };
 

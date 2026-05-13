@@ -155,60 +155,147 @@
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>#ORD-001</strong></td>
-                            <td>Nguyễn Văn A</td>
-                            <td>ROSÉ X EXED</td>
-                            <td>2</td>
-                            <td>43.100.000 đ</td>
-                            <td><span class="status-badge ongoing">Đang vận chuyển</span></td>
-                            <td>25/03/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-order-detail.html'">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                    <button class="btn-icon edit" title="Cập nhật trạng thái">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>#ORD-002</strong></td>
-                            <td>Trần Thị B</td>
-                            <td>PARK BO GUM X EXED</td>
-                            <td>1</td>
-                            <td>18.790.000 đ</td>
-                            <td><span class="status-badge success">Đã giao</span></td>
-                            <td>20/03/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view" title="Xem chi tiết">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="orders-tbody">
+                        <tr><td colspan="8" style="text-align:center;padding:30px;">Đang tải...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>auth.requireAdmin();</script>
+    <script src="../js/admin-api.js"></script>
+    <script>
+    let allDonHang = [];
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        const adminProfile = document.querySelector('.admin-profile');
+        if (adminProfile) {
+            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
+            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+        }
+        await loadDonHang();
+        setupFilters();
+    });
+
+    async function loadDonHang() {
+        const tbody = document.getElementById('orders-tbody');
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">Đang tải...</td></tr>';
+        try {
+            const res = await adminApi.getAllDonHang();
+            if (!res.success) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:red;">${res.message}</td></tr>`;
+                return;
+            }
+            allDonHang = res.data;
+            renderTable(allDonHang);
+        } catch (e) {
+            document.getElementById('orders-tbody').innerHTML =
+                `<tr><td colspan="8" style="text-align:center;color:red;">Lỗi kết nối BE: ${e.message}</td></tr>`;
+        }
+    }
+
+    function renderTable(list) {
+        const tbody = document.getElementById('orders-tbody');
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">Không có dữ liệu</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(dk => {
+            const tt = dk.thanhToan || {};
+            const cd = dk.chienDich || {};
+            const nd = dk.nguoiDung || {};
+            const statusCls = dk.daHuy ? 'failed' : 'success';
+            const statusTxt = dk.daHuy ? 'Đã hủy' : (dk.trangThaiHoanTien ? 'Đã hoàn tiền' : 'Đang xử lý');
+            return `
+            <tr>
+                <td><strong>#DK${dk.maDangKy}</strong></td>
+                <td>${nd.tenDangNhap || '—'}</td>
+                <td>${cd.tenChienDich || cd.maChienDich || '—'}</td>
+                <td>${dk.tongSoLuong}</td>
+                <td>${fmtMoney(tt.soTienThanhToan)}</td>
+                <td><span class="status-badge ${statusCls}">${statusTxt}</span></td>
+                <td>${fmtDate(dk.ngayDangKy)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-order-detail.html?id=${dk.maDangKy}'">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        ${!dk.daHuy ? `
+                        <button class="btn-icon delete" title="Hủy đơn" onclick="huyDon(${dk.maDangKy})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>` : ''}
+                        ${dk.daHuy && !dk.trangThaiHoanTien ? `
+                        <button class="btn-icon edit" title="Xác nhận hoàn tiền" onclick="hoanTien(${dk.maDangKy})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                            </svg>
+                        </button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function setupFilters() {
+        const selTrangThai = document.querySelector('.filter-select-admin');
+        const inputSearch = document.querySelector('.filter-input-admin');
+        const btnSearch = document.querySelectorAll('.btn-secondary-admin')[0];
+
+        if (selTrangThai) {
+            selTrangThai.innerHTML = `
+                <option value="">Tất cả</option>
+                <option value="active">Đang xử lý</option>
+                <option value="huy">Đã hủy</option>
+                <option value="hoantien">Đã hoàn tiền</option>
+            `;
+            selTrangThai.addEventListener('change', () => {
+                const val = selTrangThai.value;
+                let filtered = allDonHang;
+                if (val === 'active') filtered = allDonHang.filter(dk => !dk.daHuy);
+                else if (val === 'huy') filtered = allDonHang.filter(dk => dk.daHuy);
+                else if (val === 'hoantien') filtered = allDonHang.filter(dk => dk.trangThaiHoanTien);
+                renderTable(filtered);
+            });
+        }
+
+        if (btnSearch && inputSearch) {
+            btnSearch.addEventListener('click', () => {
+                const q = inputSearch.value.toLowerCase();
+                const filtered = allDonHang.filter(dk =>
+                    String(dk.maDangKy).includes(q) ||
+                    dk.nguoiDung?.tenDangNhap?.toLowerCase().includes(q) ||
+                    dk.chienDich?.tenChienDich?.toLowerCase().includes(q)
+                );
+                renderTable(filtered);
+            });
+        }
+    }
+
+    async function huyDon(id) {
+        if (!confirm(`Hủy đơn hàng #DK${id}?`)) return;
+        try {
+            const res = await adminApi.huyDonHang(id);
+            if (res.success) { showToast('Đã hủy đơn hàng'); await loadDonHang(); }
+            else showToast(res.message, 'error');
+        } catch (e) { showToast('Lỗi kết nối', 'error'); }
+    }
+
+    async function hoanTien(id) {
+        if (!confirm(`Xác nhận hoàn tiền cho đơn #DK${id}?`)) return;
+        try {
+            const res = await adminApi.xacNhanHoanTien(id);
+            if (res.success) { showToast('Đã xác nhận hoàn tiền'); await loadDonHang(); }
+            else showToast(res.message, 'error');
+        } catch (e) { showToast('Lỗi kết nối', 'error'); }
+    }
+    </script>
+
 </body>
 </html>
-

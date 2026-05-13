@@ -306,32 +306,109 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
+    <script src="../js/admin-api.js"></script>
     <script>
-        // Require admin access
-        auth.requireAdmin();
-        
-        // Update admin profile info
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = auth.getCurrentUser();
-            if (user) {
-                document.querySelector('.admin-profile span').textContent = user.fullname;
-                document.querySelector('.admin-profile img').src = user.avatar;
-            }
-            
-            // Toggle dropdown
-            const adminProfile = document.querySelector('.admin-profile');
-            adminProfile.addEventListener('click', function(e) {
-                e.stopPropagation();
-                this.classList.toggle('active');
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function() {
-                adminProfile.classList.remove('active');
-            });
-        });
+    document.addEventListener('DOMContentLoaded', async function () {
+
+        // ── Cập nhật tên admin ──────────────────────────────────
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        const profileSpan = document.querySelector('.admin-profile span');
+        if (profileSpan && user.tenDangNhap) profileSpan.textContent = user.tenDangNhap;
+
+        // Toggle dropdown
+        const adminProfile = document.querySelector('.admin-profile');
+        if (adminProfile) {
+            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
+            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+        }
+
+        // ── Load Dashboard từ API ───────────────────────────────
+        try {
+            const res = await adminApi.getDashboard();
+            if (!res.success) return;
+            const d = res.data;
+
+            // Doanh thu
+            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = fmtMoney(d.doanhThuThangNay);
+            const pct = d.phanTramDoanhThu;
+            const pctEl = document.querySelector('.stat-card:nth-child(1) .stat-change');
+            pctEl.textContent = (pct >= 0 ? '+' : '') + pct + '% so với tháng trước';
+            pctEl.className = 'stat-change ' + (pct >= 0 ? 'positive' : 'negative');
+
+            // Chiến dịch
+            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent =
+                `${d.chienDichThanhCong}/${d.tongChienDich}`;
+            document.querySelector('.stat-card:nth-child(2) .stat-change').textContent =
+                `Tỷ lệ: ${d.tyLeChienDich}%`;
+
+            // Khách hàng
+            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent =
+                `${Number(d.khachHangCuocDung).toLocaleString('vi-VN')}/${Number(d.tongKhachHang).toLocaleString('vi-VN')}`;
+            document.querySelector('.stat-card:nth-child(3) .stat-change').textContent =
+                `Tỷ lệ: ${d.tyLeKhachHang}%`;
+
+            // Hoàn tiền
+            document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = fmtMoney(d.tongHoanTien);
+        } catch (e) {
+            console.error('Dashboard API error:', e);
+        }
+
+        // ── Load đơn hàng gần đây ──────────────────────────────
+        try {
+            const res = await adminApi.getAllDonHang();
+            if (!res.success || !res.data.length) return;
+            const recent = res.data.slice(0, 3);
+            const grid = document.querySelector('.orders-grid');
+            if (!grid) return;
+            grid.innerHTML = recent.map(dk => {
+                const tt = dk.thanhToan || {};
+                const cd = dk.chienDich || {};
+                const nd = dk.nguoiDung || {};
+                const statusCls = dk.daHuy ? 'failed' : 'success';
+                const statusTxt = dk.daHuy ? 'Đã hủy' : 'Đang xử lý';
+                return `
+                <div class="order-card-mini">
+                    <div class="order-header-mini">
+                        <span class="order-id-mini">#DK${dk.maDangKy}</span>
+                        <span class="order-status-mini ${statusCls}">${statusTxt}</span>
+                    </div>
+                    <div class="order-info-mini">
+                        <p><strong>Khách hàng:</strong> ${nd.tenDangNhap || '—'}</p>
+                        <p><strong>Chiến dịch:</strong> ${cd.tenChienDich || '—'}</p>
+                        <p><strong>Số tiền:</strong> ${fmtMoney(tt.soTienThanhToan)}</p>
+                    </div>
+                    <div class="order-footer-mini">
+                        <span>${fmtDate(dk.ngayDangKy)}</span>
+                        <button class="btn-link" onclick="window.location.href='admin-order-detail.html?id=${dk.maDangKy}'">Chi tiết →</button>
+                    </div>
+                </div>`;
+            }).join('');
+        } catch (e) {
+            console.error('Orders API error:', e);
+        }
+
+        // ── Load top chiến dịch ────────────────────────────────
+        try {
+            const res = await adminApi.getAllChienDich();
+            if (!res.success || !res.data.length) return;
+            const sorted = res.data
+                .filter(cd => cd.tongSoLuongHienTai > 0)
+                .sort((a, b) => (b.tongSoLuongHienTai || 0) - (a.tongSoLuongHienTai || 0))
+                .slice(0, 5);
+            const tbody = document.querySelector('.admin-table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = sorted.map((cd, i) => `
+                <tr>
+                    <td><strong>${i + 1}</strong></td>
+                    <td>${cd.tenChienDich}</td>
+                    <td>${cd.ngheSi?.tenNgheSi || cd.maNgheSi}</td>
+                    <td>${Number(cd.tongSoLuongHienTai).toLocaleString('vi-VN')}</td>
+                    <td>${fmtMoney((cd.tongSoLuongHienTai || 0) * (cd.giaGoc || 0))}</td>
+                </tr>`).join('');
+        } catch (e) {
+            console.error('Campaigns API error:', e);
+        }
+    });
     </script>
 </body>
 </html>
