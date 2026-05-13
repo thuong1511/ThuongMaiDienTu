@@ -213,7 +213,7 @@ CREATE TABLE DangKyChienDich (
     maNguoiDung       CHAR(5) NOT NULL,
     maChienDich       CHAR(5) NOT NULL,
     daHuy             BIT NOT NULL DEFAULT 0,
-    tongSoLuong       INT NOT NULL CHECK (tongSoLuong >= 1 AND tongSoLuong <= 2),
+    tongSoLuong       INT NOT NULL CHECK (tongSoLuong >= 1),
     trangThaiHoanTien BIT NOT NULL DEFAULT 0,
     ngayDangKy        DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (maThanhToan)  REFERENCES ThanhToan(maThanhToan),
@@ -855,10 +855,10 @@ GO
 INSERT INTO SoDiaChi (maSo, maNguoiDung, maPhuongXa, hoTen, soDienThoai, diaChiChiTiet, macDinh)
 VALUES ('SO001', 'ND002', 'PX005', N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi', 1);
 select * from ThanhToan
+select * from DangKyChienDich
+select * from PhieuChiTietDangKy
 select * from HinhAnhChienDich
 select * from HinhAnhSanPham
 select * from ChienDich
 select * from SoDiaChi
 select * from ThanhToan
-select * from DangKyChienDich
-select * from PhieuChiTietDangKy

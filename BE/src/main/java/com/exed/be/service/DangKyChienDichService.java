@@ -69,8 +69,8 @@ public class DangKyChienDichService {
         }
         
         // Validate số lượng (1-2)
-        if (request.getTongSoLuong() < 1 || request.getTongSoLuong() > 2) {
-            throw new RuntimeException("Số lượng phải từ 1 đến 2");
+        if (request.getTongSoLuong() < 1 ) {
+            throw new RuntimeException("Số lượng phải từ 1 sản phẩm trở lên");
         }
         
         DangKyChienDich dangKy = new DangKyChienDich();
