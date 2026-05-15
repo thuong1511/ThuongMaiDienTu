@@ -20,6 +20,8 @@ import java.util.Optional;
  * GET    /api/admin/khachhang/vaitro/{v}   - Lọc theo vai trò
  * GET    /api/admin/khachhang/{id}         - Chi tiết khách hàng
  * GET    /api/admin/khachhang/{id}/lichsu  - Lịch sử đăng ký chiến dịch
+ * GET    /api/admin/khachhang/{id}/thongke - Thống kê: tổng đơn, chi tiêu, hoàn tiền, cược đúng
+ * GET    /api/admin/khachhang/{id}/diachi  - Danh sách địa chỉ giao hàng
  * PUT    /api/admin/khachhang/{id}         - Cập nhật thông tin
  * PATCH  /api/admin/khachhang/{id}/toggle  - Khóa / mở khóa tài khoản
  */
@@ -92,6 +94,45 @@ public class AdminKhachHangController {
             response.put("data", list);
             response.put("total", list.size());
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/{id}/thongke")
+    public ResponseEntity<Map<String, Object>> getThongKe(@PathVariable String id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            var data = adminKhachHangService.getThongKe(id);
+            response.put("success", true);
+            response.put("data", data);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(404).body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/{id}/diachi")
+    public ResponseEntity<Map<String, Object>> getDiaChi(@PathVariable String id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            var list = adminKhachHangService.getDiaChi(id);
+            response.put("success", true);
+            response.put("data", list);
+            response.put("total", list.size());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(404).body(response);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Lỗi: " + e.getMessage());

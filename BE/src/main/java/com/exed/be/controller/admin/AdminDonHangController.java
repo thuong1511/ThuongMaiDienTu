@@ -16,6 +16,7 @@ import java.util.Optional;
  * Admin Quản lý đơn hàng
  *
  * GET    /api/admin/donhang                        - Tất cả đơn hàng
+ * GET    /api/admin/donhang/export/excel           - Xuất CSV danh sách đơn
  * GET    /api/admin/donhang/{id}                   - Chi tiết đơn hàng
  * GET    /api/admin/donhang/{id}/chitiet           - Phiếu chi tiết đăng ký
  * GET    /api/admin/donhang/khachhang/{maNguoiDung} - Đơn theo khách hàng
@@ -23,6 +24,13 @@ import java.util.Optional;
  * GET    /api/admin/donhang/chiendich/{id}/thongke  - Thống kê đơn của chiến dịch
  * PATCH  /api/admin/donhang/{id}/huy               - Hủy đơn hàng
  * PATCH  /api/admin/donhang/{id}/hoantien          - Xác nhận hoàn tiền
+ *
+ * GIAO HÀNG (DonHang)
+ * GET    /api/admin/donhang/{id}/giaohang                          - Phiếu giao hàng của đăng ký
+ * POST   /api/admin/donhang/{id}/giaohang                          - Tạo phiếu giao hàng
+ * GET    /api/admin/donhang/giaohang                               - Tất cả phiếu giao
+ * GET    /api/admin/donhang/giaohang/{maDonHang}                   - Chi tiết phiếu giao
+ * PATCH  /api/admin/donhang/giaohang/{maDonHang}/trangthai         - Cập nhật trạng thái giao
  */
 @RestController
 @RequestMapping("/api/admin/donhang")
@@ -31,6 +39,9 @@ public class AdminDonHangController {
 
     @Autowired
     private AdminDonHangService adminDonHangService;
+
+    @Autowired
+    private com.exed.be.service.admin.AdminExportService adminExportService;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAll() {
@@ -46,6 +57,18 @@ public class AdminDonHangController {
             response.put("message", "Lỗi: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<byte[]> exportExcel() {
+        byte[] data = adminExportService.exportDonHangCsv();
+        String fileName = "donhang-exed-" + java.time.LocalDate.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd")) + ".csv";
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.parseMediaType("text/csv; charset=UTF-8"));
+        headers.setContentDispositionFormData("attachment", fileName);
+        headers.setContentLength(data.length);
+        return new ResponseEntity<>(data, headers, 200);
     }
 
     @GetMapping("/{id}")
@@ -155,6 +178,107 @@ public class AdminDonHangController {
             response.put("success", true);
             response.put("message", "Xác nhận hoàn tiền thành công");
             response.put("data", dk);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(400).body(response);
+        }
+    }
+
+    // ── GIAO HÀNG ──────────────────────────────────────────────
+
+    @GetMapping("/giaohang")
+    public ResponseEntity<Map<String, Object>> getAllGiaoHang() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            var list = adminDonHangService.getAllGiaoHang();
+            response.put("success", true);
+            response.put("data", list);
+            response.put("total", list.size());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/giaohang/{maDonHang}")
+    public ResponseEntity<Map<String, Object>> getGiaoHangById(@PathVariable String maDonHang) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            var opt = adminDonHangService.getGiaoHangById(maDonHang);
+            if (opt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Không tìm thấy phiếu giao: " + maDonHang);
+                return ResponseEntity.status(404).body(response);
+            }
+            response.put("success", true);
+            response.put("data", opt.get());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @GetMapping("/{id}/giaohang")
+    public ResponseEntity<Map<String, Object>> getGiaoHangByDangKy(@PathVariable Integer id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            var opt = adminDonHangService.getGiaoHangByDangKy(id);
+            if (opt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Đăng ký chưa có phiếu giao hàng");
+                return ResponseEntity.status(404).body(response);
+            }
+            response.put("success", true);
+            response.put("data", opt.get());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Lỗi: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @PostMapping("/{id}/giaohang")
+    public ResponseEntity<Map<String, Object>> taoPhieuGiao(
+            @PathVariable Integer id,
+            @RequestBody(required = false) com.exed.be.dto.admin.DonHangRequest body) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (body == null) body = new com.exed.be.dto.admin.DonHangRequest();
+            body.setMaDangKy(id);
+            var dh = adminDonHangService.taoPhieuGiao(body);
+            response.put("success", true);
+            response.put("message", "Tạo phiếu giao hàng thành công");
+            response.put("data", dh);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(400).body(response);
+        }
+    }
+
+    @PatchMapping("/giaohang/{maDonHang}/trangthai")
+    public ResponseEntity<Map<String, Object>> capNhatTrangThaiGiao(
+            @PathVariable String maDonHang,
+            @RequestParam(required = false) String trangThai,
+            @RequestBody(required = false) Map<String, Object> body) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String tt = trangThai;
+            if ((tt == null || tt.isBlank()) && body != null && body.get("trangThai") != null) {
+                tt = body.get("trangThai").toString();
+            }
+            var dh = adminDonHangService.capNhatTrangThaiGiao(maDonHang, tt);
+            response.put("success", true);
+            response.put("message", "Cập nhật trạng thái giao hàng thành công");
+            response.put("data", dh);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);

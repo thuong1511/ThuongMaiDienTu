@@ -294,6 +294,27 @@ CREATE TABLE HinhAnhDanhGia (
     FOREIGN KEY (maDanhGia) REFERENCES DanhGia(maDanhGia) ON DELETE CASCADE
 );
 
+--25. CauHinh
+CREATE TABLE CauHinh (
+        khoa         VARCHAR(60) PRIMARY KEY,
+        nhom         VARCHAR(40) NOT NULL,        -- 'chung' | 'vanchuyen' | 'thanhtoan'
+        giaTri       NVARCHAR(MAX) NULL,
+        loai         VARCHAR(20) NOT NULL DEFAULT 'string', -- 'string' | 'number' | 'boolean'
+        moTa         NVARCHAR(255) NULL,
+        ngayCapNhat  DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- 26. Banner
+CREATE TABLE Banner (
+        maBanner     INT PRIMARY KEY IDENTITY(1,1),
+        duongDan     VARCHAR(255) NOT NULL,
+        tieuDe       NVARCHAR(150) NULL,
+        thuTu        INT NOT NULL DEFAULT 1,
+        dangHienThi  BIT NOT NULL DEFAULT 0,
+        ngayTao      DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+
 GO
 CREATE TRIGGER trg_CapNhatTrangThaiChienDich
 ON ChienDich
@@ -851,6 +872,26 @@ INSERT INTO HinhAnhChienDich (maChienDich, duongDan, thuTu) VALUES
 ('CD010', 'images/chiendichNamtan2.jpg',         2),
 ('CD011', 'images/chiendichMartin1.jpg',         1),
 ('CD011', 'images/chiendichMartin2.jpg',         2);
+
+-- ============================================================
+-- INSERT DỮ LIỆU TABLE CẤU HÌNH
+-- ============================================================
+INSERT INTO CauHinh (khoa, nhom, giaTri, loai, moTa) VALUES
+    ('site.tenWebsite',          'chung',     N'EXED - Limited Sneaker Collab',  'string', N'Tên hiển thị của website'),
+    ('site.email',                'chung',     N'exed@gmail.com',                  'string', N'Email liên hệ'),
+    ('site.soDienThoai',          'chung',     N'000 111 2345',                    'string', N'Số điện thoại liên hệ'),
+    ('site.diaChi',               'chung',     N'123 Trung tâm thành phố',         'string', N'Địa chỉ trụ sở'),
+    ('site.moTaNgan',             'chung',     N'Nền tảng mua giày sneaker phiên bản giới hạn hợp tác cùng các nghệ sĩ nổi tiếng.', 'string', N'Mô tả ngắn'),
+
+    ('vanchuyen.phiNoiThanh',     'vanchuyen', N'30000',  'number',  N'Phí nội thành (VNĐ)'),
+    ('vanchuyen.phiNgoaiThanh',   'vanchuyen', N'50000',  'number',  N'Phí ngoại thành (VNĐ)'),
+    ('vanchuyen.mienPhiTu',       'vanchuyen', N'500000', 'number',  N'Miễn phí ship khi đơn từ (VNĐ)'),
+    ('vanchuyen.thoiGianNoiThanh','vanchuyen', N'2',      'number',  N'Thời gian giao nội thành (ngày)'),
+    ('vanchuyen.thoiGianNgoaiThanh','vanchuyen', N'5',    'number',  N'Thời gian giao ngoại thành (ngày)'),
+
+    ('thanhtoan.phiThamGiaMacDinh','thanhtoan', N'500000', 'number', N'Phí tham gia mặc định (VNĐ)'),
+    ('thanhtoan.thoiGianGiuTien',  'thanhtoan', N'7',      'number', N'Thời gian giữ tiền (ngày)'),
+    ('thanhtoan.hoanTienSauKetThuc','thanhtoan',N'3',      'number', N'Thời gian hoàn tiền sau khi kết thúc (ngày)');
 GO
 INSERT INTO SoDiaChi (maSo, maNguoiDung, maPhuongXa, hoTen, soDienThoai, diaChiChiTiet, macDinh)
 VALUES ('SO001', 'ND002', 'PX005', N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi', 1);

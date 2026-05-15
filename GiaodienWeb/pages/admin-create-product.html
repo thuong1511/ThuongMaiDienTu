@@ -98,7 +98,7 @@
         <!-- Main Content -->
         <main class="admin-main">
             <div class="page-header">
-                <h1>THÊM SẢN PHẨM MỚI</h1>
+                <h1 id="page-title">THÊM SẢN PHẨM MỚI</h1>
                 <button class="btn-back" onclick="window.location.href='admin-products.html'">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -107,7 +107,7 @@
                 </button>
             </div>
 
-            <form class="campaign-form">
+            <form class="campaign-form" id="form-sanpham">
                 <!-- Basic Information -->
                 <div class="content-section">
                     <div class="settings-section-header">
@@ -125,23 +125,21 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Mã sản phẩm *</label>
-                            <input type="text" class="form-input" placeholder="VD: SP001" required>
+                            <input type="text" id="f-maSP" class="form-input" placeholder="VD: SP001" maxlength="5" required>
                         </div>
                         <div class="form-group">
                             <label>Danh mục *</label>
-                            <select class="form-input" required>
-                                <option value="">Chọn danh mục</option>
-                                <option value="ao">Áo</option>
-                                <option value="giay">Giày</option>
+                            <select id="f-maDanhMuc" class="form-input" required>
+                                <option value="">Đang tải...</option>
                             </select>
                         </div>
                         <div class="form-group full-width">
                             <label>Tên sản phẩm *</label>
-                            <input type="text" class="form-input" placeholder="VD: Áo thun ROSÉ Limited Edition" required>
+                            <input type="text" id="f-tenSP" class="form-input" placeholder="VD: Áo thun ROSÉ Limited Edition" required>
                         </div>
                         <div class="form-group full-width">
                             <label>Mô tả sản phẩm</label>
-                            <textarea class="form-input form-textarea" rows="4" placeholder="Nhập mô tả chi tiết về sản phẩm..."></textarea>
+                            <textarea id="f-moTa" class="form-input form-textarea" rows="4" placeholder="Nhập mô tả chi tiết về sản phẩm..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -158,10 +156,10 @@
                         </div>
                         <div>
                             <h3 class="settings-section-title">Hình ảnh sản phẩm</h3>
-                            <p class="settings-section-desc">Tải lên hình ảnh sản phẩm (tối đa 10 ảnh)</p>
+                            <p class="settings-section-desc">Tải lên hình ảnh sản phẩm</p>
                         </div>
                     </div>
-                    <div class="file-upload-area" onclick="document.getElementById('productImages').click()">
+                    <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('productImages').click()">
                         <input type="file" id="productImages" multiple accept="image/*" style="display: none;">
                         <div class="upload-icon">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -171,11 +169,9 @@
                             </svg>
                         </div>
                         <p class="upload-text">Kéo thả ảnh vào đây hoặc <span class="upload-link">chọn file</span></p>
-                        <p class="upload-hint">PNG, JPG, JPEG (tối đa 5MB mỗi ảnh)</p>
+                        <p class="upload-hint">PNG, JPG · Tối đa 10MB mỗi ảnh</p>
                     </div>
-                    <div class="image-preview-grid" id="imagePreview" style="margin-top: 16px;">
-                        <!-- Preview images will be shown here -->
-                    </div>
+                    <div class="image-preview-grid" id="imagePreview" style="margin-top: 16px;"></div>
                 </div>
 
                 <!-- Colors & Quantities -->
@@ -188,32 +184,22 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="settings-section-title">Màu sắc & Số lượng</h3>
-                            <p class="settings-section-desc">Thêm các màu sắc và số lượng tối đa cho mỗi màu</p>
+                            <h3 class="settings-section-title">Màu sắc &amp; Số lượng</h3>
+                            <p class="settings-section-desc">Chọn màu có sẵn hoặc tạo mới + số lượng tối đa</p>
                         </div>
                     </div>
                     <div class="variants-section">
                         <div class="tier-table">
                             <div class="tier-header">
-                                <span>Tên màu</span>
-                                <span>Mã màu (Hex)</span>
+                                <span>Màu</span>
+                                <span>Tên (nếu mới)</span>
                                 <span>Số lượng tối đa</span>
                                 <span></span>
                             </div>
                             <div class="pricing-tiers" id="colorTiers">
-                                <div class="tier-row">
-                                    <input type="text" class="form-input" placeholder="VD: Đen" required>
-                                    <input type="text" class="form-input" placeholder="VD: #000000" required>
-                                    <input type="number" class="form-input" placeholder="VD: 500" min="1" required>
-                                    <button type="button" class="btn-icon delete" onclick="this.parentElement.remove()">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        </svg>
-                                    </button>
-                                </div>
+                                <!-- rows dynamic -->
                             </div>
-                            <button type="button" class="btn-add-tier" onclick="addColorTier()">
+                            <button type="button" class="btn-add-tier" id="btn-add-color">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -234,15 +220,12 @@
                         </div>
                         <div>
                             <h3 class="settings-section-title">Kích thước</h3>
-                            <p class="settings-section-desc">Thêm các kích thước có sẵn cho sản phẩm</p>
+                            <p class="settings-section-desc">Tick các size có sẵn cho sản phẩm</p>
                         </div>
                     </div>
                     <div class="variants-section">
-                        <div class="variant-group">
-                            <label>Kích thước (nhấn Enter để thêm)</label>
-                            <div class="variant-tags" id="sizeTags">
-                                <input type="text" class="tag-input" placeholder="VD: S, M, L, XL..." onkeypress="handleSizeInput(event)">
-                            </div>
+                        <div id="size-checkboxes" style="display:flex;flex-wrap:wrap;gap:10px;">
+                            <p style="color:#888;">Đang tải...</p>
                         </div>
                     </div>
                 </div>
@@ -252,7 +235,7 @@
                     <button type="button" class="btn-secondary-admin" onclick="window.location.href='admin-products.html'">
                         Hủy
                     </button>
-                    <button type="submit" class="btn-primary-admin">
+                    <button type="submit" class="btn-primary-admin" id="btn-submit">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                             <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -265,76 +248,298 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
+    <script src="../js/admin-api.js"></script>
     <script>
-        // Require admin access
-        auth.requireAdmin();
+    const params = new URLSearchParams(window.location.search);
+    const editingId = params.get('id');
+    const isEdit = params.get('mode') === 'edit' && editingId;
 
-        // Add color tier
-        function addColorTier() {
-            const container = document.getElementById('colorTiers');
-            const newRow = document.createElement('div');
-            newRow.className = 'tier-row';
-            newRow.innerHTML = `
-                <input type="text" class="form-input" placeholder="VD: Trắng" required>
-                <input type="text" class="form-input" placeholder="VD: #FFFFFF" required>
-                <input type="number" class="form-input" placeholder="VD: 400" min="1" required>
-                <button type="button" class="btn-icon delete" onclick="this.parentElement.remove()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </button>
-            `;
-            container.appendChild(newRow);
+    /** Ảnh đã upload (chưa save) hoặc đã có sẵn từ DB */
+    const pendingImages = [];   // { duongDan }  - mới upload, chưa lưu hoặc dùng cho create
+    const existingImages = [];  // { maHinhAnh, duongDan, thuTu } - chỉ ở edit mode
+
+    let allMauSac = [];   // master data
+    let allKichThuoc = []; // master data
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (isEdit) {
+            document.getElementById('page-title').textContent = 'CHỈNH SỬA SẢN PHẨM';
+            document.title = 'Chỉnh sửa sản phẩm - Admin EXED';
         }
 
-        // Handle size input
-        function handleSizeInput(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const input = event.target;
-                const value = input.value.trim();
-                
-                if (value) {
-                    const tag = document.createElement('span');
-                    tag.className = 'tag';
-                    tag.innerHTML = `
-                        ${value}
-                        <button type="button" onclick="this.parentElement.remove()">×</button>
-                    `;
-                    input.parentElement.insertBefore(tag, input);
-                    input.value = '';
-                }
+        await initAdminHeader();
+
+        await Promise.all([loadDanhMuc(), loadMauSac(), loadKichThuoc()]);
+
+        if (isEdit) {
+            await loadSanPham(editingId);
+        } else {
+            try {
+                const r = await adminApi.getNextMaSanPham();
+                if (r.success) document.getElementById('f-maSP').value = r.data;
+            } catch (_) {}
+            addColorRow();
+        }
+
+        document.getElementById('btn-add-color').addEventListener('click', () => addColorRow());
+        document.getElementById('productImages').addEventListener('change', onFileSelect);
+        setupDropzone();
+        document.getElementById('form-sanpham').addEventListener('submit', onSubmit);
+    });
+
+    // ── Master data ─────────────────────────────────────────────
+    async function loadDanhMuc() {
+        const sel = document.getElementById('f-maDanhMuc');
+        try {
+            const r = await adminApi.getAllDanhMuc();
+            if (!r.success) throw new Error(r.message);
+            sel.innerHTML = '<option value="">-- Chọn danh mục --</option>'
+                + r.data.map(dm => `<option value="${dm.maDanhMuc}">${dm.maDanhMuc} - ${dm.tenDanhMuc}</option>`).join('');
+        } catch (e) {
+            sel.innerHTML = '<option value="">Lỗi tải danh mục</option>';
+        }
+    }
+
+    async function loadMauSac() {
+        try {
+            const r = await adminApi.getAllMauSac();
+            if (r.success) allMauSac = r.data || [];
+        } catch (_) { allMauSac = []; }
+    }
+
+    async function loadKichThuoc() {
+        const wrap = document.getElementById('size-checkboxes');
+        try {
+            const r = await adminApi.getAllKichThuoc();
+            if (!r.success) throw new Error(r.message);
+            allKichThuoc = r.data || [];
+            wrap.innerHTML = allKichThuoc.length
+                ? allKichThuoc.map(k => `
+                    <label style="display:flex;align-items:center;gap:6px;border:1px solid #ddd;padding:6px 12px;border-radius:6px;cursor:pointer;">
+                        <input type="checkbox" class="size-cb" value="${k.maSize}">
+                        <span><strong>${k.tenSize}</strong>${k.loaiKichThuoc ? ` (${k.loaiKichThuoc})` : ''}</span>
+                    </label>`).join('')
+                : '<p style="color:#888;">Chưa có size nào trong hệ thống</p>';
+        } catch (e) {
+            wrap.innerHTML = '<p style="color:red;">Lỗi tải size</p>';
+        }
+    }
+
+    // ── Edit mode: load SP hiện có ──────────────────────────────
+    async function loadSanPham(id) {
+        try {
+            const r = await adminApi.getSanPhamById(id);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const sp = r.data;
+            document.getElementById('f-maSP').value = sp.maSanPham;
+            document.getElementById('f-maSP').readOnly = true;
+            document.getElementById('f-tenSP').value = sp.tenSanPham || '';
+            document.getElementById('f-moTa').value = sp.moTa || '';
+            document.getElementById('f-maDanhMuc').value = sp.maDanhMuc || '';
+
+            // Màu
+            const colorsWrap = document.getElementById('colorTiers');
+            colorsWrap.innerHTML = '';
+            (sp.sanPhamMauSacs || []).forEach(spm => {
+                addColorRow(spm.maMau, spm.soLuongToiDa);
+            });
+            if (!colorsWrap.children.length) addColorRow();
+
+            // Size — tick
+            const sizeIds = (sp.sanPhamKichThuocs || []).map(spk => String(spk.maSize));
+            document.querySelectorAll('.size-cb').forEach(cb => {
+                cb.checked = sizeIds.includes(cb.value);
+            });
+
+            // Ảnh đã có
+            (sp.hinhAnhSanPhams || []).forEach(a => existingImages.push({
+                maHinhAnh: a.maHinhAnh, duongDan: a.duongDan, thuTu: a.thuTu
+            }));
+            renderImagePreview();
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
+
+    // ── Color rows ──────────────────────────────────────────────
+    function addColorRow(maMauSelected = '', soLuong = '') {
+        const wrap = document.getElementById('colorTiers');
+        const row = document.createElement('div');
+        row.className = 'tier-row';
+        const opts = allMauSac.map(m =>
+            `<option value="${m.maMau}" ${String(m.maMau) === String(maMauSelected) ? 'selected' : ''}>${m.tenMau}</option>`
+        ).join('');
+        row.innerHTML = `
+            <select class="form-input color-select">
+                <option value="">-- Có sẵn --</option>
+                ${opts}
+                <option value="__new__">+ Tạo mới</option>
+            </select>
+            <input type="text" class="form-input color-newname" placeholder="Tên màu mới" style="display:none;">
+            <input type="number" class="form-input color-qty" placeholder="VD: 500" min="0" value="${soLuong}">
+            <button type="button" class="btn-icon delete" onclick="this.parentElement.remove()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>`;
+        wrap.appendChild(row);
+
+        const sel = row.querySelector('.color-select');
+        const nameIn = row.querySelector('.color-newname');
+        sel.addEventListener('change', () => {
+            nameIn.style.display = sel.value === '__new__' ? 'block' : 'none';
+        });
+    }
+
+    function readColors() {
+        const rows = document.querySelectorAll('#colorTiers .tier-row');
+        const result = [];
+        rows.forEach(r => {
+            const sel = r.querySelector('.color-select').value;
+            const name = r.querySelector('.color-newname').value.trim();
+            const qty = parseInt(r.querySelector('.color-qty').value, 10);
+            if (!Number.isFinite(qty) || qty < 0) return;
+            if (sel === '__new__') {
+                if (!name) return;
+                result.push({ tenMau: name, soLuongToiDa: qty });
+            } else if (sel) {
+                result.push({ maMau: parseInt(sel, 10), soLuongToiDa: qty });
+            }
+        });
+        return result;
+    }
+
+    function readSizes() {
+        return Array.from(document.querySelectorAll('.size-cb:checked'))
+            .map(cb => parseInt(cb.value, 10))
+            .filter(Number.isFinite);
+    }
+
+    // ── Upload ảnh ──────────────────────────────────────────────
+    function setupDropzone() {
+        const area = document.getElementById('fileUploadArea');
+        ['dragenter', 'dragover'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = 'rgba(200,169,106,0.1)';
+        }));
+        ['dragleave', 'drop'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = '';
+        }));
+        area.addEventListener('drop', e => {
+            const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+            if (files.length) handleFiles(files);
+        });
+    }
+
+    async function onFileSelect(e) {
+        const files = Array.from(e.target.files || []);
+        if (files.length) await handleFiles(files);
+        e.target.value = '';
+    }
+
+    async function handleFiles(files) {
+        for (const f of files) {
+            if (f.size > 10 * 1024 * 1024) {
+                showToast(`File "${f.name}" vượt quá 10MB`, 'error');
+                continue;
+            }
+            try {
+                const r = await adminApi.uploadFile(f, 'sanpham');
+                if (!r.success) { showToast(r.message || 'Upload lỗi', 'error'); continue; }
+                pendingImages.push({ duongDan: r.data.duongDan });
+            } catch (err) {
+                showToast('Lỗi upload: ' + err.message, 'error');
             }
         }
+        renderImagePreview();
+    }
 
-        // Handle image preview
-        document.getElementById('productImages').addEventListener('change', function(e) {
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-            
-            Array.from(e.target.files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        preview.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
+    function renderImagePreview() {
+        const grid = document.getElementById('imagePreview');
+        const all = [
+            ...existingImages.map(a => ({ kind: 'existing', ...a })),
+            ...pendingImages.map((a, i) => ({ kind: 'new', idx: i, ...a }))
+        ];
+        if (!all.length) { grid.innerHTML = ''; return; }
+        grid.innerHTML = all.map(a => {
+            const url = imgUrl(a.duongDan);
+            const remove = a.kind === 'new'
+                ? `onclick="removeNewImage(${a.idx})"`
+                : `onclick="removeExistingImage(${a.maHinhAnh})"`;
+            return `<div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid #ddd;">
+                <img src="${url}" style="width:100%;height:120px;object-fit:cover;" alt="">
+                <button type="button" class="btn-icon delete" ${remove}
+                    style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;">×</button>
+            </div>`;
+        }).join('');
+    }
+
+    window.removeNewImage = function (idx) {
+        pendingImages.splice(idx, 1);
+        renderImagePreview();
+    };
+    window.removeExistingImage = async function (maHinhAnh) {
+        if (!confirm('Xóa ảnh này?')) return;
+        try {
+            const r = await adminApi.xoaHinhAnhSanPham(editingId, maHinhAnh);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const i = existingImages.findIndex(x => x.maHinhAnh === maHinhAnh);
+            if (i >= 0) existingImages.splice(i, 1);
+            renderImagePreview();
+            showToast('Đã xóa ảnh');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+
+    // ── Submit ──────────────────────────────────────────────────
+    async function onSubmit(e) {
+        e.preventDefault();
+
+        const payload = {
+            maSanPham: document.getElementById('f-maSP').value.trim().toUpperCase(),
+            tenSanPham: document.getElementById('f-tenSP').value.trim(),
+            moTa: document.getElementById('f-moTa').value.trim(),
+            maDanhMuc: document.getElementById('f-maDanhMuc').value,
+            mauSacs: readColors(),
+            kichThuocs: readSizes()
+        };
+
+        // Validate
+        if (!payload.maSanPham) return showToast('Thiếu mã sản phẩm', 'error');
+        if (!payload.tenSanPham) return showToast('Thiếu tên sản phẩm', 'error');
+        if (!payload.maDanhMuc) return showToast('Chưa chọn danh mục', 'error');
+
+        // Khi tạo: gửi luôn ảnh đã upload
+        if (!isEdit) {
+            payload.hinhAnhs = pendingImages.map((p, i) => ({ duongDan: p.duongDan, thuTu: i + 1 }));
+        }
+
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        try {
+            const res = isEdit
+                ? await adminApi.updateSanPham(editingId, payload)
+                : await adminApi.createSanPham(payload);
+            if (!res.success) {
+                showToast(res.message || 'Lưu thất bại', 'error');
+                btn.disabled = false;
+                return;
+            }
+
+            // Khi sửa: thêm các ảnh mới (existing đã có sẵn ở DB)
+            if (isEdit) {
+                for (let i = 0; i < pendingImages.length; i++) {
+                    await adminApi.themHinhAnhSanPham(editingId, pendingImages[i].duongDan, existingImages.length + i + 1);
                 }
-            });
-        });
+            }
 
-        // Handle form submission
-        document.querySelector('.campaign-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Sản phẩm đã được lưu thành công!');
-            window.location.href = 'admin-products.html';
-        });
+            showToast(isEdit ? 'Cập nhật thành công' : 'Thêm sản phẩm thành công');
+            setTimeout(() => { window.location.href = 'admin-products.html'; }, 700);
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+            btn.disabled = false;
+        }
+    }
     </script>
 </body>
 </html>

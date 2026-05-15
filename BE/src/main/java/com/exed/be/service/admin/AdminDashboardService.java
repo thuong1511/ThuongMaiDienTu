@@ -1,6 +1,9 @@
 package com.exed.be.service.admin;
 
 import com.exed.be.dto.admin.AdminDashboardDTO;
+import com.exed.be.dto.admin.DoanhThuThangDTO;
+import com.exed.be.dto.admin.DonHangGanDayDTO;
+import com.exed.be.dto.admin.TopChienDichDTO;
 import com.exed.be.model.ChienDich;
 import com.exed.be.model.DangKyChienDich;
 import com.exed.be.model.NguoiDung;
@@ -15,7 +18,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminDashboardService {
@@ -112,5 +120,140 @@ public class AdminDashboardService {
         dto.setTongHoanTien(tongHoanTien);
 
         return dto;
+    }
+
+    /**
+     * Doanh thu theo tháng (mặc định 12 tháng gần nhất)
+     */
+    public List<DoanhThuThangDTO> getDoanhThuTheoThang(int soThang) {
+        if (soThang <= 0 || soThang > 36) soThang = 12;
+
+        LocalDateTime now = LocalDateTime.now();
+        YearMonth thangHienTai = YearMonth.from(now);
+
+        // Khởi tạo map các tháng trong khoảng (kể cả tháng không có dữ liệu)
+        Map<YearMonth, BigDecimal> doanhThuMap = new HashMap<>();
+        Map<YearMonth, Integer> soDonMap = new HashMap<>();
+        for (int i = soThang - 1; i >= 0; i--) {
+            YearMonth ym = thangHienTai.minusMonths(i);
+            doanhThuMap.put(ym, BigDecimal.ZERO);
+            soDonMap.put(ym, 0);
+        }
+
+        // Mốc thời gian sớm nhất
+        YearMonth mocSomNhat = thangHienTai.minusMonths(soThang - 1L);
+        LocalDateTime mocBatDau = mocSomNhat.atDay(1).atStartOfDay();
+
+        List<DangKyChienDich> allDangKy = dangKyChienDichRepository.findAll();
+        for (DangKyChienDich dk : allDangKy) {
+            if (dk.getDaHuy()) continue;
+            ThanhToan tt = dk.getThanhToan();
+            if (tt == null || tt.getNgayThanhToan() == null) continue;
+            LocalDateTime ngay = tt.getNgayThanhToan();
+            if (ngay.isBefore(mocBatDau)) continue;
+
+            YearMonth ym = YearMonth.from(ngay);
+            if (!doanhThuMap.containsKey(ym)) continue;
+
+            doanhThuMap.put(ym, doanhThuMap.get(ym).add(tt.getSoTienThanhToan()));
+            soDonMap.put(ym, soDonMap.get(ym) + 1);
+        }
+
+        // Build list theo thứ tự tháng tăng dần
+        List<DoanhThuThangDTO> result = new ArrayList<>();
+        for (int i = soThang - 1; i >= 0; i--) {
+            YearMonth ym = thangHienTai.minusMonths(i);
+            result.add(new DoanhThuThangDTO(
+                    ym.getMonthValue(), ym.getYear(),
+                    doanhThuMap.get(ym),
+                    soDonMap.get(ym)
+            ));
+        }
+        return result;
+    }
+
+    /**
+     * Top chiến dịch theo doanh thu cao nhất
+     */
+    public List<TopChienDichDTO> getTopChienDich(int limit) {
+        if (limit <= 0 || limit > 50) limit = 5;
+
+        List<ChienDich> allCD = chienDichRepository.findAll();
+        List<DangKyChienDich> allDangKy = dangKyChienDichRepository.findAll();
+
+        // Tính doanh thu + số lượng bán cho từng chiến dịch
+        Map<String, BigDecimal> doanhThuMap = new HashMap<>();
+        Map<String, Integer> soLuongMap = new HashMap<>();
+
+        for (DangKyChienDich dk : allDangKy) {
+            if (dk.getDaHuy()) continue;
+            if (dk.getChienDich() == null) continue;
+            String maCD = dk.getChienDich().getMaChienDich();
+
+            BigDecimal soTien = dk.getThanhToan() != null
+                    ? dk.getThanhToan().getSoTienThanhToan()
+                    : BigDecimal.ZERO;
+
+            doanhThuMap.merge(maCD, soTien, BigDecimal::add);
+            soLuongMap.merge(maCD, dk.getTongSoLuong() != null ? dk.getTongSoLuong() : 0, Integer::sum);
+        }
+
+        // Build và sort
+        List<TopChienDichDTO> all = new ArrayList<>();
+        for (ChienDich cd : allCD) {
+            BigDecimal dt = doanhThuMap.getOrDefault(cd.getMaChienDich(), BigDecimal.ZERO);
+            int sl = soLuongMap.getOrDefault(cd.getMaChienDich(), 0);
+            if (dt.compareTo(BigDecimal.ZERO) <= 0 && sl <= 0) continue;
+
+            String tenNS = cd.getNgheSi() != null ? cd.getNgheSi().getTenNgheSi() : cd.getMaNgheSi();
+            all.add(new TopChienDichDTO(0, cd.getMaChienDich(), cd.getTenChienDich(), tenNS, sl, dt));
+        }
+
+        all.sort(Comparator.comparing(TopChienDichDTO::getDoanhThu).reversed());
+
+        List<TopChienDichDTO> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(limit, all.size()); i++) {
+            TopChienDichDTO row = all.get(i);
+            row.setXepHang(i + 1);
+            result.add(row);
+        }
+        return result;
+    }
+
+    /**
+     * Đơn hàng gần đây (sort theo ngày đăng ký mới nhất)
+     */
+    public List<DonHangGanDayDTO> getDonHangGanDay(int limit) {
+        if (limit <= 0 || limit > 100) limit = 10;
+
+        List<DangKyChienDich> all = dangKyChienDichRepository.findAll();
+        all.sort(Comparator.comparing(
+                DangKyChienDich::getNgayDangKy,
+                Comparator.nullsLast(Comparator.reverseOrder())
+        ));
+
+        List<DonHangGanDayDTO> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(limit, all.size()); i++) {
+            DangKyChienDich dk = all.get(i);
+            String tenKH = dk.getNguoiDung() != null
+                    ? dk.getNguoiDung().getTenDangNhap()
+                    : "—";
+            String tenCD = dk.getChienDich() != null ? dk.getChienDich().getTenChienDich() : "—";
+            BigDecimal soTien = dk.getThanhToan() != null
+                    ? dk.getThanhToan().getSoTienThanhToan()
+                    : BigDecimal.ZERO;
+
+            String trangThai;
+            if (dk.getDaHuy()) {
+                trangThai = dk.getTrangThaiHoanTien() ? "Đã hoàn tiền" : "Đã hủy";
+            } else {
+                trangThai = "Đang xử lý";
+            }
+
+            result.add(new DonHangGanDayDTO(
+                    dk.getMaDangKy(), tenKH, tenCD, soTien, dk.getNgayDangKy(), trangThai
+            ));
+        }
+        return result;
     }
 }

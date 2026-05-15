@@ -168,11 +168,7 @@
     let allDonHang = [];
 
     document.addEventListener('DOMContentLoaded', async function () {
-        const adminProfile = document.querySelector('.admin-profile');
-        if (adminProfile) {
-            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
-            document.addEventListener('click', () => adminProfile.classList.remove('active'));
-        }
+        await initAdminHeader();
         await loadDonHang();
         setupFilters();
     });
@@ -246,7 +242,15 @@
     function setupFilters() {
         const selTrangThai = document.querySelector('.filter-select-admin');
         const inputSearch = document.querySelector('.filter-input-admin');
-        const btnSearch = document.querySelectorAll('.btn-secondary-admin')[0];
+        const allBtns = document.querySelectorAll('.btn-secondary-admin');
+        const btnSearch = allBtns[0];
+        const btnExcel = allBtns[1];
+
+        if (btnExcel) {
+            btnExcel.addEventListener('click', () => {
+                window.location.href = adminApi.exportDonHangExcelUrl();
+            });
+        }
 
         if (selTrangThai) {
             selTrangThai.innerHTML = `

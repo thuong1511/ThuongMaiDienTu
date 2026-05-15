@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface BangGiaBacThangRepository extends JpaRepository<BangGiaBacThang, Integer> {
     List<BangGiaBacThang> findByMaChienDich(String maChienDich);
+    List<BangGiaBacThang> findByMaChienDichOrderBySoLuongToiThieuAsc(String maChienDich);
     void deleteByMaChienDich(String maChienDich);
 }

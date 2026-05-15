@@ -100,7 +100,7 @@
             <div class="page-header">
                 <h1>CHI TIẾT SẢN PHẨM</h1>
                 <div style="display: flex; gap: 12px;">
-                    <button class="btn-secondary-admin" onclick="window.location.href='admin-create-product.html?id=SP001&mode=edit'">
+                    <button class="btn-secondary-admin" id="btn-edit-sp">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -120,21 +120,21 @@
             <div class="content-section">
                 <h2 class="section-title">Thông tin sản phẩm</h2>
                 <div class="campaign-detail-info">
-                    <img src="../images/SPCDRose2.jpg" alt="Product" class="campaign-detail-img">
+                    <img src="../images/banner.jpg" alt="Product" class="campaign-detail-img" id="sp-img">
                     <div class="campaign-detail-meta">
-                        <h3 class="campaign-detail-name">Áo thun ROSÉ Limited Edition</h3>
+                        <h3 class="campaign-detail-name" id="sp-ten">—</h3>
                         <div class="campaign-detail-grid">
                             <div class="campaign-detail-field">
                                 <p class="field-label">Mã sản phẩm</p>
-                                <p class="field-value">SP001</p>
+                                <p class="field-value" id="sp-ma">—</p>
                             </div>
                             <div class="campaign-detail-field">
                                 <p class="field-label">Danh mục</p>
-                                <p class="field-value">Áo</p>
+                                <p class="field-value" id="sp-danhmuc">—</p>
                             </div>
                             <div class="campaign-detail-field full-width">
                                 <p class="field-label">Mô tả</p>
-                                <p class="field-value">Áo thun cao cấp với chất liệu cotton 100%, thiết kế độc quyền từ ROSÉ. Sản phẩm limited edition chỉ có trong chiến dịch collab đặc biệt.</p>
+                                <p class="field-value" id="sp-mota">—</p>
                             </div>
                         </div>
                     </div>
@@ -144,12 +144,8 @@
             <!-- Product Images -->
             <div class="content-section">
                 <h2 class="section-title">Hình ảnh sản phẩm</h2>
-                <div class="image-preview-grid">
-                    <img src="../images/SPCDRose1.jpg" alt="Product image 1">
-                    <img src="../images/SPCDJen2.jpg" alt="Product image 2">
-                    <img src="../images/chiendich3.jpg" alt="Product image 3">
-                    <img src="../images/rose.jpg" alt="Product image 4">
-                    <img src="../images/lisa.jpg" alt="Product image 5">
+                <div class="image-preview-grid" id="sp-images">
+                    <p style="grid-column:1/-1;text-align:center;padding:20px;color:#888;">Đang tải...</p>
                 </div>
             </div>
 
@@ -157,7 +153,7 @@
             <div class="detail-two-col">
                 <!-- Color Stats -->
                 <div class="content-section">
-                    <h2 class="section-title">Màu sắc & Số lượng</h2>
+                    <h2 class="section-title">Màu sắc &amp; Số lượng</h2>
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -167,40 +163,8 @@
                                 <th>Còn lại</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background: #000; border-radius: 4px; border: 1px solid #ddd;"></span>
-                                        <span>Đen</span>
-                                    </div>
-                                </td>
-                                <td>500</td>
-                                <td>385</td>
-                                <td>115</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background: #fff; border-radius: 4px; border: 1px solid #ddd;"></span>
-                                        <span>Trắng</span>
-                                    </div>
-                                </td>
-                                <td>400</td>
-                                <td>312</td>
-                                <td>88</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="display: inline-block; width: 20px; height: 20px; background: #FFB6C1; border-radius: 4px; border: 1px solid #ddd;"></span>
-                                        <span>Hồng</span>
-                                    </div>
-                                </td>
-                                <td>300</td>
-                                <td>227</td>
-                                <td>73</td>
-                            </tr>
+                        <tbody id="sp-mau-tbody">
+                            <tr><td colspan="4" style="text-align:center;padding:20px;">Đang tải...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -215,23 +179,8 @@
                                 <th>Loại</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>S</strong></td>
-                                <td>Áo</td>
-                            </tr>
-                            <tr>
-                                <td><strong>M</strong></td>
-                                <td>Áo</td>
-                            </tr>
-                            <tr>
-                                <td><strong>L</strong></td>
-                                <td>Áo</td>
-                            </tr>
-                            <tr>
-                                <td><strong>XL</strong></td>
-                                <td>Áo</td>
-                            </tr>
+                        <tbody id="sp-size-tbody">
+                            <tr><td colspan="2" style="text-align:center;padding:20px;">Đang tải...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -251,36 +200,132 @@
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>#CD001</strong></td>
-                            <td>ROSÉ X EXED</td>
-                            <td>ROSÉ</td>
-                            <td><span class="status-badge ongoing">Đang diễn ra</span></td>
-                            <td>01/03/2026 - 31/03/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon view" title="Xem chi tiết" onclick="window.location.href='admin-campaign-detail.html'">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="sp-cd-tbody">
+                        <tr><td colspan="6" style="text-align:center;padding:20px;">Đang tải...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
+    <script src="../js/admin-api.js"></script>
     <script>
-        // Require admin access
-        auth.requireAdmin();
+    const params = new URLSearchParams(window.location.search);
+    const spId = params.get('id');
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initAdminHeader();
+
+        if (!spId) { showToast('Thiếu mã sản phẩm', 'error'); return; }
+
+        document.getElementById('btn-edit-sp').addEventListener('click', () => {
+            window.location.href = `admin-create-product.html?mode=edit&id=${spId}`;
+        });
+
+        await Promise.all([loadInfo(), loadThongKe(), loadChienDich()]);
+    });
+
+    /** Thông tin SP + ảnh + sizes */
+    async function loadInfo() {
+        try {
+            const r = await adminApi.getSanPhamById(spId);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const sp = r.data;
+
+            document.getElementById('sp-ten').textContent = sp.tenSanPham || '—';
+            document.getElementById('sp-ma').textContent = sp.maSanPham || '—';
+            document.getElementById('sp-danhmuc').textContent =
+                sp.danhMuc ? `${sp.danhMuc.maDanhMuc} - ${sp.danhMuc.tenDanhMuc}` : (sp.maDanhMuc || '—');
+            document.getElementById('sp-mota').textContent = sp.moTa || '—';
+
+            // Ảnh chính (đầu tiên)
+            const imgMain = document.getElementById('sp-img');
+            imgMain.src = imgSanPham(sp);
+            imgMain.onerror = () => { imgMain.src = '../images/banner.jpg'; };
+
+            // Grid ảnh
+            const imgGrid = document.getElementById('sp-images');
+            const imgs = sp.hinhAnhSanPhams || [];
+            if (!imgs.length) {
+                imgGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;color:#888;">Chưa có ảnh</p>';
+            } else {
+                imgGrid.innerHTML = imgs.map(a => `<img src="${imgUrl(a.duongDan)}" alt="">`).join('');
+            }
+
+            // Bảng size
+            const sizeTb = document.getElementById('sp-size-tbody');
+            const sizes = sp.sanPhamKichThuocs || [];
+            if (!sizes.length) {
+                sizeTb.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:20px;color:#888;">Chưa có size</td></tr>';
+            } else {
+                sizeTb.innerHTML = sizes.map(spk => `
+                    <tr>
+                        <td><strong>${spk.kichThuoc?.tenSize || '—'}</strong></td>
+                        <td>${spk.kichThuoc?.loaiKichThuoc || '—'}</td>
+                    </tr>`).join('');
+            }
+        } catch (e) {
+            showToast('Lỗi tải SP: ' + e.message, 'error');
+        }
+    }
+
+    /** Thống kê màu (đã đặt / còn lại) */
+    async function loadThongKe() {
+        const tb = document.getElementById('sp-mau-tbody');
+        try {
+            const r = await adminApi.getThongKeSanPham(spId);
+            if (!r.success) { tb.innerHTML = `<tr><td colspan="4" style="color:red;">${r.message}</td></tr>`; return; }
+            const list = r.data?.mauSacs || [];
+            if (!list.length) {
+                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Chưa có màu</td></tr>';
+                return;
+            }
+            tb.innerHTML = list.map(m => `
+                <tr>
+                    <td><strong>${m.tenMau || '—'}</strong></td>
+                    <td>${Number(m.soLuongToiDa || 0).toLocaleString('vi-VN')}</td>
+                    <td>${Number(m.daDat || 0).toLocaleString('vi-VN')}</td>
+                    <td>${Number(m.conLai || 0).toLocaleString('vi-VN')}</td>
+                </tr>`).join('');
+        } catch (e) {
+            tb.innerHTML = `<tr><td colspan="4" style="color:red;">Lỗi: ${e.message}</td></tr>`;
+        }
+    }
+
+    /** Chiến dịch dùng SP */
+    async function loadChienDich() {
+        const tb = document.getElementById('sp-cd-tbody');
+        try {
+            const r = await adminApi.getChienDichDungSP(spId);
+            if (!r.success) { tb.innerHTML = `<tr><td colspan="6" style="color:red;">${r.message}</td></tr>`; return; }
+            const list = r.data || [];
+            if (!list.length) {
+                tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#888;">Chưa có chiến dịch nào dùng sản phẩm này</td></tr>';
+                return;
+            }
+            tb.innerHTML = list.map(cd => `
+                <tr>
+                    <td><strong>#${cd.maChienDich}</strong></td>
+                    <td>${cd.tenChienDich || '—'}</td>
+                    <td>${cd.ngheSi?.tenNgheSi || cd.maNgheSi || '—'}</td>
+                    <td>${thoiDiemBadge(cd.thoiDiem)}</td>
+                    <td>${fmtDate(cd.ngayBatDau)} - ${fmtDate(cd.ngayKetThuc)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon view" title="Xem chi tiết"
+                                onclick="window.location.href='admin-campaign-detail.html?id=${cd.maChienDich}'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+        } catch (e) {
+            tb.innerHTML = `<tr><td colspan="6" style="color:red;">Lỗi: ${e.message}</td></tr>`;
+        }
+    }
     </script>
 </body>
 </html>

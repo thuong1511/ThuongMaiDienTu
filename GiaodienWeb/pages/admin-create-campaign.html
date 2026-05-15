@@ -137,40 +137,32 @@
                         </div>
                         <div>
                             <h2 class="settings-section-title">Thông tin cơ bản</h2>
-                            <p class="settings-section-desc">Tên, nghệ sĩ, mô tả và hình ảnh sản phẩm</p>
+                            <p class="settings-section-desc">Tên, nghệ sĩ, sản phẩm và hình ảnh chiến dịch</p>
                         </div>
                     </div>
                     <div class="form-grid">
-                        <div class="form-group full-width">
+                        <div class="form-group">
+                            <label>Mã chiến dịch *</label>
+                            <input type="text" id="f-maChienDich" class="form-input" placeholder="CD001" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
                             <label>Tên chiến dịch *</label>
-                            <input type="text" class="form-input" placeholder="VD: ROSÉ X EXED" required>
+                            <input type="text" id="f-tenChienDich" class="form-input" placeholder="VD: ROSÉ X EXED" required>
                         </div>
                         <div class="form-group">
                             <label>Nghệ sĩ Collab *</label>
-                            <select class="form-input" required>
-                                <option value="">Chọn nghệ sĩ</option>
-                                <option value="rose">ROSÉ</option>
-                                <option value="lisa">LISA</option>
-                                <option value="jisoo">JISOO</option>
-                                <option value="jennie">JENNIE</option>
-                                <option value="parkbogum">PARK BO GUM</option>
+                            <select id="f-maNgheSi" class="form-input" required>
+                                <option value="">Đang tải...</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Danh mục *</label>
-                            <select class="form-input" required>
-                                <option value="">Chọn danh mục</option>
-                                <option value="sneaker">Giày Sneaker</option>
-                                <option value="tshirt">Áo thun</option>
-                                <option value="accessory">Phụ kiện</option>
+                            <label>Sản phẩm *</label>
+                            <select id="f-maSanPham" class="form-input" required>
+                                <option value="">Đang tải...</option>
                             </select>
                         </div>
                         <div class="form-group full-width">
-                            <label>Mô tả sản phẩm</label>
-                            <textarea class="form-input form-textarea" rows="3" placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Hình ảnh sản phẩm *</label>
+                            <label>Hình ảnh chiến dịch</label>
                             <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
                                 <div class="upload-icon">
                                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -180,10 +172,10 @@
                                     </svg>
                                 </div>
                                 <p class="upload-text">Kéo thả ảnh vào đây hoặc <span class="upload-link">chọn file</span></p>
-                                <p class="upload-hint">JPG, PNG · Tối đa 5MB mỗi file</p>
+                                <p class="upload-hint">JPG, PNG · Tối đa 10MB mỗi file</p>
                                 <input type="file" accept="image/*" multiple id="fileInput" style="display:none">
                             </div>
-                            <div class="image-preview-grid" id="imagePreviewGrid"></div>
+                            <div class="image-preview-grid" id="imagePreviewGrid" style="margin-top:12px;"></div>
                         </div>
                     </div>
                 </div>
@@ -210,38 +202,7 @@
                             <span></span>
                         </div>
                         <div class="pricing-tiers" id="pricingTiers">
-                            <div class="tier-row">
-                                <input type="number" class="form-input" placeholder="100" value="100">
-                                <input type="number" class="form-input" placeholder="499" value="499">
-                                <input type="number" class="form-input" placeholder="Giá" value="25500000">
-                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </button>
-                            </div>
-                            <div class="tier-row">
-                                <input type="number" class="form-input" placeholder="500" value="500">
-                                <input type="number" class="form-input" placeholder="799" value="799">
-                                <input type="number" class="form-input" placeholder="Giá" value="23550000">
-                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </button>
-                            </div>
-                            <div class="tier-row">
-                                <input type="number" class="form-input" placeholder="800" value="800">
-                                <input type="number" class="form-input" placeholder="999" value="999">
-                                <input type="number" class="form-input" placeholder="Giá" value="21550000">
-                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </button>
-                            </div>
-                            <div class="tier-row">
-                                <input type="number" class="form-input" placeholder="1000" value="1000">
-                                <input type="number" class="form-input" placeholder="1200" value="1200">
-                                <input type="number" class="form-input" placeholder="Giá" value="18550000">
-                                <button type="button" class="btn-icon delete btn-remove-tier" title="Xóa">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </button>
-                            </div>
+                            <!-- rows dynamic -->
                         </div>
                     </div>
                     <button type="button" class="btn-add-tier" id="addTierBtn">
@@ -261,75 +222,50 @@
                         </div>
                         <div>
                             <h2 class="settings-section-title">Cài đặt chiến dịch</h2>
-                            <p class="settings-section-desc">Giá, số lượng, thời gian và trạng thái</p>
+                            <p class="settings-section-desc">Giá, ngưỡng số lượng, thời gian và trạng thái</p>
                         </div>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Giá bán lẻ cao nhất (VNĐ) *</label>
-                            <input type="number" class="form-input" placeholder="28850000" required>
-                        </div>
-                        <div class="form-group">
-                            <label>MOQ tối thiểu *</label>
-                            <input type="number" class="form-input" placeholder="100" required>
+                            <label>Giá gốc (VNĐ) *</label>
+                            <input type="number" id="f-giaGoc" class="form-input" placeholder="28850000" min="0" required>
                         </div>
                         <div class="form-group">
                             <label>Phí tham gia (VNĐ) *</label>
-                            <input type="number" class="form-input" placeholder="500000" required>
+                            <input type="number" id="f-phiThamGia" class="form-input" placeholder="500000" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngưỡng MOQ (số lượng tối thiểu) *</label>
+                            <input type="number" id="f-nguongMOQ" class="form-input" placeholder="100" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngưỡng tối đa *</label>
+                            <input type="number" id="f-nguongToiDa" class="form-input" placeholder="1200" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Thời điểm</label>
+                            <select id="f-thoiDiem" class="form-input">
+                                <option value="Sắp bắt đầu">Sắp bắt đầu</option>
+                                <option value="Đang diễn ra">Đang diễn ra</option>
+                                <option value="Đã kết thúc">Đã kết thúc</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Trạng thái</label>
-                            <select class="form-input">
-                                <option value="draft">Nháp</option>
-                                <option value="active">Kích hoạt</option>
+                            <select id="f-trangThai" class="form-input">
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Tạm ngưng">Tạm ngưng</option>
+                                <option value="Thành công">Thành công</option>
+                                <option value="Thất bại">Thất bại</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Thời gian bắt đầu *</label>
-                            <input type="datetime-local" class="form-input" required>
+                            <input type="datetime-local" id="f-ngayBatDau" class="form-input" required>
                         </div>
                         <div class="form-group">
                             <label>Thời gian kết thúc *</label>
-                            <input type="datetime-local" class="form-input" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Variants -->
-                <div class="content-section">
-                    <div class="settings-section-header">
-                        <div class="settings-section-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                                <rect x="1" y="3" width="22" height="5"></rect>
-                                <line x1="10" y1="12" x2="14" y2="12"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="settings-section-title">Phân loại sản phẩm</h2>
-                            <p class="settings-section-desc">Size và màu sắc có sẵn</p>
-                        </div>
-                    </div>
-                    <div class="variants-section">
-                        <div class="variant-group">
-                            <label>Size</label>
-                            <div class="variant-tags" id="sizeTags">
-                                <span class="tag">38 <button type="button">×</button></span>
-                                <span class="tag">39 <button type="button">×</button></span>
-                                <span class="tag">40 <button type="button">×</button></span>
-                                <span class="tag">41 <button type="button">×</button></span>
-                                <span class="tag">42 <button type="button">×</button></span>
-                                <input type="text" class="tag-input" placeholder="Thêm size...">
-                            </div>
-                        </div>
-                        <div class="variant-group">
-                            <label>Màu sắc</label>
-                            <div class="variant-tags" id="colorTags">
-                                <span class="tag">Đen <button type="button">×</button></span>
-                                <span class="tag">Trắng <button type="button">×</button></span>
-                                <span class="tag">Xanh <button type="button">×</button></span>
-                                <input type="text" class="tag-input" placeholder="Thêm màu...">
-                            </div>
+                            <input type="datetime-local" id="f-ngayKetThuc" class="form-input" required>
                         </div>
                     </div>
                 </div>
@@ -337,142 +273,316 @@
                 <!-- Actions -->
                 <div class="campaign-form-actions">
                     <button type="button" class="btn-secondary-admin" onclick="history.back()">Hủy</button>
-                    <button type="button" class="btn-secondary-admin">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        </svg>
-                        Lưu nháp
-                    </button>
-                    <button type="submit" class="btn-primary-admin">
+                    <button type="submit" class="btn-primary-admin" id="btn-submit">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
-                        Xuất bản
+                        Lưu chiến dịch
                     </button>
                 </div>
             </form>
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
+    <script src="../js/admin-api.js"></script>
     <script>
-        // Require admin access
-        auth.requireAdmin();
-        
-        // Mock campaign data
-        const mockCampaigns = {
-            'CD001': {
-                name: 'ROSÉ X EXED',
-                artist: 'ROSÉ',
-                category: 'fashion',
-                description: 'Chiến dịch hợp tác độc quyền với ROSÉ - Thành viên BLACKPINK. Bộ sưu tập thời trang cao cấp giới hạn.',
-                startDate: '2026-03-01',
-                endDate: '2026-04-15',
-                originalPrice: '28850000',
-                tiers: [
-                    { quantity: '100', price: '28850000', description: 'Mốc khởi điểm' },
-                    { quantity: '300', price: '26550000', description: 'Mốc phổ biến' },
-                    { quantity: '600', price: '24550000', description: 'Mốc ưu đãi' },
-                    { quantity: '1200', price: '23550000', description: 'Mốc tốt nhất' }
-                ],
-                colors: ['Đen', 'Trắng', 'Hồng'],
-                sizes: ['S', 'M', 'L', 'XL']
-            },
-            'CD003': {
-                name: 'LISA X EXED',
-                artist: 'LISA',
-                category: 'fashion',
-                description: 'Bộ sưu tập thời trang street style độc đáo cùng LISA.',
-                startDate: '2026-03-10',
-                endDate: '2026-04-20',
-                originalPrice: '27850000',
-                tiers: [
-                    { quantity: '100', price: '27850000', description: 'Mốc khởi điểm' },
-                    { quantity: '500', price: '25550000', description: 'Mốc phổ biến' },
-                    { quantity: '1000', price: '23850000', description: 'Mốc tốt nhất' }
-                ],
-                colors: ['Đen', 'Trắng', 'Xanh'],
-                sizes: ['S', 'M', 'L', 'XL']
-            }
-        };
-        
-        // Check if edit mode
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-        const campaignId = urlParams.get('id');
+    // ────────────────────────────────────────────────────────────
+    // State
+    // ────────────────────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const editingId = params.get('id');
+    const isEdit = mode === 'edit' && editingId;
 
-        if (mode === 'edit' && campaignId) {
-            // Edit mode
+    /** Ảnh đã upload lên BE (file đã chọn → upload ngay → push vào đây) */
+    const pendingImages = []; // { duongDan, file, isNew: true }
+    /** Ảnh đã có sẵn trong DB (chế độ edit) */
+    const existingImages = []; // { maHinhAnh, duongDan, thuTu }
+
+    // ────────────────────────────────────────────────────────────
+    // Init
+    // ────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (isEdit) {
             document.getElementById('page-title').textContent = 'CHỈNH SỬA CHIẾN DỊCH';
-            document.title = 'Chỉnh sửa chiến dịch - Admin - EXED';
-            
-            console.log('Edit mode for campaign:', campaignId);
-            
-            // Load campaign data
-            const campaign = mockCampaigns[campaignId];
-            if (campaign) {
-                // Fill basic info
-                document.querySelector('input[placeholder="VD: ROSÉ X EXED"]').value = campaign.name;
-                document.querySelector('select').value = campaign.artist.toLowerCase();
-                document.querySelector('textarea').value = campaign.description;
-                document.querySelectorAll('input[type="date"]')[0].value = campaign.startDate;
-                document.querySelectorAll('input[type="date"]')[1].value = campaign.endDate;
-                document.querySelector('input[placeholder="VD: 28.850.000"]').value = campaign.originalPrice;
-                
-                // Fill pricing tiers
-                const tierContainer = document.querySelector('.pricing-tiers');
-                tierContainer.innerHTML = '';
-                campaign.tiers.forEach((tier, index) => {
-                    const tierRow = document.createElement('div');
-                    tierRow.className = 'tier-row';
-                    tierRow.innerHTML = `
-                        <input type="number" placeholder="Số lượng" value="${tier.quantity}" required>
-                        <input type="number" placeholder="Giá bán" value="${tier.price}" required>
-                        <input type="text" placeholder="Mô tả (tùy chọn)" value="${tier.description}">
-                        ${index > 0 ? '<button type="button" class="btn-remove-tier">×</button>' : '<div style="width: 40px;"></div>'}
-                    `;
-                    tierContainer.appendChild(tierRow);
-                });
-                
-                // Fill colors
-                const colorContainer = document.querySelector('.variant-tags');
-                colorContainer.innerHTML = '';
-                campaign.colors.forEach(color => {
-                    const tag = document.createElement('span');
-                    tag.className = 'tag';
-                    tag.innerHTML = `${color} <button type="button">×</button>`;
-                    colorContainer.appendChild(tag);
-                });
-                const colorInput = document.createElement('input');
-                colorInput.type = 'text';
-                colorInput.placeholder = 'Thêm màu...';
-                colorContainer.appendChild(colorInput);
-                
-                // Fill sizes
-                const sizeContainer = document.querySelectorAll('.variant-tags')[1];
-                sizeContainer.innerHTML = '';
-                campaign.sizes.forEach(size => {
-                    const tag = document.createElement('span');
-                    tag.className = 'tag';
-                    tag.innerHTML = `${size} <button type="button">×</button>`;
-                    sizeContainer.appendChild(tag);
-                });
-                const sizeInput = document.createElement('input');
-                sizeInput.type = 'text';
-                sizeInput.placeholder = 'Thêm size...';
-                sizeContainer.appendChild(sizeInput);
-                
-                console.log('Campaign data loaded:', campaign);
-            } else {
-                alert('Không tìm thấy chiến dịch với ID: ' + campaignId);
-            }
-        } else {
-            // Create mode
-            console.log('Create new campaign mode');
+            document.title = 'Chỉnh sửa chiến dịch - Admin EXED';
         }
+
+        // Toggle dropdown profile
+        await initAdminHeader();
+
+        // Load song song dropdown nghệ sĩ + sản phẩm + (nếu edit) dữ liệu CD
+        await Promise.all([loadNgheSi(), loadSanPham()]);
+
+        if (isEdit) {
+            await loadChienDich(editingId);
+        } else {
+            // Sinh mã CD tiếp theo
+            try {
+                const r = await adminApi.getNextMaChienDich();
+                if (r.success) document.getElementById('f-maChienDich').value = r.data;
+            } catch (_) {}
+            addTierRow(); // 1 dòng giá mặc định
+        }
+
+        // Bind events
+        document.getElementById('addTierBtn').addEventListener('click', () => addTierRow());
+        document.getElementById('fileInput').addEventListener('change', onFileSelect);
+        setupDropzone();
+        document.getElementById('createCampaignForm').addEventListener('submit', onSubmit);
+    });
+
+    // ────────────────────────────────────────────────────────────
+    // Load dropdown
+    // ────────────────────────────────────────────────────────────
+    async function loadNgheSi() {
+        const sel = document.getElementById('f-maNgheSi');
+        try {
+            const r = await adminApi.getAllNgheSi();
+            if (!r.success) throw new Error(r.message);
+            sel.innerHTML = '<option value="">-- Chọn nghệ sĩ --</option>'
+                + r.data.map(ns => `<option value="${ns.maNgheSi}">${ns.tenNgheSi || ns.maNgheSi}</option>`).join('');
+        } catch (e) {
+            sel.innerHTML = '<option value="">Lỗi tải nghệ sĩ</option>';
+        }
+    }
+
+    async function loadSanPham() {
+        const sel = document.getElementById('f-maSanPham');
+        try {
+            const r = await adminApi.getAllSanPham();
+            if (!r.success) throw new Error(r.message);
+            sel.innerHTML = '<option value="">-- Chọn sản phẩm --</option>'
+                + r.data.map(sp => `<option value="${sp.maSanPham}">${sp.maSanPham} - ${sp.tenSanPham || ''}</option>`).join('');
+        } catch (e) {
+            sel.innerHTML = '<option value="">Lỗi tải sản phẩm</option>';
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Edit mode: Load chiến dịch hiện có
+    // ────────────────────────────────────────────────────────────
+    async function loadChienDich(id) {
+        try {
+            const r = await adminApi.getChienDichById(id);
+            if (!r.success) { showToast(r.message || 'Không tải được CD', 'error'); return; }
+            const cd = r.data;
+            document.getElementById('f-maChienDich').value = cd.maChienDich || '';
+            document.getElementById('f-maChienDich').readOnly = true; // không cho đổi PK
+            document.getElementById('f-tenChienDich').value = cd.tenChienDich || '';
+            document.getElementById('f-maNgheSi').value = cd.maNgheSi || '';
+            document.getElementById('f-maSanPham').value = cd.maSanPham || '';
+            document.getElementById('f-giaGoc').value = cd.giaGoc ?? 0;
+            document.getElementById('f-phiThamGia').value = cd.phiThamGia ?? 0;
+            document.getElementById('f-nguongMOQ').value = cd.nguongMOQ ?? 0;
+            document.getElementById('f-nguongToiDa').value = cd.nguongToiDa ?? 0;
+            document.getElementById('f-thoiDiem').value = cd.thoiDiem || 'Sắp bắt đầu';
+            document.getElementById('f-trangThai').value = cd.trangThai || 'Hoạt động';
+            document.getElementById('f-ngayBatDau').value = toDatetimeLocal(cd.ngayBatDau);
+            document.getElementById('f-ngayKetThuc').value = toDatetimeLocal(cd.ngayKetThuc);
+
+            // Bảng giá
+            const tiersWrap = document.getElementById('pricingTiers');
+            tiersWrap.innerHTML = '';
+            (cd.bangGiaBacThangs || []).forEach(b => addTierRow(b.soLuongToiThieu, b.soLuongToiDa, b.donGia));
+            if (!tiersWrap.children.length) addTierRow();
+
+            // Ảnh có sẵn
+            if (cd.hinhAnhChienDichs && cd.hinhAnhChienDichs.length) {
+                cd.hinhAnhChienDichs.forEach(a => existingImages.push({
+                    maHinhAnh: a.maHinhAnh, duongDan: a.duongDan, thuTu: a.thuTu || 1
+                }));
+                renderImagePreview();
+            }
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
+
+    function toDatetimeLocal(s) {
+        if (!s) return '';
+        // BE trả ISO "2026-03-01T08:00:00" — datetime-local cần dạng "2026-03-01T08:00"
+        return String(s).slice(0, 16);
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Tier rows
+    // ────────────────────────────────────────────────────────────
+    function addTierRow(min = '', max = '', price = '') {
+        const wrap = document.getElementById('pricingTiers');
+        const row = document.createElement('div');
+        row.className = 'tier-row';
+        row.innerHTML = `
+            <input type="number" class="form-input tier-min" placeholder="Từ" min="0" value="${min}">
+            <input type="number" class="form-input tier-max" placeholder="Đến" min="0" value="${max}">
+            <input type="number" class="form-input tier-price" placeholder="Giá" min="0" value="${price}">
+            <button type="button" class="btn-icon delete" title="Xóa" onclick="this.parentElement.remove()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>`;
+        wrap.appendChild(row);
+    }
+
+    function readTiers() {
+        const rows = document.querySelectorAll('#pricingTiers .tier-row');
+        const tiers = [];
+        rows.forEach(r => {
+            const min = parseInt(r.querySelector('.tier-min').value, 10);
+            const max = parseInt(r.querySelector('.tier-max').value, 10);
+            const price = parseFloat(r.querySelector('.tier-price').value);
+            if (Number.isFinite(min) && Number.isFinite(max) && Number.isFinite(price)) {
+                tiers.push({ soLuongToiThieu: min, soLuongToiDa: max, donGia: price });
+            }
+        });
+        return tiers;
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Upload ảnh — upload ngay khi chọn để có duongDan thật
+    // ────────────────────────────────────────────────────────────
+    function setupDropzone() {
+        const area = document.getElementById('fileUploadArea');
+        ['dragenter', 'dragover'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = 'rgba(200,169,106,0.1)';
+        }));
+        ['dragleave', 'drop'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = '';
+        }));
+        area.addEventListener('drop', e => {
+            const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+            if (files.length) handleFiles(files);
+        });
+    }
+
+    async function onFileSelect(e) {
+        const files = Array.from(e.target.files || []);
+        if (files.length) await handleFiles(files);
+        e.target.value = '';
+    }
+
+    async function handleFiles(files) {
+        for (const f of files) {
+            if (f.size > 10 * 1024 * 1024) {
+                showToast(`File "${f.name}" vượt quá 10MB`, 'error');
+                continue;
+            }
+            try {
+                const r = await adminApi.uploadFile(f, 'chiendich');
+                if (!r.success) {
+                    showToast(r.message || 'Upload thất bại', 'error');
+                    continue;
+                }
+                pendingImages.push({ duongDan: r.data.duongDan, isNew: true });
+            } catch (err) {
+                showToast('Lỗi upload: ' + err.message, 'error');
+            }
+        }
+        renderImagePreview();
+    }
+
+    function renderImagePreview() {
+        const grid = document.getElementById('imagePreviewGrid');
+        const all = [
+            ...existingImages.map(a => ({ kind: 'existing', ...a })),
+            ...pendingImages.map((a, i) => ({ kind: 'new', idx: i, ...a }))
+        ];
+        if (!all.length) {
+            grid.innerHTML = '';
+            return;
+        }
+        grid.innerHTML = all.map(a => {
+            const url = imgUrl(a.duongDan);
+            const removeBtn = a.kind === 'new'
+                ? `<button type="button" class="btn-icon delete" onclick="removeNewImage(${a.idx})" title="Xóa" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;">×</button>`
+                : `<button type="button" class="btn-icon delete" onclick="removeExistingImage(${a.maHinhAnh})" title="Xóa" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;">×</button>`;
+            return `<div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid #ddd;">
+                <img src="${url}" style="width:100%;height:120px;object-fit:cover;display:block;" alt="">
+                ${removeBtn}
+            </div>`;
+        }).join('');
+    }
+
+    window.removeNewImage = function (idx) {
+        pendingImages.splice(idx, 1);
+        renderImagePreview();
+    };
+
+    window.removeExistingImage = async function (maHinhAnh) {
+        if (!confirm('Xóa ảnh này?')) return;
+        try {
+            const r = await adminApi.xoaHinhAnhChienDich(editingId, maHinhAnh);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const i = existingImages.findIndex(x => x.maHinhAnh === maHinhAnh);
+            if (i >= 0) existingImages.splice(i, 1);
+            renderImagePreview();
+            showToast('Đã xóa ảnh');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+
+    // ────────────────────────────────────────────────────────────
+    // Submit
+    // ────────────────────────────────────────────────────────────
+    async function onSubmit(e) {
+        e.preventDefault();
+
+        const payload = {
+            maChienDich: document.getElementById('f-maChienDich').value.trim().toUpperCase(),
+            tenChienDich: document.getElementById('f-tenChienDich').value.trim(),
+            maNgheSi: document.getElementById('f-maNgheSi').value,
+            maSanPham: document.getElementById('f-maSanPham').value,
+            giaGoc: parseFloat(document.getElementById('f-giaGoc').value) || 0,
+            phiThamGia: parseFloat(document.getElementById('f-phiThamGia').value) || 0,
+            nguongMOQ: parseInt(document.getElementById('f-nguongMOQ').value, 10) || 0,
+            nguongToiDa: parseInt(document.getElementById('f-nguongToiDa').value, 10) || 0,
+            thoiDiem: document.getElementById('f-thoiDiem').value,
+            trangThai: document.getElementById('f-trangThai').value,
+            ngayBatDau: document.getElementById('f-ngayBatDau').value || null,
+            ngayKetThuc: document.getElementById('f-ngayKetThuc').value || null,
+            bangGiaBacThangs: readTiers()
+        };
+
+        // Validate
+        if (!payload.maChienDich) return showToast('Thiếu mã chiến dịch', 'error');
+        if (!payload.tenChienDich) return showToast('Thiếu tên chiến dịch', 'error');
+        if (!payload.maNgheSi) return showToast('Chưa chọn nghệ sĩ', 'error');
+        if (!payload.maSanPham) return showToast('Chưa chọn sản phẩm', 'error');
+        if (!payload.ngayBatDau || !payload.ngayKetThuc) return showToast('Thiếu thời gian', 'error');
+        if (payload.nguongToiDa < payload.nguongMOQ) return showToast('Ngưỡng tối đa phải >= MOQ', 'error');
+
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+
+        try {
+            let res;
+            let savedId = payload.maChienDich;
+            if (isEdit) {
+                res = await adminApi.updateChienDich(editingId, payload);
+                savedId = editingId;
+            } else {
+                res = await adminApi.createChienDich(payload);
+            }
+            if (!res.success) {
+                showToast(res.message || 'Lưu thất bại', 'error');
+                btn.disabled = false;
+                return;
+            }
+
+            // Gắn ảnh mới (nếu có)
+            for (let i = 0; i < pendingImages.length; i++) {
+                const img = pendingImages[i];
+                await adminApi.themHinhAnhChienDich(savedId, img.duongDan, i + 1);
+            }
+
+            showToast(isEdit ? 'Cập nhật thành công' : 'Tạo chiến dịch thành công');
+            setTimeout(() => { window.location.href = 'admin-campaigns.html'; }, 700);
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+            btn.disabled = false;
+        }
+    }
     </script>
 </body>
 </html>

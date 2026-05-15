@@ -108,7 +108,7 @@
         <main class="admin-main">
             <div class="page-header">
                 <h1>CẤU HÌNH HỆ THỐNG</h1>
-                <button class="btn-primary-admin" onclick="alert('Đã lưu tất cả!')">
+                <button class="btn-primary-admin" id="btn-save-all">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                         <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -120,150 +120,150 @@
 
             <!-- Cài đặt chung -->
             <div class="content-section">
-                    <div class="settings-section-header">
-                        <div class="settings-section-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="2" y1="12" x2="22" y2="12"></line>
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="settings-section-title">Cài đặt chung</h2>
-                            <p class="settings-section-desc">Thông tin cơ bản của website</p>
-                        </div>
+                <div class="settings-section-header">
+                    <div class="settings-section-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
                     </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Tên website</label>
-                            <input type="text" class="form-input" value="EXPED - Limited Sneaker Collab">
-                        </div>
-                        <div class="form-group">
-                            <label>Email liên hệ</label>
-                            <input type="email" class="form-input" value="exped@gmail.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Số điện thoại</label>
-                            <input type="tel" class="form-input" value="000 111 2345">
-                        </div>
-                        <div class="form-group">
-                            <label>Địa chỉ</label>
-                            <input type="text" class="form-input" value="123 P. Trung Thanh Phố">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Mô tả ngắn</label>
-                            <textarea class="form-input form-textarea" rows="2">Nền tảng mua giày sneaker phiên bản giới hạn hợp tác cùng các nghệ sĩ nổi tiếng.</textarea>
-                        </div>
+                    <div>
+                        <h2 class="settings-section-title">Cài đặt chung</h2>
+                        <p class="settings-section-desc">Thông tin cơ bản của website</p>
                     </div>
                 </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tên website</label>
+                        <input type="text" class="form-input" data-key="site.tenWebsite">
+                    </div>
+                    <div class="form-group">
+                        <label>Email liên hệ</label>
+                        <input type="email" class="form-input" data-key="site.email">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" class="form-input" data-key="site.soDienThoai">
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ</label>
+                        <input type="text" class="form-input" data-key="site.diaChi">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Mô tả ngắn</label>
+                        <textarea class="form-input form-textarea" rows="2" data-key="site.moTaNgan"></textarea>
+                    </div>
+                </div>
+            </div>
 
             <!-- Bảo mật -->
             <div class="content-section">
-                    <div class="settings-section-header">
-                        <div class="settings-section-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="settings-section-title">Bảo mật</h2>
-                            <p class="settings-section-desc">Đổi mật khẩu Admin</p>
-                        </div>
+                <div class="settings-section-header">
+                    <div class="settings-section-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
                     </div>
-                    <div class="form-grid settings-single-col">
-                        <div class="form-group full-width">
-                            <label>Mật khẩu hiện tại</label>
-                            <input type="password" class="form-input" placeholder="Nhập mật khẩu hiện tại">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Mật khẩu mới</label>
-                            <input type="password" class="form-input" placeholder="Nhập mật khẩu mới">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Xác nhận mật khẩu mới</label>
-                            <input type="password" class="form-input" placeholder="Nhập lại mật khẩu mới">
-                        </div>
-                    </div>
-                    <div class="form-actions" style="margin-top:16px;">
-                        <button class="btn-primary-admin" onclick="alert('Đã đổi mật khẩu!')">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                            </svg>
-                            Đổi mật khẩu
-                        </button>
+                    <div>
+                        <h2 class="settings-section-title">Bảo mật</h2>
+                        <p class="settings-section-desc">Đổi mật khẩu Admin</p>
                     </div>
                 </div>
+                <div class="form-grid settings-single-col">
+                    <div class="form-group full-width">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" class="form-input" id="pw-cu" placeholder="Nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" class="form-input" id="pw-moi" placeholder="Nhập mật khẩu mới">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-input" id="pw-xn" placeholder="Nhập lại mật khẩu mới">
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:16px;">
+                    <button class="btn-primary-admin" id="btn-doi-pw">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Đổi mật khẩu
+                    </button>
+                </div>
+            </div>
 
             <!-- Vận chuyển -->
-                <div class="content-section">
-                    <div class="settings-section-header">
-                        <div class="settings-section-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="1" y="3" width="15" height="13"></rect>
-                                <path d="M16 8h4l3 3v5h-7V8z"></path>
-                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="settings-section-title">Vận chuyển</h2>
-                            <p class="settings-section-desc">Phí và thời gian giao hàng</p>
-                        </div>
+            <div class="content-section">
+                <div class="settings-section-header">
+                    <div class="settings-section-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <path d="M16 8h4l3 3v5h-7V8z"></path>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
                     </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Phí nội thành (VNĐ)</label>
-                            <input type="number" class="form-input" value="30000">
-                        </div>
-                        <div class="form-group">
-                            <label>Phí ngoại thành (VNĐ)</label>
-                            <input type="number" class="form-input" value="50000">
-                        </div>
-                        <div class="form-group">
-                            <label>Miễn phí từ (VNĐ)</label>
-                            <input type="number" class="form-input" value="500000">
-                        </div>
-                        <div class="form-group">
-                            <label>Thời gian nội thành (ngày)</label>
-                            <input type="number" class="form-input" value="2">
-                        </div>
-                        <div class="form-group">
-                            <label>Thời gian ngoại thành (ngày)</label>
-                            <input type="number" class="form-input" value="5">
-                        </div>
+                    <div>
+                        <h2 class="settings-section-title">Vận chuyển</h2>
+                        <p class="settings-section-desc">Phí và thời gian giao hàng</p>
                     </div>
                 </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Phí nội thành (VNĐ)</label>
+                        <input type="number" class="form-input" data-key="vanchuyen.phiNoiThanh">
+                    </div>
+                    <div class="form-group">
+                        <label>Phí ngoại thành (VNĐ)</label>
+                        <input type="number" class="form-input" data-key="vanchuyen.phiNgoaiThanh">
+                    </div>
+                    <div class="form-group">
+                        <label>Miễn phí từ (VNĐ)</label>
+                        <input type="number" class="form-input" data-key="vanchuyen.mienPhiTu">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian nội thành (ngày)</label>
+                        <input type="number" class="form-input" data-key="vanchuyen.thoiGianNoiThanh">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian ngoại thành (ngày)</label>
+                        <input type="number" class="form-input" data-key="vanchuyen.thoiGianNgoaiThanh">
+                    </div>
+                </div>
+            </div>
 
             <!-- Thanh toán -->
             <div class="content-section">
-                    <div class="settings-section-header">
-                        <div class="settings-section-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                <line x1="1" y1="10" x2="23" y2="10"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="settings-section-title">Thanh toán</h2>
-                            <p class="settings-section-desc">Phí tham gia và hoàn tiền</p>
-                        </div>
+                <div class="settings-section-header">
+                    <div class="settings-section-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
                     </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Phí tham gia mặc định (VNĐ)</label>
-                            <input type="number" class="form-input" value="500000">
-                        </div>
-                        <div class="form-group">
-                            <label>Thời gian giữ tiền (ngày)</label>
-                            <input type="number" class="form-input" value="7">
-                        </div>
-                        <div class="form-group">
-                            <label>Hoàn tiền sau khi kết thúc (ngày)</label>
-                            <input type="number" class="form-input" value="3">
-                        </div>
+                    <div>
+                        <h2 class="settings-section-title">Thanh toán</h2>
+                        <p class="settings-section-desc">Phí tham gia và hoàn tiền</p>
                     </div>
                 </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Phí tham gia mặc định (VNĐ)</label>
+                        <input type="number" class="form-input" data-key="thanhtoan.phiThamGiaMacDinh">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian giữ tiền (ngày)</label>
+                        <input type="number" class="form-input" data-key="thanhtoan.thoiGianGiuTien">
+                    </div>
+                    <div class="form-group">
+                        <label>Hoàn tiền sau khi kết thúc (ngày)</label>
+                        <input type="number" class="form-input" data-key="thanhtoan.hoanTienSauKetThuc">
+                    </div>
+                </div>
+            </div>
 
             <!-- Banner -->
             <div class="content-section">
@@ -281,8 +281,8 @@
                     </div>
                 </div>
                 <div class="banner-settings-layout">
-                    <!-- Upload area -->
-                    <div class="file-upload-area">
+                    <div class="file-upload-area" id="banner-dropzone" onclick="document.getElementById('banner-input').click()">
+                        <input type="file" id="banner-input" accept="image/*" multiple style="display:none;">
                         <div class="upload-icon">
                             <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -291,35 +291,10 @@
                             </svg>
                         </div>
                         <p class="upload-text">Kéo thả banner vào đây hoặc <span class="upload-link">chọn file</span></p>
-                        <p class="upload-hint">PNG, JPG · 1920×600px · Tối đa 5MB</p>
+                        <p class="upload-hint">PNG, JPG · 1920×600px · Tối đa 10MB</p>
                     </div>
-                    <!-- Preview list -->
-                    <div class="banner-preview-list">
-                        <div class="banner-preview-item">
-                            <img src="../images/chiendich1.jpg" alt="Banner 1">
-                            <div class="banner-preview-info">
-                                <span>banner-rose-exed.jpg</span>
-                                <span class="banner-active-badge">Đang hiển thị</span>
-                            </div>
-                            <button class="btn-icon delete" title="Xóa">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="banner-preview-item">
-                            <img src="../images/chiendich2.jpg" alt="Banner 2">
-                            <div class="banner-preview-info">
-                                <span>banner-parkbogum-exed.jpg</span>
-                            </div>
-                            <button class="btn-icon delete" title="Xóa">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </button>
-                        </div>
+                    <div class="banner-preview-list" id="banner-list">
+                        <p style="text-align:center;padding:20px;color:#888;">Đang tải...</p>
                     </div>
                 </div>
             </div>
@@ -327,10 +302,178 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
-    <script>auth.requireAdmin();</script>
+    <script src="../js/admin-api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initAdminHeader();
+
+        await loadCauHinh();
+        await loadBanner();
+        setupBannerUpload();
+
+        document.getElementById('btn-save-all').addEventListener('click', saveAll);
+        document.getElementById('btn-doi-pw').addEventListener('click', doiMatKhau);
+    });
+
+    /** Load và bind cấu hình hệ thống */
+    async function loadCauHinh() {
+        try {
+            const r = await adminApi.getCauHinh();
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const data = r.data || {};
+            // Flatten: { nhom: { khoa: gt } } → { khoa: gt }
+            const flat = {};
+            Object.values(data).forEach(group => Object.assign(flat, group));
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const k = el.dataset.key;
+                if (flat[k] != null) el.value = flat[k];
+            });
+        } catch (e) {
+            showToast('Lỗi tải cấu hình: ' + e.message, 'error');
+        }
+    }
+
+    /** Lưu toàn bộ cấu hình */
+    async function saveAll() {
+        const body = {};
+        document.querySelectorAll('[data-key]').forEach(el => {
+            body[el.dataset.key] = el.value;
+        });
+        try {
+            const r = await adminApi.capNhatCauHinh(body);
+            if (r.success) showToast(r.message || 'Đã lưu cấu hình');
+            else showToast(r.message, 'error');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
+
+    /** Đổi mật khẩu admin */
+    async function doiMatKhau() {
+        const cu = document.getElementById('pw-cu').value;
+        const moi = document.getElementById('pw-moi').value;
+        const xn = document.getElementById('pw-xn').value;
+
+        if (!cu || !moi || !xn) return showToast('Vui lòng nhập đủ 3 trường', 'error');
+        if (moi !== xn) return showToast('Xác nhận mật khẩu không khớp', 'error');
+
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        if (!user.maNguoiDung) return showToast('Phiên đăng nhập đã hết, vui lòng đăng nhập lại', 'error');
+
+        try {
+            const r = await adminApi.doiMatKhauAdmin(user.maNguoiDung, cu, moi, xn);
+            if (r.success) {
+                showToast('Đổi mật khẩu thành công');
+                document.getElementById('pw-cu').value = '';
+                document.getElementById('pw-moi').value = '';
+                document.getElementById('pw-xn').value = '';
+            } else showToast(r.message, 'error');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
+
+    // ── Banner ─────────────────────────────────────────────────
+    async function loadBanner() {
+        const wrap = document.getElementById('banner-list');
+        try {
+            const r = await adminApi.getAllBanner();
+            if (!r.success) { wrap.innerHTML = `<p style="color:red;padding:10px;">${r.message}</p>`; return; }
+            const list = r.data || [];
+            if (!list.length) {
+                wrap.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Chưa có banner nào</p>';
+                return;
+            }
+            wrap.innerHTML = list.map(b => `
+                <div class="banner-preview-item" data-id="${b.maBanner}">
+                    <img src="${imgUrl(b.duongDan)}" alt="${b.tieuDe || ''}" onerror="this.src='../images/banner.jpg'">
+                    <div class="banner-preview-info">
+                        <span>${b.tieuDe || (b.duongDan?.split('/').pop() || 'banner')}</span>
+                        ${b.dangHienThi ? '<span class="banner-active-badge">Đang hiển thị</span>' : ''}
+                    </div>
+                    <button class="btn-icon ${b.dangHienThi ? 'view' : 'edit'}"
+                            title="${b.dangHienThi ? 'Đang bật' : 'Bật hiển thị'}"
+                            onclick="toggleBannerHienThi(${b.maBanner}, ${!b.dangHienThi})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            ${b.dangHienThi
+                                ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>'
+                                : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'}
+                        </svg>
+                    </button>
+                    <button class="btn-icon delete" title="Xóa" onclick="xoaBanner(${b.maBanner})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>`).join('');
+        } catch (e) {
+            wrap.innerHTML = `<p style="color:red;padding:10px;">Lỗi: ${e.message}</p>`;
+        }
+    }
+
+    function setupBannerUpload() {
+        const area = document.getElementById('banner-dropzone');
+        const input = document.getElementById('banner-input');
+
+        ['dragenter', 'dragover'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = 'rgba(200,169,106,0.1)';
+        }));
+        ['dragleave', 'drop'].forEach(ev => area.addEventListener(ev, e => {
+            e.preventDefault(); e.stopPropagation(); area.style.background = '';
+        }));
+        area.addEventListener('drop', e => {
+            const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+            if (files.length) handleBannerFiles(files);
+        });
+        input.addEventListener('change', async e => {
+            const files = Array.from(e.target.files || []);
+            if (files.length) await handleBannerFiles(files);
+            e.target.value = '';
+        });
+    }
+
+    async function handleBannerFiles(files) {
+        for (const f of files) {
+            if (f.size > 10 * 1024 * 1024) { showToast(`"${f.name}" vượt 10MB`, 'error'); continue; }
+            try {
+                const up = await adminApi.uploadFile(f, 'banner');
+                if (!up.success) { showToast(up.message || 'Upload lỗi', 'error'); continue; }
+                const r = await adminApi.themBanner({
+                    duongDan: up.data.duongDan,
+                    tieuDe: f.name,
+                    dangHienThi: false
+                });
+                if (!r.success) showToast(r.message, 'error');
+            } catch (e) {
+                showToast('Lỗi: ' + e.message, 'error');
+            }
+        }
+        await loadBanner();
+        showToast('Đã thêm banner');
+    }
+
+    window.toggleBannerHienThi = async function (id, hienThi) {
+        try {
+            const r = await adminApi.capNhatBanner(id, { dangHienThi: hienThi });
+            if (r.success) { showToast(hienThi ? 'Đã bật banner' : 'Đã tắt banner'); await loadBanner(); }
+            else showToast(r.message, 'error');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+
+    window.xoaBanner = async function (id) {
+        if (!confirm('Xóa banner này?')) return;
+        try {
+            const r = await adminApi.xoaBanner(id);
+            if (r.success) { showToast('Đã xóa'); await loadBanner(); }
+            else showToast(r.message, 'error');
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+    </script>
 </body>
 </html>
-

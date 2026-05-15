@@ -13,11 +13,17 @@ public class CorsConfig implements WebMvcConfigurer {
         // API endpoints
         registry.addMapping("/api/**")
                 .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*");
 
         // Static images — cho phép FE (Live Server) load ảnh từ BE
         registry.addMapping("/images/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "OPTIONS")
+                .allowedHeaders("*");
+
+        // Uploaded files
+        registry.addMapping("/uploads/**")
                 .allowedOrigins("*")
                 .allowedMethods("GET", "OPTIONS")
                 .allowedHeaders("*");

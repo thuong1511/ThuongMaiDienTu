@@ -179,9 +179,20 @@
     let allSanPham = [];
 
     document.addEventListener('DOMContentLoaded', async function () {
-        await loadSanPham();
+        await Promise.all([loadSanPham(), loadDanhMucDropdown()]);
         setupFilters();
     });
+
+    async function loadDanhMucDropdown() {
+        const sel = document.querySelector('.filter-select-admin');
+        if (!sel) return;
+        try {
+            const r = await adminApi.getAllDanhMuc();
+            if (!r.success) return;
+            sel.innerHTML = '<option value="">Tất cả</option>'
+                + (r.data || []).map(dm => `<option value="${dm.maDanhMuc}">${dm.tenDanhMuc}</option>`).join('');
+        } catch (_) {}
+    }
 
     async function loadSanPham() {
         const tbody = document.getElementById('products-tbody');
@@ -251,18 +262,25 @@
     }
 
     function setupFilters() {
+        const selDanhMuc = document.querySelector('.filter-select-admin');
         const inputSearch = document.querySelector('.filter-input-admin');
         const btnSearch = document.querySelector('.btn-secondary-admin');
-        if (btnSearch && inputSearch) {
-            btnSearch.addEventListener('click', () => {
-                const q = inputSearch.value.toLowerCase();
-                const filtered = allSanPham.filter(sp =>
-                    sp.tenSanPham?.toLowerCase().includes(q) ||
-                    sp.maSanPham?.toLowerCase().includes(q)
-                );
-                renderTable(filtered);
+
+        const apply = () => {
+            const dm = selDanhMuc?.value || '';
+            const q = inputSearch?.value.toLowerCase() || '';
+            const filtered = allSanPham.filter(sp => {
+                if (dm && sp.maDanhMuc !== dm) return false;
+                if (q && !sp.tenSanPham?.toLowerCase().includes(q) &&
+                         !sp.maSanPham?.toLowerCase().includes(q)) return false;
+                return true;
             });
-        }
+            renderTable(filtered);
+        };
+
+        selDanhMuc?.addEventListener('change', apply);
+        btnSearch?.addEventListener('click', apply);
+        inputSearch?.addEventListener('keydown', e => { if (e.key === 'Enter') apply(); });
     }
 
     async function deleteSanPham(id, ten) {

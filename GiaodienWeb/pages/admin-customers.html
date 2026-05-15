@@ -156,11 +156,7 @@
     let allKhachHang = [];
 
     document.addEventListener('DOMContentLoaded', async function () {
-        const adminProfile = document.querySelector('.admin-profile');
-        if (adminProfile) {
-            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
-            document.addEventListener('click', () => adminProfile.classList.remove('active'));
-        }
+        await initAdminHeader();
         await loadKhachHang();
         setupFilters();
     });
@@ -189,7 +185,7 @@
             return;
         }
         tbody.innerHTML = list.map(nd => `
-            <tr>
+            <tr data-ma="${nd.maNguoiDung}">
                 <td>#${nd.maNguoiDung}</td>
                 <td>
                     <div class="campaign-cell">
@@ -199,8 +195,8 @@
                 </td>
                 <td>${nd.email}</td>
                 <td>${nd.soDienThoai || '—'}</td>
-                <td>—</td>
-                <td>—</td>
+                <td data-stat="don">—</td>
+                <td data-stat="tien">—</td>
                 <td>${trangThaiBadge(nd.trangThai)}</td>
                 <td>
                     <div class="action-buttons">
@@ -222,6 +218,21 @@
                     </div>
                 </td>
             </tr>`).join('');
+
+        // Load thống kê async cho từng dòng
+        list.forEach(nd => loadRowStats(nd.maNguoiDung));
+    }
+
+    async function loadRowStats(maNguoiDung) {
+        try {
+            const r = await adminApi.getThongKeKhachHang(maNguoiDung);
+            if (!r.success) return;
+            const t = r.data || {};
+            const tr = document.querySelector(`#customers-tbody tr[data-ma="${maNguoiDung}"]`);
+            if (!tr) return;
+            tr.querySelector('[data-stat="don"]').textContent = Number(t.tongDon || 0).toLocaleString('vi-VN');
+            tr.querySelector('[data-stat="tien"]').textContent = fmtMoney(t.tongChiTieu);
+        } catch (_) {}
     }
 
     function applyFiltersKH() {

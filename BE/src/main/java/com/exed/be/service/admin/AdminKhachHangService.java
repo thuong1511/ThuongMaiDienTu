@@ -21,6 +21,9 @@ public class AdminKhachHangService {
     @Autowired
     private DangKyChienDichRepository dangKyChienDichRepository;
 
+    @Autowired
+    private com.exed.be.repository.SoDiaChiRepository soDiaChiRepository;
+
     public List<NguoiDung> getAllKhachHang() {
         return nguoiDungRepository.findAll();
     }
@@ -70,5 +73,64 @@ public class AdminKhachHangService {
                 .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
         nd.setTrangThai("Hoạt động".equals(nd.getTrangThai()) ? "Bị khóa" : "Hoạt động");
         return nguoiDungRepository.save(nd);
+    }
+
+    /**
+     * Thống kê tổng hợp 1 khách hàng (cho trang admin-customer-detail)
+     */
+    public com.exed.be.dto.admin.KhachHangThongKeDTO getThongKe(String maNguoiDung) {
+        if (!nguoiDungRepository.existsById(maNguoiDung)) {
+            throw new RuntimeException("Người dùng không tồn tại: " + maNguoiDung);
+        }
+
+        var dto = new com.exed.be.dto.admin.KhachHangThongKeDTO();
+        var list = dangKyChienDichRepository.findByNguoiDung_MaNguoiDung(maNguoiDung);
+
+        java.time.LocalDateTime startOfMonth = java.time.LocalDateTime.now()
+                .withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        int tongDon = list.size(), donHuy = 0, donHopLe = 0, donThangNay = 0;
+        java.math.BigDecimal tongChiTieu = java.math.BigDecimal.ZERO;
+        java.math.BigDecimal tongHoanTien = java.math.BigDecimal.ZERO;
+
+        for (var dk : list) {
+            boolean huy = Boolean.TRUE.equals(dk.getDaHuy());
+            java.math.BigDecimal soTien = (dk.getThanhToan() != null && dk.getThanhToan().getSoTienThanhToan() != null)
+                    ? dk.getThanhToan().getSoTienThanhToan() : java.math.BigDecimal.ZERO;
+
+            if (huy) {
+                donHuy++;
+                if (Boolean.TRUE.equals(dk.getTrangThaiHoanTien())) {
+                    tongHoanTien = tongHoanTien.add(soTien);
+                }
+            } else {
+                donHopLe++;
+                tongChiTieu = tongChiTieu.add(soTien);
+            }
+
+            if (dk.getNgayDangKy() != null && !dk.getNgayDangKy().isBefore(startOfMonth)) {
+                donThangNay++;
+            }
+        }
+
+        dto.setTongDon(tongDon);
+        dto.setDonHopLe(donHopLe);
+        dto.setDonHuy(donHuy);
+        dto.setDonThangNay(donThangNay);
+        dto.setTongChiTieu(tongChiTieu);
+        dto.setTongHoanTien(tongHoanTien);
+        dto.setTyLeCuocDung(tongDon > 0
+                ? Math.round(donHopLe * 1000.0 / tongDon) / 10.0 : 0.0);
+        return dto;
+    }
+
+    /**
+     * Danh sách địa chỉ giao hàng của khách
+     */
+    public List<com.exed.be.model.SoDiaChi> getDiaChi(String maNguoiDung) {
+        if (!nguoiDungRepository.existsById(maNguoiDung)) {
+            throw new RuntimeException("Người dùng không tồn tại: " + maNguoiDung);
+        }
+        return soDiaChiRepository.findByMaNguoiDung(maNguoiDung);
     }
 }

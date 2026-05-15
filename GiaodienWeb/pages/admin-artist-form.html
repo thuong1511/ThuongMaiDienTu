@@ -121,7 +121,7 @@
                             </div>
                         </div>
                         <div class="artist-photo-preview" id="photoPreview">
-                            <img src="../images/rose.jpg" alt="Preview" id="previewImg">
+                            <img src="../images/avt_rose.jpg" alt="Preview" id="previewImg">
                             <div class="artist-photo-overlay" onclick="document.getElementById('photoInput').click()">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -132,7 +132,7 @@
                             </div>
                         </div>
                         <input type="file" id="photoInput" accept="image/*" style="display:none">
-                        <p class="upload-hint" style="text-align:center;margin-top:10px;">JPG, PNG · Tỉ lệ 3:4 · Tối đa 5MB</p>
+                        <p class="upload-hint" style="text-align:center;margin-top:10px;">JPG, PNG · Tỉ lệ 3:4 · Tối đa 10MB</p>
                     </div>
 
                     <!-- Thông tin -->
@@ -146,46 +146,25 @@
                             </div>
                             <div>
                                 <h2 class="settings-section-title">Thông tin cơ bản</h2>
-                                <p class="settings-section-desc">Tên, loại và mô tả nghệ sĩ</p>
+                                <p class="settings-section-desc">Tên, nghề nghiệp và tiểu sử</p>
                             </div>
                         </div>
                         <div class="form-grid">
                             <div class="form-group">
+                                <label>Mã nghệ sĩ *</label>
+                                <input type="text" id="f-maNS" class="form-input" placeholder="VD: NS001" maxlength="5" required>
+                            </div>
+                            <div class="form-group">
                                 <label>Tên nghệ sĩ *</label>
-                                <input type="text" class="form-input" placeholder="VD: ROSÉ" value="ROSÉ" required>
+                                <input type="text" id="f-tenNS" class="form-input" placeholder="VD: ROSÉ" required>
                             </div>
                             <div class="form-group">
-                                <label>Loại *</label>
-                                <select class="form-input" required>
-                                    <option value="singer" selected>Ca sĩ</option>
-                                    <option value="actor">Diễn viên</option>
-                                    <option value="model">Người mẫu</option>
-                                    <option value="other">Khác</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Nhóm / Công ty</label>
-                                <input type="text" class="form-input" placeholder="VD: BLACKPINK, YG Entertainment" value="BLACKPINK">
-                            </div>
-                            <div class="form-group">
-                                <label>Quốc tịch</label>
-                                <input type="text" class="form-input" placeholder="VD: Hàn Quốc" value="Hàn Quốc">
+                                <label>Nghề nghiệp</label>
+                                <input type="text" id="f-ngheNghiep" class="form-input" placeholder="VD: Ca sĩ, Diễn viên...">
                             </div>
                             <div class="form-group full-width">
                                 <label>Tiểu sử ngắn</label>
-                                <textarea class="form-input form-textarea" rows="3" placeholder="Mô tả ngắn về nghệ sĩ...">Thành viên nhóm nhạc BLACKPINK, ca sĩ solo với album APT. nổi tiếng toàn cầu.</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Trạng thái hợp tác</label>
-                                <select class="form-input">
-                                    <option value="active" selected>Đang hợp tác</option>
-                                    <option value="pending">Chờ hợp tác</option>
-                                    <option value="ended">Đã kết thúc</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Ngày bắt đầu hợp tác</label>
-                                <input type="date" class="form-input" value="2024-01-15">
+                                <textarea id="f-moTa" class="form-input form-textarea" rows="4" placeholder="Mô tả ngắn về nghệ sĩ..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -206,32 +185,20 @@
                         </div>
                         <div>
                             <h2 class="settings-section-title">Mạng xã hội</h2>
-                            <p class="settings-section-desc">Link trang cá nhân của nghệ sĩ</p>
+                            <p class="settings-section-desc">Link trang cá nhân nổi bật của nghệ sĩ</p>
                         </div>
                     </div>
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Instagram</label>
-                            <input type="url" class="form-input" placeholder="https://instagram.com/..." value="https://instagram.com/roses_are_rosie">
-                        </div>
-                        <div class="form-group">
-                            <label>Facebook</label>
-                            <input type="url" class="form-input" placeholder="https://facebook.com/...">
-                        </div>
-                        <div class="form-group">
-                            <label>YouTube</label>
-                            <input type="url" class="form-input" placeholder="https://youtube.com/...">
-                        </div>
-                        <div class="form-group">
-                            <label>TikTok</label>
-                            <input type="url" class="form-input" placeholder="https://tiktok.com/@...">
+                        <div class="form-group full-width">
+                            <label>Link MXH</label>
+                            <input type="url" id="f-linkMXH" class="form-input" placeholder="https://instagram.com/...">
                         </div>
                     </div>
                 </div>
 
                 <!-- Actions -->
                 <div class="campaign-form-actions">
-                    <button type="button" class="btn-secondary-admin" style="color:#f44336;border-color:#f44336;" onclick="if(confirm('Xóa nghệ sĩ này?'))alert('Đã xóa!')">
+                    <button type="button" class="btn-secondary-admin" id="btn-delete" style="color:#f44336;border-color:#f44336;display:none;">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -239,7 +206,7 @@
                         Xóa nghệ sĩ
                     </button>
                     <button type="button" class="btn-secondary-admin" onclick="history.back()">Hủy</button>
-                    <button type="submit" class="btn-primary-admin" onclick="alert('Đã lưu!')">
+                    <button type="submit" class="btn-primary-admin" id="btn-submit">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                             <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -253,26 +220,133 @@
         </main>
     </div>
 
-    <script src="../js/data.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/admin.js"></script>
+    <script src="../js/admin-api.js"></script>
     <script>
-        auth.requireAdmin();
-        // Preview ảnh khi chọn file
-        document.getElementById('photoInput').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => document.getElementById('previewImg').src = e.target.result;
-                reader.readAsDataURL(file);
-            }
-        });
-        // Edit mode
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('mode') === 'edit') {
+    const params = new URLSearchParams(window.location.search);
+    const editingId = params.get('id');
+    const isEdit = params.get('mode') === 'edit' && editingId;
+
+    /** Đường dẫn ảnh đã upload (chưa save trong DB nếu create mode) */
+    let pendingAvatarPath = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (isEdit) {
             document.getElementById('formTitle').textContent = 'CHỈNH SỬA NGHỆ SĨ';
             document.title = 'Chỉnh sửa nghệ sĩ - Admin EXED';
+            document.getElementById('btn-delete').style.display = '';
         }
+
+        await initAdminHeader();
+
+        if (isEdit) {
+            await loadNgheSi(editingId);
+        } else {
+            try {
+                const r = await adminApi.getNextMaNgheSi();
+                if (r.success) document.getElementById('f-maNS').value = r.data;
+            } catch (_) {}
+        }
+
+        document.getElementById('photoInput').addEventListener('change', onPickAvatar);
+        document.getElementById('artistForm').addEventListener('submit', onSubmit);
+        document.getElementById('btn-delete').addEventListener('click', onDelete);
+    });
+
+    /** Load nghệ sĩ + ảnh */
+    async function loadNgheSi(id) {
+        try {
+            const r = await adminApi.getNgheSiById(id);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const ns = r.data;
+            document.getElementById('f-maNS').value = ns.maNgheSi || '';
+            document.getElementById('f-maNS').readOnly = true;
+            document.getElementById('f-tenNS').value = ns.tenNgheSi || '';
+            document.getElementById('f-ngheNghiep').value = ns.ngheNghiep || '';
+            document.getElementById('f-moTa').value = ns.moTa || '';
+            document.getElementById('f-linkMXH').value = ns.linkMXH || '';
+
+            const img = document.getElementById('previewImg');
+            img.src = avatarNgheSi(ns);
+            img.onerror = () => { img.src = '../images/avt_rose.jpg'; };
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
+
+    /** Khi user chọn ảnh — upload luôn lên BE */
+    async function onPickAvatar(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) {
+            showToast('Ảnh vượt quá 10MB', 'error');
+            return;
+        }
+        // Preview client-side trước
+        const reader = new FileReader();
+        reader.onload = ev => document.getElementById('previewImg').src = ev.target.result;
+        reader.readAsDataURL(file);
+        // Upload lên BE
+        try {
+            const r = await adminApi.uploadFile(file, 'nghesi');
+            if (!r.success) { showToast(r.message || 'Upload thất bại', 'error'); return; }
+            pendingAvatarPath = r.data.duongDan;
+            showToast('Đã tải ảnh lên');
+        } catch (err) {
+            showToast('Lỗi upload: ' + err.message, 'error');
+        }
+        e.target.value = '';
+    }
+
+    async function onSubmit(e) {
+        e.preventDefault();
+        const payload = {
+            maNgheSi: document.getElementById('f-maNS').value.trim().toUpperCase(),
+            tenNgheSi: document.getElementById('f-tenNS').value.trim(),
+            ngheNghiep: document.getElementById('f-ngheNghiep').value.trim(),
+            moTa: document.getElementById('f-moTa').value.trim(),
+            linkMXH: document.getElementById('f-linkMXH').value.trim()
+        };
+        if (!payload.maNgheSi) return showToast('Thiếu mã nghệ sĩ', 'error');
+        if (!payload.tenNgheSi) return showToast('Thiếu tên nghệ sĩ', 'error');
+
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        try {
+            const res = isEdit
+                ? await adminApi.updateNgheSi(editingId, payload)
+                : await adminApi.createNgheSi(payload);
+            if (!res.success) {
+                showToast(res.message || 'Lưu thất bại', 'error');
+                btn.disabled = false;
+                return;
+            }
+            const savedId = isEdit ? editingId : res.data.maNgheSi;
+
+            // Cập nhật ảnh đại diện nếu có
+            if (pendingAvatarPath) {
+                await adminApi.capNhatAnhDaiDienNgheSi(savedId, pendingAvatarPath);
+            }
+
+            showToast(isEdit ? 'Cập nhật thành công' : 'Thêm nghệ sĩ thành công');
+            setTimeout(() => { window.location.href = 'admin-artists.html'; }, 700);
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+            btn.disabled = false;
+        }
+    }
+
+    async function onDelete() {
+        if (!editingId) return;
+        if (!confirm('Xóa nghệ sĩ này? Không thể hoàn tác.')) return;
+        try {
+            const r = await adminApi.deleteNgheSi(editingId);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            showToast('Đã xóa');
+            setTimeout(() => { window.location.href = 'admin-artists.html'; }, 700);
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    }
     </script>
 </body>
 </html>

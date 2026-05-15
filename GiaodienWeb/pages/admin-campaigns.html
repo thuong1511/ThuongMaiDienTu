@@ -192,11 +192,7 @@
     let allChienDich = [];
 
     document.addEventListener('DOMContentLoaded', async function () {
-        const adminProfile = document.querySelector('.admin-profile');
-        if (adminProfile) {
-            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
-            document.addEventListener('click', () => adminProfile.classList.remove('active'));
-        }
+        await initAdminHeader();
         await loadChienDich();
         setupFilters();
     });

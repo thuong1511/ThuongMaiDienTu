@@ -104,24 +104,24 @@
             <div class="content-section cus-profile-card">
                 <div class="cus-avatar-wrap">
                     <img src="../images/avt_rose.jpg" alt="Avatar" class="cus-avatar" id="cus-avatar-img">
-                    <span class="status-badge success">Hoạt động</span>
+                    <span class="status-badge success" id="cus-status-badge">Hoạt động</span>
                 </div>
                 <div class="cus-profile-info">
-                    <h2 class="cus-name">Nguyễn Văn A</h2>
-                    <p class="cus-id">#CUS001</p>
+                    <h2 class="cus-name" id="cus-name">—</h2>
+                    <p class="cus-id" id="cus-id">#—</p>
                     <div class="cus-info-grid">
                         <div class="cus-info-item">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
-                            <span>customer@example.com</span>
+                            <span id="cus-email">—</span>
                         </div>
                         <div class="cus-info-item">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
                             </svg>
-                            <span>0901234567</span>
+                            <span id="cus-phone">—</span>
                         </div>
                         <div class="cus-info-item">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -130,31 +130,24 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>Tham gia: 15/01/2024</span>
+                            <span id="cus-joined">—</span>
                         </div>
                         <div class="cus-info-item">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
-                            <span>Hà Nội, Việt Nam</span>
+                            <span id="cus-address">—</span>
                         </div>
                     </div>
                 </div>
                 <div class="cus-actions">
-                    <button class="btn-primary-admin">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                        Chỉnh sửa
-                    </button>
-                    <button class="btn-secondary-admin" style="color:#f44336;border-color:#f44336;" onclick="if(confirm('Khóa tài khoản này?'))alert('Đã khóa!')">
+                    <button class="btn-secondary-admin" id="btn-toggle-status" style="color:#f44336;border-color:#f44336;">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        Khóa tài khoản
+                        <span id="btn-toggle-label">Khóa tài khoản</span>
                     </button>
                 </div>
             </div>
@@ -170,8 +163,8 @@
                         </div>
                         <div class="stat-info">
                             <h3>Tổng đơn hàng</h3>
-                            <p class="stat-value">5</p>
-                            <span class="stat-change positive">+2 tháng này</span>
+                            <p class="stat-value" id="s-tongDon">—</p>
+                            <span class="stat-change positive" id="s-donThangNay">—</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -183,7 +176,7 @@
                         </div>
                         <div class="stat-info">
                             <h3>Tổng chi tiêu</h3>
-                            <p class="stat-value">125M đ</p>
+                            <p class="stat-value" id="s-tongChiTieu">—</p>
                             <span class="stat-change">Tích lũy</span>
                         </div>
                     </div>
@@ -196,8 +189,8 @@
                         </div>
                         <div class="stat-info">
                             <h3>Tỷ lệ cược đúng</h3>
-                            <p class="stat-value">80%</p>
-                            <span class="stat-change positive">4/5 đơn</span>
+                            <p class="stat-value" id="s-tyLe">—</p>
+                            <span class="stat-change positive" id="s-donHopLe">—</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -209,7 +202,7 @@
                         </div>
                         <div class="stat-info">
                             <h3>Tổng hoàn tiền</h3>
-                            <p class="stat-value">20.6M đ</p>
+                            <p class="stat-value" id="s-tongHoan">—</p>
                             <span class="stat-change">Đã nhận</span>
                         </div>
                     </div>
@@ -232,27 +225,8 @@
                                 <th>Trạng thái</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>#CD2024001</strong></td>
-                                <td>PARK BO GUM X EXED</td>
-                                <td>1000–1200</td>
-                                <td>2</td>
-                                <td>58.200.000 đ</td>
-                                <td>20.600.000 đ</td>
-                                <td>15/02/2026</td>
-                                <td><span class="status-badge success">Đã giao</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>#CD2024002</strong></td>
-                                <td>ROSÉ X EXED</td>
-                                <td>800–999</td>
-                                <td>1</td>
-                                <td>29.350.000 đ</td>
-                                <td>—</td>
-                                <td>25/03/2026</td>
-                                <td><span class="status-badge ongoing">Đang diễn ra</span></td>
-                            </tr>
+                        <tbody id="tbody-lichsu">
+                            <tr><td colspan="8" style="text-align:center;padding:30px;">Đang tải...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -261,20 +235,8 @@
             <!-- Địa chỉ giao hàng -->
             <div class="content-section">
                 <h2 class="section-title">Địa chỉ giao hàng</h2>
-                <div class="address-list">
-                    <div class="address-item">
-                        <div class="address-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                        </div>
-                        <div class="address-body">
-                            <p class="address-name">Nguyễn Văn A · 0901234567</p>
-                            <p class="address-text">123 Đường Láng, Đống Đa, Hà Nội</p>
-                        </div>
-                        <span class="address-default">Mặc định</span>
-                    </div>
+                <div class="address-list" id="address-list">
+                    <p style="text-align:center;padding:20px;color:#888;">Đang tải...</p>
                 </div>
             </div>
 
@@ -283,88 +245,157 @@
 
     <script src="../js/admin-api.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-        const adminProfile = document.querySelector('.admin-profile');
-        if (adminProfile) {
-            adminProfile.addEventListener('click', e => { e.stopPropagation(); adminProfile.classList.toggle('active'); });
-            document.addEventListener('click', () => adminProfile.classList.remove('active'));
+    const params = new URLSearchParams(window.location.search);
+    const khId = params.get('id');
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initAdminHeader();
+
+        if (!khId) { showToast('Thiếu mã khách hàng', 'error'); return; }
+
+        await Promise.all([loadInfo(), loadThongKe(), loadLichSu(), loadDiaChi()]);
+    });
+
+    /** 1. Profile cơ bản + nút khóa/mở khóa */
+    async function loadInfo() {
+        try {
+            const r = await adminApi.getKhachHangById(khId);
+            if (!r.success) { showToast(r.message, 'error'); return; }
+            const nd = r.data;
+
+            document.getElementById('cus-name').textContent = nd.tenDangNhap || '—';
+            document.getElementById('cus-id').textContent = '#' + (nd.maNguoiDung || '—');
+            document.getElementById('cus-email').textContent = nd.email || '—';
+            document.getElementById('cus-phone').textContent = nd.soDienThoai || '—';
+            document.getElementById('cus-joined').textContent = 'Tham gia: ' + fmtDate(nd.ngayTao);
+
+            // Status badge
+            const badge = document.getElementById('cus-status-badge');
+            const cls = nd.trangThai === 'Hoạt động' ? 'success' : 'failed';
+            badge.className = 'status-badge ' + cls;
+            badge.textContent = nd.trangThai || '—';
+
+            // Toggle button
+            const btn = document.getElementById('btn-toggle-status');
+            const lbl = document.getElementById('btn-toggle-label');
+            const action = nd.trangThai === 'Hoạt động' ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+            lbl.textContent = action;
+            btn.onclick = async () => {
+                if (!confirm(`${action}?`)) return;
+                const r2 = await adminApi.toggleTrangThaiKhachHang(khId);
+                if (r2.success) { showToast('Đã cập nhật trạng thái'); loadInfo(); }
+                else showToast(r2.message, 'error');
+            };
+        } catch (e) {
+            showToast('Lỗi tải thông tin: ' + e.message, 'error');
         }
+    }
 
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        if (!id) return;
-
-        // ── Load thông tin khách hàng ──────────────────────────
+    /** 2. 4 thẻ stat */
+    async function loadThongKe() {
         try {
-            const res = await adminApi.getKhachHangById(id);
-            if (!res.success) { showToast(res.message, 'error'); return; }
-            const nd = res.data;
+            const r = await adminApi.getThongKeKhachHang(khId);
+            if (!r.success) return;
+            const t = r.data;
+            document.getElementById('s-tongDon').textContent = Number(t.tongDon || 0).toLocaleString('vi-VN');
+            document.getElementById('s-donThangNay').textContent =
+                (t.donThangNay > 0 ? '+' : '') + (t.donThangNay || 0) + ' tháng này';
+            document.getElementById('s-tongChiTieu').textContent = fmtMoney(t.tongChiTieu);
+            document.getElementById('s-tyLe').textContent = (t.tyLeCuocDung || 0) + '%';
+            document.getElementById('s-donHopLe').textContent =
+                `${t.donHopLe || 0}/${t.tongDon || 0} đơn`;
+            document.getElementById('s-tongHoan').textContent = fmtMoney(t.tongHoanTien);
+        } catch (e) {
+            console.error('ThongKe error:', e);
+        }
+    }
 
-            document.querySelector('.cus-name').textContent = nd.tenDangNhap;
-            document.querySelector('.cus-id').textContent = '#' + nd.maNguoiDung;
-            document.querySelector('.cus-info-item:nth-child(1) span').textContent = nd.email;
-            document.querySelector('.cus-info-item:nth-child(2) span').textContent = nd.soDienThoai || '—';
-            document.querySelector('.cus-info-item:nth-child(3) span').textContent =
-                'Tham gia: ' + fmtDate(nd.ngayTao);
-            document.querySelector('.status-badge').outerHTML = trangThaiBadge(nd.trangThai);
-
-            // Nút khóa/mở khóa
-            const btnToggle = document.querySelector('.btn-secondary-admin[onclick*="Khóa"]');
-            if (btnToggle) {
-                const action = nd.trangThai === 'Hoạt động' ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
-                btnToggle.querySelector('span') && (btnToggle.querySelector('span').textContent = action);
-                btnToggle.onclick = async () => {
-                    if (!confirm(`${action}?`)) return;
-                    const r = await adminApi.toggleTrangThaiKhachHang(id);
-                    if (r.success) { showToast('Đã cập nhật'); location.reload(); }
-                    else showToast(r.message, 'error');
-                };
+    /** 3. Bảng lịch sử đơn hàng */
+    async function loadLichSu() {
+        const tb = document.getElementById('tbody-lichsu');
+        try {
+            const r = await adminApi.getLichSuDangKy(khId);
+            if (!r.success) {
+                tb.innerHTML = `<tr><td colspan="8" style="text-align:center;color:red;">${r.message}</td></tr>`;
+                return;
             }
-        } catch (e) { console.error(e); }
-
-        // ── Load lịch sử đăng ký ──────────────────────────────
-        try {
-            const res = await adminApi.getLichSuDangKy(id);
-            if (!res.success) return;
-            const list = res.data;
-
-            // Cập nhật stats
-            const active = list.filter(dk => !dk.daHuy);
-            const tongTien = active.reduce((s, dk) => s + (dk.thanhToan?.soTienThanhToan || 0), 0);
-            const tongHoan = list.filter(dk => dk.trangThaiHoanTien)
-                .reduce((s, dk) => s + (dk.thanhToan?.soTienThanhToan || 0), 0);
-
-            const statVals = document.querySelectorAll('.stat-value');
-            if (statVals[0]) statVals[0].textContent = list.length;
-            if (statVals[1]) statVals[1].textContent = fmtMoney(tongTien);
-            if (statVals[2]) statVals[2].textContent = list.length > 0
-                ? Math.round(active.length / list.length * 100) + '%' : '0%';
-            if (statVals[3]) statVals[3].textContent = fmtMoney(tongHoan);
-
-            // Bảng lịch sử
-            const tbody = document.querySelector('.admin-table tbody');
-            if (!tbody) return;
-            if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;">Chưa có đơn hàng</td></tr>'; return; }
-            tbody.innerHTML = list.map(dk => {
+            const list = (r.data || []).slice().sort((a, b) =>
+                new Date(b.ngayDangKy || 0) - new Date(a.ngayDangKy || 0));
+            if (!list.length) {
+                tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#888;">Chưa có đơn hàng</td></tr>';
+                return;
+            }
+            tb.innerHTML = list.map(dk => {
                 const tt = dk.thanhToan || {};
                 const cd = dk.chienDich || {};
                 const bg = dk.bangGiaBacThang || {};
-                const statusCls = dk.daHuy ? 'failed' : 'success';
-                const statusTxt = dk.daHuy ? 'Đã hủy' : 'Đang xử lý';
+                let cls = 'success', txt = 'Đang xử lý';
+                if (dk.daHuy) {
+                    cls = dk.trangThaiHoanTien ? 'pending' : 'failed';
+                    txt = dk.trangThaiHoanTien ? 'Đã hoàn tiền' : 'Đã hủy';
+                }
+                const moc = (bg.soLuongToiThieu != null && bg.soLuongToiDa != null)
+                    ? `${bg.soLuongToiThieu}–${bg.soLuongToiDa}` : '—';
                 return `
                 <tr>
                     <td><strong>#DK${dk.maDangKy}</strong></td>
                     <td>${cd.tenChienDich || cd.maChienDich || '—'}</td>
-                    <td>${bg.soLuongToiThieu || '—'}–${bg.soLuongToiDa || '—'}</td>
-                    <td>${dk.tongSoLuong}</td>
+                    <td>${moc}</td>
+                    <td>${dk.tongSoLuong || 0}</td>
                     <td>${fmtMoney(tt.soTienThanhToan)}</td>
                     <td>${dk.trangThaiHoanTien ? fmtMoney(tt.soTienThanhToan) : '—'}</td>
                     <td>${fmtDate(dk.ngayDangKy)}</td>
-                    <td><span class="status-badge ${statusCls}">${statusTxt}</span></td>
+                    <td><span class="status-badge ${cls}">${txt}</span></td>
                 </tr>`;
             }).join('');
-        } catch (e) { console.error(e); }
-    });
+        } catch (e) {
+            tb.innerHTML = `<tr><td colspan="8" style="text-align:center;color:red;">Lỗi: ${e.message}</td></tr>`;
+        }
+    }
+
+    /** 4. Danh sách địa chỉ giao hàng */
+    async function loadDiaChi() {
+        const wrap = document.getElementById('address-list');
+        try {
+            const r = await adminApi.getDiaChiKhachHang(khId);
+            if (!r.success) {
+                wrap.innerHTML = `<p style="text-align:center;padding:20px;color:red;">${r.message}</p>`;
+                return;
+            }
+            const list = r.data || [];
+            if (!list.length) {
+                wrap.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Chưa có địa chỉ</p>';
+                return;
+            }
+
+            // Đặt địa chỉ đầu tiên (hoặc mặc định) làm hiển thị ở header
+            const def = list.find(a => a.macDinh) || list[0];
+            if (def) {
+                const parts = [def.diaChiChiTiet, def.tenPhuongXa, def.tenTinhThanh].filter(Boolean);
+                document.getElementById('cus-address').textContent = parts.join(', ');
+            }
+
+            wrap.innerHTML = list.map(a => {
+                const parts = [a.diaChiChiTiet, a.tenPhuongXa, a.tenTinhThanh].filter(Boolean);
+                return `
+                <div class="address-item">
+                    <div class="address-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div class="address-body">
+                        <p class="address-name">${a.hoTen || '—'} · ${a.soDienThoai || '—'}</p>
+                        <p class="address-text">${parts.join(', ') || '—'}</p>
+                    </div>
+                    ${a.macDinh ? '<span class="address-default">Mặc định</span>' : ''}
+                </div>`;
+            }).join('');
+        } catch (e) {
+            wrap.innerHTML = `<p style="text-align:center;padding:20px;color:red;">Lỗi: ${e.message}</p>`;
+        }
+    }
     </script>
 
 </body>
