@@ -78,6 +78,15 @@ const api = {
     return this.fetchData(`/sanpham/${id}`);
   },
 
+  // Đơn hàng APIs
+  async getDonHangByUserId(userId) {
+    return this.fetchData(`/donhang/nguoidung/${userId}`);
+  },
+
+  async getDonHangById(maDonHang) {
+    return this.fetchData(`/donhang/${maDonHang}`);
+  },
+
   // ── Admin APIs ──────────────────────────────────────────────
   async adminGetDashboard() {
     return this.fetchData('/admin/dashboard');

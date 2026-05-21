@@ -902,4 +902,11 @@ select * from HinhAnhChienDich
 select * from HinhAnhSanPham
 select * from ChienDich
 select * from SoDiaChi
-select * from ThanhToan
+select * from ChienDich
+select * from DanhGia
+Select * from DonHang
+select * from DangKyChienDich
+
+UPDATE ChienDich
+SET ngayKetThuc = '2026-05-16 23:21:59'
+WHERE maChienDich = 'CD008';
