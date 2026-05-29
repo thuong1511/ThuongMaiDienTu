@@ -63,13 +63,17 @@ public class AdminSanPhamService {
         if (sanPhamRepository.existsById(req.getMaSanPham())) {
             throw new RuntimeException("Mã sản phẩm đã tồn tại: " + req.getMaSanPham());
         }
-        if (req.getMaDanhMuc() == null || !danhMucRepository.existsById(req.getMaDanhMuc())) {
-            throw new RuntimeException("Danh mục không tồn tại: " + req.getMaDanhMuc());
+        if (req.getMaDanhMuc() == null || req.getMaDanhMuc().isBlank()) {
+            throw new RuntimeException("Thiếu mã danh mục");
         }
+        
+        // Lấy DanhMuc object từ database
+        DanhMuc danhMuc = danhMucRepository.findById(req.getMaDanhMuc())
+                .orElseThrow(() -> new RuntimeException("Danh mục không tồn tại: " + req.getMaDanhMuc()));
 
         SanPham sp = new SanPham();
         sp.setMaSanPham(req.getMaSanPham().trim().toUpperCase());
-        sp.setMaDanhMuc(req.getMaDanhMuc());
+        sp.setDanhMuc(danhMuc);  // Set object DanhMuc thay vì string
         sp.setTenSanPham(req.getTenSanPham());
         sp.setMoTa(req.getMoTa());
         sanPhamRepository.save(sp);
@@ -86,10 +90,9 @@ public class AdminSanPhamService {
         if (req.getTenSanPham() != null) sp.setTenSanPham(req.getTenSanPham());
         if (req.getMoTa() != null) sp.setMoTa(req.getMoTa());
         if (req.getMaDanhMuc() != null) {
-            if (!danhMucRepository.existsById(req.getMaDanhMuc())) {
-                throw new RuntimeException("Danh mục không tồn tại: " + req.getMaDanhMuc());
-            }
-            sp.setMaDanhMuc(req.getMaDanhMuc());
+            DanhMuc danhMuc = danhMucRepository.findById(req.getMaDanhMuc())
+                    .orElseThrow(() -> new RuntimeException("Danh mục không tồn tại: " + req.getMaDanhMuc()));
+            sp.setDanhMuc(danhMuc);  // Set object DanhMuc
         }
         sanPhamRepository.save(sp);
 

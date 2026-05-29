@@ -14,6 +14,9 @@ public class MauSac {
     @Column(name = "tenMau", length = 50, nullable = false)
     private String tenMau;
     
+    @Column(name = "maHexa", length = 7)
+    private String maHexa;
+    
     // Getters and Setters
     public Integer getMaMau() {
         return maMau;
@@ -29,5 +32,13 @@ public class MauSac {
     
     public void setTenMau(String tenMau) {
         this.tenMau = tenMau;
+    }
+    
+    public String getMaHexa() {
+        return maHexa;
+    }
+    
+    public void setMaHexa(String maHexa) {
+        this.maHexa = maHexa;
     }
 }

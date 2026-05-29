@@ -40,9 +40,13 @@ public class AdminMauSacController {
         Map<String, Object> response = new HashMap<>();
         try {
             String tenMau = (String) body.get("tenMau");
+            String maHexa = (String) body.get("maHexa");
             if (tenMau == null || tenMau.isBlank()) throw new RuntimeException("Thiếu tenMau");
             MauSac m = new MauSac();
             m.setTenMau(tenMau.trim());
+            if (maHexa != null && !maHexa.isBlank()) {
+                m.setMaHexa(maHexa.trim());
+            }
             m = mauSacRepository.save(m);
             response.put("success", true);
             response.put("message", "Thêm màu thành công");
@@ -63,7 +67,9 @@ public class AdminMauSacController {
             MauSac m = mauSacRepository.findById(maMau)
                     .orElseThrow(() -> new RuntimeException("Màu không tồn tại"));
             String tenMau = (String) body.get("tenMau");
+            String maHexa = (String) body.get("maHexa");
             if (tenMau != null && !tenMau.isBlank()) m.setTenMau(tenMau.trim());
+            if (maHexa != null && !maHexa.isBlank()) m.setMaHexa(maHexa.trim());
             mauSacRepository.save(m);
             response.put("success", true);
             response.put("data", m);

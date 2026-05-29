@@ -355,14 +355,16 @@ const adminApi = {
     getAllMauSac() {
         return this._fetch(`${ADMIN_API_BASE}/mausac`);
     },
-    createMauSac(tenMau) {
+    createMauSac(tenMau, maHexa = '#000000') {
         return this._fetch(`${ADMIN_API_BASE}/mausac`, {
-            method: 'POST', body: JSON.stringify({ tenMau })
+            method: 'POST', body: JSON.stringify({ tenMau, maHexa })
         });
     },
-    updateMauSac(maMau, tenMau) {
+    updateMauSac(maMau, tenMau, maHexa) {
+        const body = { tenMau };
+        if (maHexa) body.maHexa = maHexa;
         return this._fetch(`${ADMIN_API_BASE}/mausac/${maMau}`, {
-            method: 'PUT', body: JSON.stringify({ tenMau })
+            method: 'PUT', body: JSON.stringify(body)
         });
     },
     deleteMauSac(maMau) {

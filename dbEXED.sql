@@ -103,7 +103,8 @@ CREATE TABLE DanhMuc (
 -- 9. MauSac
 CREATE TABLE MauSac (
     maMau   INT PRIMARY KEY IDENTITY(1,1),
-    tenMau  NVARCHAR(50) NOT NULL
+    tenMau  NVARCHAR(50) NOT NULL,
+    maHexa  VARCHAR(7) DEFAULT '#000000'
 );
 
 -- 10. KichThuoc
@@ -463,12 +464,14 @@ GO
 -- ============================================================
 -- 8. MauSac
 -- ============================================================
-INSERT INTO MauSac (tenMau) VALUES
-(N'Đen'),       -- maMau = 1
-(N'Trắng'),     -- maMau = 2
-(N'Xanh Navy'), -- maMau = 3
-(N'Đỏ'),        -- maMau = 4
-(N'Xám');       -- maMau = 5
+-- 8. MauSac
+-- ============================================================
+INSERT INTO MauSac (tenMau, maHexa) VALUES
+(N'Đen',       '#000000'),  -- maMau = 1
+(N'Trắng',     '#FFFFFF'),  -- maMau = 2
+(N'Xanh Navy', '#001F3F'),  -- maMau = 3
+(N'Đỏ',        '#FF0000'),  -- maMau = 4
+(N'Xám',       '#808080');  -- maMau = 5
 GO
  
 -- ============================================================
@@ -522,18 +525,17 @@ INSERT INTO SanPham_KichThuoc (maSanPham, maSize) VALUES
 
 GO
  
--- ============================================================
--- ============================================================
+
 -- 14. ChienDich
 -- ============================================================
 INSERT INTO ChienDich (maChienDich, maSanPham, maNgheSi, tenChienDich,
                        thoiDiem, ngayBatDau, ngayKetThuc,
                        nguongMOQ, nguongToiDa, phiThamGia, giaGoc, tongSoLuongHienTai, nguoiThamGia) VALUES
 ('CD001', 'SP001', 'NS001', N'ROSÉ X EXED', 
- N'Đang diễn ra', '2026-05-05 14:00:00', '2026-05-15 23:59:59', 
+ N'Đang diễn ra', '2026-25-05 14:00:00', '2026-10-06 23:59:59', 
  100, 1200, 500000, 28850000, 914,911),
  ('CD002', 'SP002', 'NS004', N'JENNIE X EXED', 
- N'Đang diễn ra', '2026-05-05 09:00:00', '2026-05-25 23:59:59', 
+ N'Đang diễn ra', '2026-25-05 09:00:00', '2026-10-06 23:59:59', 
  50, 1000, 500000, 15500000, 870,800); 
 GO
 
@@ -691,25 +693,6 @@ INSERT INTO SanPham_KichThuoc (maSanPham, maSize) VALUES
 GO
 
 -- ============================================================
--- PHẦN 5: CHIẾN DỊCH (CD003–CD011)
--- Mốc thời gian: hôm nay = 10/04/2026
---
--- ĐÃ KẾT THÚC (3):
---   CD003 Lisa    - Thất bại  (kết thúc 31/03, tổng < MOQ)
---   CD004 Jisoo   - Thành công (kết thúc 05/04, tổng >= MOQ)
---   CD005 Ji Chang Wook - Thành công (kết thúc 08/04, tổng >= MOQ)
---
--- ĐANG DIỄN RA (4):
---   CD006 Park Bo Gum  (01/04 – 20/04)
---   CD007 Go Youn Jung (05/04 – 25/04)
---   CD008 Kim Ji Won   (08/04 – 30/04)
---   CD009 Chương Nhược Nam (10/04 – 05/05)
---
--- SẮP BẮT ĐẦU (3):
---   CD010 Namtan   (15/04 – 05/05)
---   CD011 Sieun    (20/04 – 10/05)
---   CD011 Martin   (25/04 – 15/05)
--- ============================================================
 
 INSERT INTO ChienDich (
     maChienDich, maSanPham, maNgheSi, tenChienDich,
@@ -748,28 +731,28 @@ INSERT INTO ChienDich (
 -- CD006: Park Bo Gum x Fila Disruptor
 ('CD006','SP006','NS006', N'PARK BO GUM X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-01 00:00:00', '2026-05-20 23:59:59',
+ '2026-05-15 00:00:00', '2026-05-31 23:59:59',
  200, 800, 400000, 1950000,
  25, 20),
 
 -- CD007: Go Youn Jung x Nike AF1 Shadow
 ('CD007','SP007','NS007', N'GO YOUN JUNG X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-03 00:00:00', '2026-05-25 23:59:59',
+ '2026-05-20 00:00:00', '2026-06-04 23:59:59',
  500, 1000, 500000, 2800000,
  930, 900),
 
 -- CD008: Kim Ji Won x Converse Chuck 70
 ('CD008','SP008','NS008', N'KIM JI WON X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-04 00:00:00', '2026-05-30 23:59:59',
+ '2026-05-24 00:00:00', '2026-06-07 23:59:59',
  400, 1000, 450000, 1750000,
  930, 880),
 
 -- CD009: Chương Nhược Nam x Li-Ning Wade
 ('CD009','SP011','NS011', N'CHƯƠNG NHƯỢC NAM X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-01 00:00:00', '2026-05-15 23:59:59',
+ '2026-05-16 00:00:00', '2026-06-01 23:59:59',
  300, 1200, 350000, 650000,
  1030, 990),
 
@@ -778,13 +761,13 @@ INSERT INTO ChienDich (
 -- CD010: Namtan x Vans Old Skool
 ('CD010','SP009','NS009', N'NAMTAN X EXED',
  N'Sắp bắt đầu', NULL,
- '2026-05-15 00:00:00', '2026-06-05 23:59:59',
+ '2026-06-08 00:00:00', '2026-06-22 23:59:59',
  200, 800, 400000, 2100000,
  0, 0),
 -- CD011: Martin x Dickies Heavyweight
 ('CD011','SP012','NS012', N'MARTIN X EXED',
  N'Sắp bắt đầu', NULL,
- '2026-05-25 00:00:00', '2026-06-15 23:59:59',
+ '2026-06-09 00:00:00', '2026-06-23 23:59:59',
  150, 500, 250000, 550000,
  0, 0);
 GO
@@ -907,6 +890,7 @@ select * from DanhGia
 Select * from DonHang
 select * from DangKyChienDich
 
+-- Cập nhật ngày kết thúc về tương lai (sau ngày hiện tại: May 29, 2026)
 UPDATE ChienDich
-SET ngayKetThuc = '2026-05-16 23:21:59'
+SET ngayKetThuc = '2026-06-07 23:59:59'
 WHERE maChienDich = 'CD008';

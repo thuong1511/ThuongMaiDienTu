@@ -169,7 +169,7 @@
                             </svg>
                         </div>
                         <p class="upload-text">Kéo thả ảnh vào đây hoặc <span class="upload-link">chọn file</span></p>
-                        <p class="upload-hint">PNG, JPG · Tối đa 10MB mỗi ảnh</p>
+                        <p class="upload-hint">PNG, JPG · Tối đa 10MB mỗi ảnh · <strong style="color: var(--accent-gold);">Bắt buộc: 2-3 ảnh</strong></p>
                     </div>
                     <div class="image-preview-grid" id="imagePreview" style="margin-top: 16px;"></div>
                 </div>
@@ -185,26 +185,32 @@
                         </div>
                         <div>
                             <h3 class="settings-section-title">Màu sắc &amp; Số lượng</h3>
-                            <p class="settings-section-desc">Chọn màu có sẵn hoặc tạo mới + số lượng tối đa</p>
+                            <p class="settings-section-desc">Chọn màu và nhập số lượng tối đa (chỉ màu có số lượng > 0 được lưu)</p>
                         </div>
                     </div>
                     <div class="variants-section">
-                        <div class="tier-table">
-                            <div class="tier-header">
-                                <span>Màu</span>
-                                <span>Tên (nếu mới)</span>
-                                <span>Số lượng tối đa</span>
-                                <span></span>
+                        <div style="display: flex; gap: 16px; align-items: flex-start;">
+                            <div class="color-table-wrapper" style="flex: 1;">
+                                <table class="color-table" id="colorTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">Màu</th>
+                                            <th style="width: 120px;">Tên màu</th>
+                                            <th style="width: 120px;">Số lượng</th>
+                                            <th style="width: 60px;">Xóa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="colorTableBody">
+                                        <tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Đang tải...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="pricing-tiers" id="colorTiers">
-                                <!-- rows dynamic -->
-                            </div>
-                            <button type="button" class="btn-add-tier" id="btn-add-color">
+                            <button type="button" class="btn-add-tier" id="btn-add-color" style="margin: 0; white-space: nowrap; height: fit-content;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                 </svg>
-                                Thêm màu
+                                Thêm màu mới
                             </button>
                         </div>
                     </div>
@@ -235,7 +241,7 @@
                     <button type="button" class="btn-secondary-admin" onclick="window.location.href='admin-products.html'">
                         Hủy
                     </button>
-                    <button type="submit" class="btn-primary-admin" id="btn-submit">
+                    <button type="submit" class="btn-primary-admin" id="btn-submit" style="cursor: pointer;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                             <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -247,6 +253,141 @@
             </form>
         </main>
     </div>
+
+    <!-- Modal: Thêm màu mới -->
+    <div id="addColorModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3>Thêm màu mới</h3>
+                <button type="button" class="modal-close" onclick="closeAddColorModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tên màu *</label>
+                    <input type="text" id="newColorName" class="form-input" placeholder="VD: Xanh lá" required>
+                </div>
+                <div class="form-group">
+                    <label>Chọn màu *</label>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="position: relative;">
+                            <input type="color" id="newColorPicker" value="#000000" 
+                                   style="width: 80px; height: 80px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; color: #666; margin-bottom: 4px; display: block;">Mã màu (Hex)</label>
+                            <input type="text" id="newColorHex" class="form-input" value="#000000" 
+                                   placeholder="#000000" maxlength="7" 
+                                   style="font-family: monospace; text-transform: uppercase;">
+                        </div>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top: 8px;">
+                        💡 Click vào ô màu để chọn hoặc nhập mã hex (VD: #FF0000)
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary-admin" onclick="closeAddColorModal()">Hủy</button>
+                <button type="button" class="btn-primary-admin" onclick="saveNewColor()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Lưu màu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .color-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            max-width: 500px;
+        }
+        .color-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .color-table thead {
+            background: #f8f8f8;
+        }
+        .color-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .color-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        .color-table tbody tr:hover {
+            background: #fafafa;
+        }
+        .color-preview {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            display: inline-block;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #888;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
 
     <script src="../js/admin-api.js"></script>
     <script>
@@ -278,13 +419,23 @@
                 const r = await adminApi.getNextMaSanPham();
                 if (r.success) document.getElementById('f-maSP').value = r.data;
             } catch (_) {}
-            addColorRow();
         }
 
-        document.getElementById('btn-add-color').addEventListener('click', () => addColorRow());
+        document.getElementById('btn-add-color').addEventListener('click', () => openAddColorModal());
         document.getElementById('productImages').addEventListener('change', onFileSelect);
         setupDropzone();
         document.getElementById('form-sanpham').addEventListener('submit', onSubmit);
+        
+        // Sync color picker with hex input
+        document.getElementById('newColorPicker').addEventListener('input', (e) => {
+            document.getElementById('newColorHex').value = e.target.value.toUpperCase();
+        });
+        document.getElementById('newColorHex').addEventListener('input', (e) => {
+            const hex = e.target.value;
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                document.getElementById('newColorPicker').value = hex;
+            }
+        });
     });
 
     // ── Master data ─────────────────────────────────────────────
@@ -294,17 +445,97 @@
             const r = await adminApi.getAllDanhMuc();
             if (!r.success) throw new Error(r.message);
             sel.innerHTML = '<option value="">-- Chọn danh mục --</option>'
-                + r.data.map(dm => `<option value="${dm.maDanhMuc}">${dm.maDanhMuc} - ${dm.tenDanhMuc}</option>`).join('');
+                + r.data.map(dm => `<option value="${dm.maDanhMuc}" data-loai="${dm.loaiKichThuoc}">${dm.maDanhMuc} - ${dm.tenDanhMuc}</option>`).join('');
+            
+            // Lắng nghe thay đổi danh mục để filter size
+            sel.addEventListener('change', filterSizesByCategory);
         } catch (e) {
             sel.innerHTML = '<option value="">Lỗi tải danh mục</option>';
         }
     }
 
+    function filterSizesByCategory() {
+        const sel = document.getElementById('f-maDanhMuc');
+        const selectedOption = sel.options[sel.selectedIndex];
+        const loaiKichThuoc = selectedOption ? selectedOption.getAttribute('data-loai') : null;
+        
+        const wrap = document.getElementById('size-checkboxes');
+        
+        if (!loaiKichThuoc) {
+            // Chưa chọn danh mục → ẩn tất cả
+            wrap.innerHTML = '<p style="color:#888;">Vui lòng chọn danh mục trước</p>';
+            return;
+        }
+        
+        // Lọc size theo loaiKichThuoc
+        const filteredSizes = allKichThuoc.filter(k => k.loaiKichThuoc === loaiKichThuoc);
+        
+        if (filteredSizes.length === 0) {
+            wrap.innerHTML = '<p style="color:#888;">Không có kích thước nào cho danh mục này</p>';
+            return;
+        }
+        
+        wrap.innerHTML = filteredSizes.map(k => `
+            <label style="display:flex;align-items:center;gap:6px;border:1px solid #ddd;padding:6px 12px;border-radius:6px;cursor:pointer;">
+                <input type="checkbox" class="size-cb" value="${k.maSize}">
+                <span><strong>${k.tenSize}</strong>${k.loaiKichThuoc ? ` (${k.loaiKichThuoc})` : ''}</span>
+            </label>`).join('');
+    }
+
     async function loadMauSac() {
         try {
             const r = await adminApi.getAllMauSac();
-            if (r.success) allMauSac = r.data || [];
-        } catch (_) { allMauSac = []; }
+            if (r.success) {
+                allMauSac = r.data || [];
+                renderColorTable();
+            }
+        } catch (_) { 
+            allMauSac = []; 
+            renderColorTable();
+        }
+    }
+
+    function renderColorTable(selectedColors = []) {
+        const tbody = document.getElementById('colorTableBody');
+        if (!allMauSac.length) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Chưa có màu. Nhấn "Thêm màu mới"</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = allMauSac.map(color => {
+            const hexColor = color.maHexa || '#000000';
+            const existingQty = selectedColors.find(c => c.maMau === color.maMau)?.soLuongToiDa || '';
+            
+            return `
+                <tr data-color-id="${color.maMau}">
+                    <td style="text-align: center;">
+                        <div class="color-preview" style="background-color: ${hexColor};" title="${hexColor}"></div>
+                    </td>
+                    <td><strong>${color.tenMau}</strong></td>
+                    <td>
+                        <input type="number" 
+                               class="form-input color-qty-input" 
+                               data-color-id="${color.maMau}"
+                               placeholder="0" 
+                               min="0" 
+                               value="${existingQty}"
+                               style="width: 100%; padding: 6px 10px;">
+                    </td>
+                    <td style="text-align: center;">
+                        <button type="button" 
+                                class="btn-icon" 
+                                onclick="deleteColor(${color.maMau})"
+                                title="Xóa màu"
+                                style="padding: 6px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     }
 
     async function loadKichThuoc() {
@@ -313,13 +544,8 @@
             const r = await adminApi.getAllKichThuoc();
             if (!r.success) throw new Error(r.message);
             allKichThuoc = r.data || [];
-            wrap.innerHTML = allKichThuoc.length
-                ? allKichThuoc.map(k => `
-                    <label style="display:flex;align-items:center;gap:6px;border:1px solid #ddd;padding:6px 12px;border-radius:6px;cursor:pointer;">
-                        <input type="checkbox" class="size-cb" value="${k.maSize}">
-                        <span><strong>${k.tenSize}</strong>${k.loaiKichThuoc ? ` (${k.loaiKichThuoc})` : ''}</span>
-                    </label>`).join('')
-                : '<p style="color:#888;">Chưa có size nào trong hệ thống</p>';
+            // Ban đầu chưa chọn danh mục → hiển thị thông báo
+            wrap.innerHTML = '<p style="color:#888;">Vui lòng chọn danh mục trước</p>';
         } catch (e) {
             wrap.innerHTML = '<p style="color:red;">Lỗi tải size</p>';
         }
@@ -336,20 +562,24 @@
             document.getElementById('f-tenSP').value = sp.tenSanPham || '';
             document.getElementById('f-moTa').value = sp.moTa || '';
             document.getElementById('f-maDanhMuc').value = sp.maDanhMuc || '';
+            
+            // Trigger filter size sau khi chọn danh mục
+            filterSizesByCategory();
 
-            // Màu
-            const colorsWrap = document.getElementById('colorTiers');
-            colorsWrap.innerHTML = '';
-            (sp.sanPhamMauSacs || []).forEach(spm => {
-                addColorRow(spm.maMau, spm.soLuongToiDa);
-            });
-            if (!colorsWrap.children.length) addColorRow();
+            // Màu - render table with selected quantities
+            const selectedColors = (sp.sanPhamMauSacs || []).map(spm => ({
+                maMau: spm.maMau,
+                soLuongToiDa: spm.soLuongToiDa
+            }));
+            renderColorTable(selectedColors);
 
-            // Size — tick
-            const sizeIds = (sp.sanPhamKichThuocs || []).map(spk => String(spk.maSize));
-            document.querySelectorAll('.size-cb').forEach(cb => {
-                cb.checked = sizeIds.includes(cb.value);
-            });
+            // Size — tick (sau khi đã filter)
+            setTimeout(() => {
+                const sizeIds = (sp.sanPhamKichThuocs || []).map(spk => String(spk.maSize));
+                document.querySelectorAll('.size-cb').forEach(cb => {
+                    cb.checked = sizeIds.includes(cb.value);
+                });
+            }, 100);
 
             // Ảnh đã có
             (sp.hinhAnhSanPhams || []).forEach(a => existingImages.push({
@@ -361,51 +591,80 @@
         }
     }
 
-    // ── Color rows ──────────────────────────────────────────────
-    function addColorRow(maMauSelected = '', soLuong = '') {
-        const wrap = document.getElementById('colorTiers');
-        const row = document.createElement('div');
-        row.className = 'tier-row';
-        const opts = allMauSac.map(m =>
-            `<option value="${m.maMau}" ${String(m.maMau) === String(maMauSelected) ? 'selected' : ''}>${m.tenMau}</option>`
-        ).join('');
-        row.innerHTML = `
-            <select class="form-input color-select">
-                <option value="">-- Có sẵn --</option>
-                ${opts}
-                <option value="__new__">+ Tạo mới</option>
-            </select>
-            <input type="text" class="form-input color-newname" placeholder="Tên màu mới" style="display:none;">
-            <input type="number" class="form-input color-qty" placeholder="VD: 500" min="0" value="${soLuong}">
-            <button type="button" class="btn-icon delete" onclick="this.parentElement.remove()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>`;
-        wrap.appendChild(row);
-
-        const sel = row.querySelector('.color-select');
-        const nameIn = row.querySelector('.color-newname');
-        sel.addEventListener('change', () => {
-            nameIn.style.display = sel.value === '__new__' ? 'block' : 'none';
-        });
+    // ── Color modal & management ───────────────────────────────
+    function openAddColorModal() {
+        document.getElementById('newColorName').value = '';
+        document.getElementById('newColorPicker').value = '#000000';
+        document.getElementById('newColorHex').value = '#000000';
+        document.getElementById('addColorModal').style.display = 'flex';
     }
 
+    window.closeAddColorModal = function() {
+        document.getElementById('addColorModal').style.display = 'none';
+    };
+
+    window.saveNewColor = async function() {
+        const tenMau = document.getElementById('newColorName').value.trim();
+        const maHexa = document.getElementById('newColorHex').value.trim().toUpperCase();
+        
+        if (!tenMau) {
+            showToast('Vui lòng nhập tên màu', 'error');
+            return;
+        }
+        
+        if (!/^#[0-9A-F]{6}$/i.test(maHexa)) {
+            showToast('Mã màu không hợp lệ (VD: #FF0000)', 'error');
+            return;
+        }
+        
+        try {
+            const r = await adminApi.createMauSac(tenMau, maHexa);
+            if (!r.success) {
+                showToast(r.message || 'Thêm màu thất bại', 'error');
+                return;
+            }
+            
+            showToast('Thêm màu thành công');
+            allMauSac.push(r.data);
+            renderColorTable();
+            closeAddColorModal();
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+
+    window.deleteColor = async function(maMau) {
+        if (!confirm('Xóa màu này? Lưu ý: Nếu màu đang được sử dụng trong sản phẩm khác, không thể xóa.')) return;
+        
+        try {
+            const r = await adminApi.deleteMauSac(maMau);
+            if (!r.success) {
+                showToast(r.message || 'Xóa màu thất bại', 'error');
+                return;
+            }
+            
+            showToast('Đã xóa màu');
+            allMauSac = allMauSac.filter(c => c.maMau !== maMau);
+            renderColorTable();
+        } catch (e) {
+            showToast('Lỗi: ' + e.message, 'error');
+        }
+    };
+
     function readColors() {
-        const rows = document.querySelectorAll('#colorTiers .tier-row');
+        const inputs = document.querySelectorAll('.color-qty-input');
         const result = [];
-        rows.forEach(r => {
-            const sel = r.querySelector('.color-select').value;
-            const name = r.querySelector('.color-newname').value.trim();
-            const qty = parseInt(r.querySelector('.color-qty').value, 10);
-            if (!Number.isFinite(qty) || qty < 0) return;
-            if (sel === '__new__') {
-                if (!name) return;
-                result.push({ tenMau: name, soLuongToiDa: qty });
-            } else if (sel) {
-                result.push({ maMau: parseInt(sel, 10), soLuongToiDa: qty });
+        
+        inputs.forEach(input => {
+            const maMau = parseInt(input.dataset.colorId, 10);
+            const qty = parseInt(input.value, 10);
+            
+            // Chỉ thêm màu có số lượng > 0
+            if (Number.isFinite(qty) && qty > 0) {
+                result.push({ maMau, soLuongToiDa: qty });
             }
         });
+        
         return result;
     }
 
@@ -437,6 +696,20 @@
     }
 
     async function handleFiles(files) {
+        // Kiểm tra giới hạn: tối đa 3 ảnh
+        const totalImages = existingImages.length + pendingImages.length;
+        const remainingSlots = 3 - totalImages;
+        
+        if (remainingSlots <= 0) {
+            showToast('Chỉ được tải tối đa 3 ảnh!', 'error');
+            return;
+        }
+        
+        if (files.length > remainingSlots) {
+            showToast(`Chỉ có thể tải thêm ${remainingSlots} ảnh nữa (tối đa 3 ảnh)`, 'error');
+            files = files.slice(0, remainingSlots);
+        }
+        
         for (const f of files) {
             if (f.size > 10 * 1024 * 1024) {
                 showToast(`File "${f.name}" vượt quá 10MB`, 'error');
@@ -494,6 +767,7 @@
     // ── Submit ──────────────────────────────────────────────────
     async function onSubmit(e) {
         e.preventDefault();
+        console.log('=== BẮT ĐẦU SUBMIT ===');
 
         const payload = {
             maSanPham: document.getElementById('f-maSP').value.trim().toUpperCase(),
@@ -504,25 +778,55 @@
             kichThuocs: readSizes()
         };
 
+        console.log('Payload:', payload);
+
         // Validate
         if (!payload.maSanPham) return showToast('Thiếu mã sản phẩm', 'error');
         if (!payload.tenSanPham) return showToast('Thiếu tên sản phẩm', 'error');
         if (!payload.maDanhMuc) return showToast('Chưa chọn danh mục', 'error');
+        if (!payload.mauSacs || payload.mauSacs.length === 0) {
+            return showToast('Vui lòng chọn ít nhất 1 màu với số lượng > 0', 'error');
+        }
+        if (!payload.kichThuocs || payload.kichThuocs.length === 0) {
+            return showToast('Vui lòng chọn ít nhất 1 kích thước', 'error');
+        }
+        
+        // Validate số lượng ảnh: tối thiểu 2, tối đa 3
+        const totalImages = existingImages.length + pendingImages.length;
+        console.log('Số ảnh:', totalImages, 'existing:', existingImages.length, 'pending:', pendingImages.length);
+        
+        if (totalImages < 2) {
+            return showToast('Vui lòng tải lên tối thiểu 2 ảnh sản phẩm!', 'error');
+        }
+        if (totalImages > 3) {
+            return showToast('Chỉ được tải tối đa 3 ảnh sản phẩm!', 'error');
+        }
 
         // Khi tạo: gửi luôn ảnh đã upload
         if (!isEdit) {
             payload.hinhAnhs = pendingImages.map((p, i) => ({ duongDan: p.duongDan, thuTu: i + 1 }));
+            console.log('Ảnh sẽ gửi:', payload.hinhAnhs);
         }
 
         const btn = document.getElementById('btn-submit');
         btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'wait';
+        
+        console.log('Đang gửi request...');
+        
         try {
             const res = isEdit
                 ? await adminApi.updateSanPham(editingId, payload)
                 : await adminApi.createSanPham(payload);
+            
+            console.log('Response:', res);
+            
             if (!res.success) {
                 showToast(res.message || 'Lưu thất bại', 'error');
                 btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
                 return;
             }
 
@@ -534,10 +838,14 @@
             }
 
             showToast(isEdit ? 'Cập nhật thành công' : 'Thêm sản phẩm thành công');
+            console.log('=== THÀNH CÔNG ===');
             setTimeout(() => { window.location.href = 'admin-products.html'; }, 700);
         } catch (e) {
+            console.error('Lỗi:', e);
             showToast('Lỗi: ' + e.message, 'error');
             btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
         }
     }
     </script>
