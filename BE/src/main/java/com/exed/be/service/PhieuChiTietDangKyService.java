@@ -27,6 +27,9 @@ public class PhieuChiTietDangKyService {
     @Autowired
     private KichThuocRepository kichThuocRepository;
     
+    @Autowired
+    private SanPhamMauSacRepository sanPhamMauSacRepository;
+    
     public List<PhieuChiTietDangKy> getAllChiTiet() {
         return phieuChiTietDangKyRepository.findAll();
     }
@@ -76,7 +79,22 @@ public class PhieuChiTietDangKyService {
         chiTiet.setKichThuoc(kichThuoc.get());
         chiTiet.setSoLuong(request.getSoLuong());
         
-        return phieuChiTietDangKyRepository.save(chiTiet);
+        PhieuChiTietDangKy saved = phieuChiTietDangKyRepository.save(chiTiet);
+        
+        // Cập nhật soLuongDaDat trong SanPham_MauSac
+        Optional<SanPhamMauSac> sanPhamMauSac = sanPhamMauSacRepository.findByMaSanPhamAndMaMau(
+            request.getMaSanPham(), 
+            request.getMaMau()
+        );
+        
+        if (sanPhamMauSac.isPresent()) {
+            SanPhamMauSac spmm = sanPhamMauSac.get();
+            int currentDaDat = spmm.getSoLuongDaDat() != null ? spmm.getSoLuongDaDat() : 0;
+            spmm.setSoLuongDaDat(currentDaDat + request.getSoLuong());
+            sanPhamMauSacRepository.save(spmm);
+        }
+        
+        return saved;
     }
     
     public PhieuChiTietDangKy updateChiTiet(Integer maChiTietDangKy, PhieuChiTietDangKyRequest request) {

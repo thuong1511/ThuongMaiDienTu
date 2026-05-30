@@ -404,21 +404,8 @@ function updateProductVariants(campaign) {
     // Check if campaign is completed
     const isCompleted = campaign.thoiDiem === 'Đã kết thúc';
     
-    // Color mapping for visual display
-    const colorMap = {
-        'Đen': '#000000',
-        'Trắng': '#FFFFFF',
-        'Xanh Navy': '#001f3f',
-        'Đỏ': '#DC143C',
-        'Xám': '#808080',
-        'Xanh Dương': '#0074D9',
-        'Xanh Lá': '#2ECC40',
-        'Vàng': '#FFDC00',
-        'Cam': '#FF851B',
-        'Hồng': '#FF69B4',
-        'Nâu': '#8B4513',
-        'Tím': '#9370DB'
-    };
+    // Track if all colors are out of stock
+    let allColorsOutOfStock = true;
     
     // Update colors
     if (colorList && campaign.sanPham.sanPhamMauSacs) {
@@ -431,9 +418,17 @@ function updateProductVariants(campaign) {
                 const remaining = color.soLuongToiDa - color.soLuongDaDat;
                 const percentage = (color.soLuongDaDat / color.soLuongToiDa) * 100;
                 
+                // Check if this color has stock
+                if (remaining > 0) {
+                    allColorsOutOfStock = false;
+                }
+                
                 const colorName = color.mauSac?.tenMau || 'N/A';
-                const colorHex = colorMap[colorName] || '#cccccc';
-                const swatchStyle = colorName === 'Trắng' 
+                // Use maHexa from database, fallback to #cccccc if not available
+                const colorHex = color.mauSac?.maHexa || '#cccccc';
+                // Add border for light colors (white, light gray, etc.)
+                const isLightColor = colorHex.toLowerCase() === '#ffffff' || colorHex.toLowerCase() === '#fff' || colorHex.toLowerCase() === '#f5f5f5';
+                const swatchStyle = isLightColor
                     ? `background: ${colorHex}; box-shadow: inset 0 0 0 1px #ddd;`
                     : `background: ${colorHex};`;
                 
@@ -500,6 +495,31 @@ function updateProductVariants(campaign) {
                     </div>
                 `;
             }).join('');
+        }
+    }
+    
+    // Hide join button if all colors are out of stock and campaign is active
+    if (allColorsOutOfStock && campaign.thoiDiem === 'Đang diễn ra') {
+        const joinBtn = document.getElementById('joinBtn');
+        if (joinBtn) {
+            joinBtn.style.display = 'none';
+        }
+        
+        // Optionally show a message
+        const actionButtons = document.getElementById('actionButtons');
+        if (actionButtons && !document.getElementById('soldOutMessage')) {
+            const soldOutMsg = document.createElement('div');
+            soldOutMsg.id = 'soldOutMessage';
+            soldOutMsg.style.cssText = 'padding: 16px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; color: #856404; text-align: center; font-weight: 600;';
+            soldOutMsg.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Tất cả màu sắc đã hết hàng
+            `;
+            actionButtons.insertBefore(soldOutMsg, actionButtons.firstChild);
         }
     }
 }

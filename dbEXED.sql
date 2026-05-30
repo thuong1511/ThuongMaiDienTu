@@ -532,10 +532,10 @@ INSERT INTO ChienDich (maChienDich, maSanPham, maNgheSi, tenChienDich,
                        thoiDiem, ngayBatDau, ngayKetThuc,
                        nguongMOQ, nguongToiDa, phiThamGia, giaGoc, tongSoLuongHienTai, nguoiThamGia) VALUES
 ('CD001', 'SP001', 'NS001', N'ROSÉ X EXED', 
- N'Đang diễn ra', '2026-25-05 14:00:00', '2026-10-06 23:59:59', 
+ N'Đang diễn ra', '2026-05-25 14:00:00', '2026-06-10 23:59:59', 
  100, 1200, 500000, 28850000, 914,911),
  ('CD002', 'SP002', 'NS004', N'JENNIE X EXED', 
- N'Đang diễn ra', '2026-25-05 09:00:00', '2026-10-06 23:59:59', 
+ N'Đang diễn ra', '2026-05-25 09:00:00', '2026-06-10 23:59:59', 
  50, 1000, 500000, 15500000, 870,800); 
 GO
 
@@ -889,8 +889,4 @@ select * from ChienDich
 select * from DanhGia
 Select * from DonHang
 select * from DangKyChienDich
-
--- Cập nhật ngày kết thúc về tương lai (sau ngày hiện tại: May 29, 2026)
-UPDATE ChienDich
-SET ngayKetThuc = '2026-06-07 23:59:59'
-WHERE maChienDich = 'CD008';
+select * from MauSac

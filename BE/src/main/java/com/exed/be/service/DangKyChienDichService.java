@@ -27,6 +27,12 @@ public class DangKyChienDichService {
     @Autowired
     private ChienDichRepository chienDichRepository;
     
+    @Autowired
+    private PhieuChiTietDangKyRepository phieuChiTietDangKyRepository;
+    
+    @Autowired
+    private SanPhamMauSacRepository sanPhamMauSacRepository;
+    
     public List<DangKyChienDich> getAllDangKy() {
         return dangKyChienDichRepository.findAll();
     }
@@ -87,6 +93,30 @@ public class DangKyChienDichService {
         Optional<DangKyChienDich> existing = dangKyChienDichRepository.findById(maDangKy);
         if (existing.isPresent()) {
             DangKyChienDich dangKy = existing.get();
+            
+            // Get all PhieuChiTietDangKy for this registration
+            List<PhieuChiTietDangKy> chiTiets = phieuChiTietDangKyRepository.findByDangKyChienDich_MaDangKy(maDangKy);
+            
+            // Decrease soLuongDaDat for each color
+            for (PhieuChiTietDangKy chiTiet : chiTiets) {
+                // Find SanPham_MauSac by product and color
+                Optional<SanPhamMauSac> sanPhamMauSacOpt = sanPhamMauSacRepository
+                    .findByMaSanPhamAndMaMau(
+                        chiTiet.getSanPham().getMaSanPham(),
+                        chiTiet.getMauSac().getMaMau()
+                    );
+                
+                if (sanPhamMauSacOpt.isPresent()) {
+                    SanPhamMauSac sanPhamMauSac = sanPhamMauSacOpt.get();
+                    // Decrease soLuongDaDat by the quantity in this detail
+                    int currentDaDat = sanPhamMauSac.getSoLuongDaDat() != null ? sanPhamMauSac.getSoLuongDaDat() : 0;
+                    int newDaDat = Math.max(0, currentDaDat - chiTiet.getSoLuong());
+                    sanPhamMauSac.setSoLuongDaDat(newDaDat);
+                    sanPhamMauSacRepository.save(sanPhamMauSac);
+                }
+            }
+            
+            // Mark registration as cancelled
             dangKy.setDaHuy(true);
             return dangKyChienDichRepository.save(dangKy);
         }

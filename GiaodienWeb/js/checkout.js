@@ -175,7 +175,13 @@ function renderProductSelectionForms() {
     // Render table rows
     matrixBody.innerHTML = colors.map(color => {
         const colorName = color.mauSac?.tenMau || 'N/A';
-        const colorHex = getColorHex(colorName);
+        // Use maHexa from database, fallback to #cccccc if not available
+        const colorHex = color.mauSac?.maHexa || '#cccccc';
+        // Add border for light colors (white, light gray, etc.)
+        const isLightColor = colorHex.toLowerCase() === '#ffffff' || colorHex.toLowerCase() === '#fff' || colorHex.toLowerCase() === '#f5f5f5';
+        const colorPreviewStyle = isLightColor
+            ? `background: ${colorHex}; box-shadow: inset 0 0 0 1px #ddd;`
+            : `background: ${colorHex};`;
         const totalStock = color.soLuongToiDa - color.soLuongDaDat;
         const stockClass = totalStock <= 0 ? 'out-of-stock' : (totalStock < 50 ? 'low-stock' : '');
         
@@ -183,7 +189,7 @@ function renderProductSelectionForms() {
             <tr data-color-id="${color.maMau}">
                 <td class="color-cell">
                     <div class="color-info">
-                        <div class="color-preview" style="background: ${colorHex};"></div>
+                        <div class="color-preview" style="${colorPreviewStyle}"></div>
                         <div class="color-details">
                             <span class="color-name">${colorName}</span>
                             <span class="color-stock ${stockClass}">Còn: ${totalStock} đôi</span>
@@ -228,29 +234,6 @@ function renderProductSelectionForms() {
     
     console.log('✅ Product matrix rendered');
 }
-
-// Get color hex code
-function getColorHex(colorName) {
-    const colorMap = {
-        'Đen': 'linear-gradient(135deg, #000, #333)',
-        'Trắng': 'linear-gradient(135deg, #f5f5f5, #fff)',
-        'Trắng Kem': 'linear-gradient(135deg, #f5f5dc, #fff)',
-        'Xanh Navy': 'linear-gradient(135deg, #001f3f, #003366)',
-        'Đỏ': 'linear-gradient(135deg, #DC143C, #FF6B6B)',
-        'Xám': 'linear-gradient(135deg, #808080, #A9A9A9)',
-        'Vàng Gold': 'linear-gradient(135deg, #C4A87F, #D4AF6A)',
-        'Xanh Dương': 'linear-gradient(135deg, #0074D9, #4DA6FF)',
-        'Xanh Lá': 'linear-gradient(135deg, #2ECC40, #5FE870)',
-        'Vàng': 'linear-gradient(135deg, #FFDC00, #FFE74C)',
-        'Cam': 'linear-gradient(135deg, #FF851B, #FFB366)',
-        'Hồng': 'linear-gradient(135deg, #FF69B4, #FFB6D9)',
-        'Nâu': 'linear-gradient(135deg, #8B4513, #A0522D)',
-        'Tím': 'linear-gradient(135deg, #9370DB, #B19CD9)'
-    };
-    return colorMap[colorName] || 'linear-gradient(135deg, #ccc, #eee)';
-}
-
-// This function is no longer needed - we use color total stock instead
 
 // Attach event handlers to matrix inputs
 function attachMatrixInputHandlers() {

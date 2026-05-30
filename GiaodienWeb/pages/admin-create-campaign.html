@@ -162,7 +162,7 @@
                             </select>
                         </div>
                         <div class="form-group full-width">
-                            <label>Hình ảnh chiến dịch</label>
+                            <label>Hình ảnh chiến dịch *</label>
                             <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
                                 <div class="upload-icon">
                                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -172,7 +172,7 @@
                                     </svg>
                                 </div>
                                 <p class="upload-text">Kéo thả ảnh vào đây hoặc <span class="upload-link">chọn file</span></p>
-                                <p class="upload-hint">JPG, PNG · Tối đa 10MB mỗi file</p>
+                                <p class="upload-hint">JPG, PNG · Tối đa 10MB mỗi file · <strong style="color: var(--accent-gold);">Bắt buộc: 2-3 ảnh</strong></p>
                                 <input type="file" accept="image/*" multiple id="fileInput" style="display:none">
                             </div>
                             <div class="image-preview-grid" id="imagePreviewGrid" style="margin-top:12px;"></div>
@@ -236,11 +236,11 @@
                         </div>
                         <div class="form-group">
                             <label>Ngưỡng MOQ (số lượng tối thiểu) *</label>
-                            <input type="number" id="f-nguongMOQ" class="form-input" placeholder="100" min="1" required>
+                            <input type="number" id="f-nguongMOQ" class="form-input" placeholder="Tự động từ bậc giá thấp nhất" min="1" readonly style="background-color: #f5f5f5;" required>
                         </div>
                         <div class="form-group">
                             <label>Ngưỡng tối đa *</label>
-                            <input type="number" id="f-nguongToiDa" class="form-input" placeholder="1200" min="1" required>
+                            <input type="number" id="f-nguongToiDa" class="form-input" placeholder="Tự động từ bậc giá cao nhất" min="1" readonly style="background-color: #f5f5f5;" required>
                         </div>
                         <div class="form-group">
                             <label>Thời điểm</label>
@@ -253,8 +253,6 @@
                         <div class="form-group">
                             <label>Trạng thái</label>
                             <select id="f-trangThai" class="form-input">
-                                <option value="Hoạt động">Hoạt động</option>
-                                <option value="Tạm ngưng">Tạm ngưng</option>
                                 <option value="Thành công">Thành công</option>
                                 <option value="Thất bại">Thất bại</option>
                             </select>
@@ -372,12 +370,12 @@
             document.getElementById('f-tenChienDich').value = cd.tenChienDich || '';
             document.getElementById('f-maNgheSi').value = cd.maNgheSi || '';
             document.getElementById('f-maSanPham').value = cd.maSanPham || '';
-            document.getElementById('f-giaGoc').value = cd.giaGoc ?? 0;
-            document.getElementById('f-phiThamGia').value = cd.phiThamGia ?? 0;
-            document.getElementById('f-nguongMOQ').value = cd.nguongMOQ ?? 0;
-            document.getElementById('f-nguongToiDa').value = cd.nguongToiDa ?? 0;
+            document.getElementById('f-giaGoc').value = cd.giaGoc || '';
+            document.getElementById('f-phiThamGia').value = cd.phiThamGia || '';
+            document.getElementById('f-nguongMOQ').value = cd.nguongMOQ || '';
+            document.getElementById('f-nguongToiDa').value = cd.nguongToiDa || '';
             document.getElementById('f-thoiDiem').value = cd.thoiDiem || 'Sắp bắt đầu';
-            document.getElementById('f-trangThai').value = cd.trangThai || 'Hoạt động';
+            document.getElementById('f-trangThai').value = cd.trangThai || 'Thành công';
             document.getElementById('f-ngayBatDau').value = toDatetimeLocal(cd.ngayBatDau);
             document.getElementById('f-ngayKetThuc').value = toDatetimeLocal(cd.ngayKetThuc);
 
@@ -386,6 +384,7 @@
             tiersWrap.innerHTML = '';
             (cd.bangGiaBacThangs || []).forEach(b => addTierRow(b.soLuongToiThieu, b.soLuongToiDa, b.donGia));
             if (!tiersWrap.children.length) addTierRow();
+            updateMOQAndMax(); // Auto-fill MOQ và Max từ bậc giá đã load
 
             // Ảnh có sẵn
             if (cd.hinhAnhChienDichs && cd.hinhAnhChienDichs.length) {
@@ -416,13 +415,45 @@
             <input type="number" class="form-input tier-min" placeholder="Từ" min="0" value="${min}">
             <input type="number" class="form-input tier-max" placeholder="Đến" min="0" value="${max}">
             <input type="number" class="form-input tier-price" placeholder="Giá" min="0" value="${price}">
-            <button type="button" class="btn-icon delete" title="Xóa" onclick="this.parentElement.remove()">
+            <button type="button" class="btn-icon delete" title="Xóa" onclick="this.parentElement.remove(); updateMOQAndMax();">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </button>`;
         wrap.appendChild(row);
+        
+        // Bind event để auto-update MOQ/Max khi thay đổi
+        row.querySelectorAll('.tier-min, .tier-max').forEach(input => {
+            input.addEventListener('input', updateMOQAndMax);
+        });
     }
+
+    // Auto-fill ngưỡng MOQ và tối đa từ bậc giá
+    function updateMOQAndMax() {
+        const rows = document.querySelectorAll('#pricingTiers .tier-row');
+        if (rows.length === 0) {
+            document.getElementById('f-nguongMOQ').value = '';
+            document.getElementById('f-nguongToiDa').value = '';
+            return;
+        }
+        
+        // Tìm min và max từ tất cả các input (kể cả chưa hoàn chỉnh)
+        let minQty = Infinity;
+        let maxQty = -Infinity;
+        
+        rows.forEach(r => {
+            const minVal = parseInt(r.querySelector('.tier-min').value, 10);
+            const maxVal = parseInt(r.querySelector('.tier-max').value, 10);
+            
+            if (Number.isFinite(minVal) && minVal < minQty) minQty = minVal;
+            if (Number.isFinite(maxVal) && maxVal > maxQty) maxQty = maxVal;
+        });
+        
+        if (minQty !== Infinity) document.getElementById('f-nguongMOQ').value = minQty;
+        if (maxQty !== -Infinity) document.getElementById('f-nguongToiDa').value = maxQty;
+    }
+
+    window.updateMOQAndMax = updateMOQAndMax; // Expose để button xóa có thể gọi
 
     function readTiers() {
         const rows = document.querySelectorAll('#pricingTiers .tier-row');
@@ -462,6 +493,20 @@
     }
 
     async function handleFiles(files) {
+        // Kiểm tra giới hạn số ảnh: tối đa 3 ảnh
+        const totalImages = existingImages.length + pendingImages.length;
+        const remainingSlots = 3 - totalImages;
+        
+        if (remainingSlots <= 0) {
+            showToast('Chỉ được tải tối đa 3 ảnh chiến dịch!', 'error');
+            return;
+        }
+        
+        if (files.length > remainingSlots) {
+            showToast(`Chỉ có thể tải thêm ${remainingSlots} ảnh nữa (tối đa 3 ảnh)`, 'error');
+            files = files.slice(0, remainingSlots);
+        }
+        
         for (const f of files) {
             if (f.size > 10 * 1024 * 1024) {
                 showToast(`File "${f.name}" vượt quá 10MB`, 'error');
@@ -537,6 +582,7 @@
             phiThamGia: parseFloat(document.getElementById('f-phiThamGia').value) || 0,
             nguongMOQ: parseInt(document.getElementById('f-nguongMOQ').value, 10) || 0,
             nguongToiDa: parseInt(document.getElementById('f-nguongToiDa').value, 10) || 0,
+            nguoiThamGia: 0, // Mặc định 0 khi tạo mới
             thoiDiem: document.getElementById('f-thoiDiem').value,
             trangThai: document.getElementById('f-trangThai').value,
             ngayBatDau: document.getElementById('f-ngayBatDau').value || null,
@@ -551,6 +597,15 @@
         if (!payload.maSanPham) return showToast('Chưa chọn sản phẩm', 'error');
         if (!payload.ngayBatDau || !payload.ngayKetThuc) return showToast('Thiếu thời gian', 'error');
         if (payload.nguongToiDa < payload.nguongMOQ) return showToast('Ngưỡng tối đa phải >= MOQ', 'error');
+        
+        // Validate số lượng ảnh: 2-3 ảnh
+        const totalImages = existingImages.length + pendingImages.length;
+        if (totalImages < 2) {
+            return showToast('Vui lòng tải lên tối thiểu 2 ảnh chiến dịch!', 'error');
+        }
+        if (totalImages > 3) {
+            return showToast('Chỉ được tải tối đa 3 ảnh chiến dịch!', 'error');
+        }
 
         const btn = document.getElementById('btn-submit');
         btn.disabled = true;
