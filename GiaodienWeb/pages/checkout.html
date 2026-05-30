@@ -434,21 +434,29 @@
                     <div class="payment-methods">
                         <h3>Phương thức thanh toán</h3>
                         <div class="payment-option">
-                            <input type="radio" name="payment" id="momo" checked>
+                            <input type="radio" name="payment" id="wallet" value="Ví EXED">
+                            <label for="wallet">
+                                <div class="payment-icon">💰</div>
+                                <span>Ví EXED</span>
+                                <span class="wallet-balance" id="wallet-balance-display" style="font-size: 12px; color: #666; margin-left: 8px;">Đang tải...</span>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" name="payment" id="momo" value="MoMo" checked>
                             <label for="momo">
                                 <div class="payment-icon">💳</div>
                                 <span>Ví MoMo</span>
                             </label>
                         </div>
                         <div class="payment-option">
-                            <input type="radio" name="payment" id="vnpay">
+                            <input type="radio" name="payment" id="vnpay" value="VNPay">
                             <label for="vnpay">
                                 <div class="payment-icon">🏦</div>
                                 <span>VNPay</span>
                             </label>
                         </div>
                         <div class="payment-option">
-                            <input type="radio" name="payment" id="card">
+                            <input type="radio" name="payment" id="card" value="Thẻ tín dụng">
                             <label for="card">
                                 <div class="payment-icon">💳</div>
                                 <span>Thẻ tín dụng/ghi nợ</span>

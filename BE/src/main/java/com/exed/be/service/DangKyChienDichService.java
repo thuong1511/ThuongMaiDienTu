@@ -6,6 +6,7 @@ import com.exed.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,12 @@ public class DangKyChienDichService {
     
     @Autowired
     private SanPhamMauSacRepository sanPhamMauSacRepository;
+    
+    @Autowired
+    private WalletRepository walletRepository;
+    
+    @Autowired
+    private WalletTransactionRepository walletTransactionRepository;
     
     public List<DangKyChienDich> getAllDangKy() {
         return dangKyChienDichRepository.findAll();
@@ -116,7 +123,10 @@ public class DangKyChienDichService {
                 }
             }
             
-            // Mark registration as cancelled
+            // Refund will be handled automatically by database trigger trg_HoanTienKhiHuyDangKy
+            // No need to manually create wallet transaction here
+            
+            // Mark registration as cancelled (trigger will handle refund)
             dangKy.setDaHuy(true);
             return dangKyChienDichRepository.save(dangKy);
         }

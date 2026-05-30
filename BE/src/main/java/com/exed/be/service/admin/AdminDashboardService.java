@@ -71,7 +71,7 @@ public class AdminDashboardService {
             }
 
             // Hoàn tiền: đơn bị hủy trong tháng này
-            if (dk.getDaHuy() && dk.getTrangThaiHoanTien() && !ngay.isBefore(startOfMonth)) {
+            if (dk.getDaHuy() && Boolean.TRUE.equals(dk.getDaHoanTien()) && !ngay.isBefore(startOfMonth)) {
                 tongHoanTien = tongHoanTien.add(tt.getSoTienThanhToan());
             }
         }
@@ -245,7 +245,7 @@ public class AdminDashboardService {
 
             String trangThai;
             if (dk.getDaHuy()) {
-                trangThai = dk.getTrangThaiHoanTien() ? "Đã hoàn tiền" : "Đã hủy";
+                trangThai = Boolean.TRUE.equals(dk.getDaHoanTien()) ? "Đã hoàn tiền" : "Đã hủy";
             } else {
                 trangThai = "Đang xử lý";
             }

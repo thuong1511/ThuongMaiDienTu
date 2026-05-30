@@ -225,7 +225,7 @@ public class AdminExportService {
             BigDecimal soTien = (dk.getThanhToan() != null && dk.getThanhToan().getSoTienThanhToan() != null)
                     ? dk.getThanhToan().getSoTienThanhToan() : BigDecimal.ZERO;
             String tt = Boolean.TRUE.equals(dk.getDaHuy())
-                    ? (Boolean.TRUE.equals(dk.getTrangThaiHoanTien()) ? "Đã hoàn tiền" : "Đã hủy")
+                    ? (Boolean.TRUE.equals(dk.getDaHoanTien()) ? "Đã hoàn tiền" : "Đã hủy")
                     : "Đang xử lý";
 
             sb.append("DK").append(dk.getMaDangKy()).append(",")

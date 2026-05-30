@@ -43,7 +43,20 @@ public class ThanhToanController {
     @PostMapping
     public ResponseEntity<ApiResponse<ThanhToan>> createThanhToan(@RequestBody ThanhToanRequest request) {
         try {
-            ThanhToan thanhToan = thanhToanService.createThanhToan(request);
+            ThanhToan thanhToan;
+            
+            // Check if payment method is "Ví EXED"
+            if ("Ví EXED".equals(request.getPhuongThuc())) {
+                if (request.getMaNguoiDung() == null || request.getMaNguoiDung().isEmpty()) {
+                    return ResponseEntity.ok(new ApiResponse<>(false, "Thiếu thông tin người dùng", null));
+                }
+                // Use wallet payment method
+                thanhToan = thanhToanService.createThanhToanWithWallet(request, request.getMaNguoiDung());
+            } else {
+                // Use regular payment method
+                thanhToan = thanhToanService.createThanhToan(request);
+            }
+            
             return ResponseEntity.ok(new ApiResponse<>(true, "Tạo thanh toán thành công", thanhToan));
         } catch (Exception e) {
             return ResponseEntity.ok(new ApiResponse<>(false, "Lỗi: " + e.getMessage(), null));

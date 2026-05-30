@@ -33,6 +33,7 @@ let currentUser = null;
 let currentCampaign = null;
 let userAddresses = [];
 let productMatrix = {}; // { colorId: { sizeId: quantity } }
+let userWallet = null; // Store user wallet info
 
 // Load all checkout data
 async function loadCheckoutData(campaignId, userId) {
@@ -49,6 +50,9 @@ async function loadCheckoutData(campaignId, userId) {
     
     // Load user addresses
     await loadUserAddresses(userId);
+    
+    // Load user wallet
+    await loadUserWallet(userId);
     
     // Initialize page
     updateCampaignInfo();
@@ -82,6 +86,36 @@ async function loadUserAddresses(userId) {
     } catch (error) {
         console.error('❌ Error loading addresses:', error);
         userAddresses = [];
+    }
+}
+
+// Load user wallet
+async function loadUserWallet(userId) {
+    try {
+        console.log('Loading wallet for user:', userId);
+        const walletResponse = await fetch(`http://localhost:8080/api/wallet/nguoidung/${userId}`);
+        const walletData = await walletResponse.json();
+        
+        if (walletData.success && walletData.data) {
+            userWallet = walletData.data;
+            console.log('✅ Wallet loaded:', userWallet);
+            
+            // Update wallet balance display
+            const walletBalanceDisplay = document.getElementById('wallet-balance-display');
+            if (walletBalanceDisplay) {
+                const balance = userWallet.soDu || 0;
+                walletBalanceDisplay.textContent = `(Số dư: ${balance.toLocaleString('vi-VN')} đ)`;
+            }
+        } else {
+            userWallet = null;
+            const walletBalanceDisplay = document.getElementById('wallet-balance-display');
+            if (walletBalanceDisplay) {
+                walletBalanceDisplay.textContent = '(Chưa có ví)';
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error loading wallet:', error);
+        userWallet = null;
     }
 }
 
@@ -769,14 +803,28 @@ async function handleCheckout(e) {
         return;
     }
     
-    // Get payment method name
+    // Get payment method name from selected radio button
     const selectedPaymentRadio = document.querySelector('input[name="payment"]:checked');
-    const paymentMethodMap = {
-        'momo': 'Ví điện tử',
-        'vnpay': 'Ví điện tử',
-        'card': 'Chuyển khoản'
-    };
-    const paymentMethod = paymentMethodMap[selectedPaymentRadio.id] || 'Chuyển khoản';
+    if (!selectedPaymentRadio) {
+        alert('Vui lòng chọn phương thức thanh toán!');
+        return;
+    }
+    
+    const paymentMethod = selectedPaymentRadio.value; // Get value directly (Ví EXED, MoMo, VNPay, Thẻ tín dụng)
+    
+    // Check wallet balance if paying with EXED Wallet
+    if (paymentMethod === 'Ví EXED') {
+        if (!userWallet) {
+            alert('Bạn chưa có ví EXED!');
+            return;
+        }
+        
+        const walletBalance = userWallet.soDu || 0;
+        if (walletBalance < totalPayment) {
+            alert(`Số dư ví không đủ!\nSố dư hiện tại: ${walletBalance.toLocaleString('vi-VN')} đ\nSố tiền cần thanh toán: ${totalPayment.toLocaleString('vi-VN')} đ\nThiếu: ${(totalPayment - walletBalance).toLocaleString('vi-VN')} đ`);
+            return;
+        }
+    }
     
     // Get selected address details
     const selectedAddress = userAddresses.find(addr => addr.maSo === selectedAddressId);
@@ -807,7 +855,8 @@ async function handleCheckout(e) {
             diaChiGiaoHang: `${selectedAddress.diaChiChiTiet}, ${selectedAddress.tenPhuongXa || ''}, ${selectedAddress.tenTinhThanh || ''}`,
             soTienThanhToan: totalPayment,
             phuongThuc: paymentMethod,
-            ghiChu: `Thanh toán đăng ký chiến dịch ${currentCampaign.tenChienDich}`
+            ghiChu: `Thanh toán đăng ký chiến dịch ${currentCampaign.tenChienDich}`,
+            maNguoiDung: currentUser.maNguoiDung // Add user ID for wallet payment
         };
         
         const thanhToanResponse = await fetch(`${API_BASE_URL}/thanhtoan`, {

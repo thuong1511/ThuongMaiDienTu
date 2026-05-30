@@ -100,7 +100,7 @@ public class AdminKhachHangService {
 
             if (huy) {
                 donHuy++;
-                if (Boolean.TRUE.equals(dk.getTrangThaiHoanTien())) {
+                if (Boolean.TRUE.equals(dk.getDaHoanTien())) {
                     tongHoanTien = tongHoanTien.add(soTien);
                 }
             } else {

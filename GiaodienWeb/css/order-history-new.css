@@ -427,17 +427,22 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    font-size: 14px;
+    font-size: 13px;
+    white-space: nowrap;
+    gap: 8px;
 }
 
 .payment-row span:first-child {
     color: rgba(95, 7, 4, 0.7);
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .payment-row .amount {
     font-weight: 800;
     color: var(--primary-dark);
+    text-align: right;
+    flex-shrink: 0;
 }
 
 .payment-row.refund .amount {

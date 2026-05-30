@@ -25,8 +25,14 @@ public class DonHang {
     @Column(name = "giaChotCuoiCung", nullable = false, precision = 18, scale = 2)
     private BigDecimal giaChotCuoiCung;
 
+    @Column(name = "daHoanTien", nullable = false)
+    private Boolean daHoanTien = false;
+
     @Column(name = "soTienHoanLai", precision = 18, scale = 2)
     private BigDecimal soTienHoanLai = BigDecimal.ZERO;
+
+    @Column(name = "ngayHoanTien")
+    private LocalDateTime ngayHoanTien;
 
     @Column(name = "trangThaiGiaoHang", length = 50)
     private String trangThaiGiaoHang = "Đang chuẩn bị";
@@ -43,6 +49,7 @@ public class DonHang {
         if (trangThaiGiaoHang == null || trangThaiGiaoHang.isBlank())
             trangThaiGiaoHang = "Đang chuẩn bị";
         if (soTienHoanLai == null) soTienHoanLai = BigDecimal.ZERO;
+        if (daHoanTien == null) daHoanTien = false;
     }
 
     // Getters & Setters
@@ -55,8 +62,14 @@ public class DonHang {
     public BigDecimal getGiaChotCuoiCung() { return giaChotCuoiCung; }
     public void setGiaChotCuoiCung(BigDecimal giaChotCuoiCung) { this.giaChotCuoiCung = giaChotCuoiCung; }
 
+    public Boolean getDaHoanTien() { return daHoanTien; }
+    public void setDaHoanTien(Boolean daHoanTien) { this.daHoanTien = daHoanTien; }
+
     public BigDecimal getSoTienHoanLai() { return soTienHoanLai; }
     public void setSoTienHoanLai(BigDecimal soTienHoanLai) { this.soTienHoanLai = soTienHoanLai; }
+
+    public LocalDateTime getNgayHoanTien() { return ngayHoanTien; }
+    public void setNgayHoanTien(LocalDateTime ngayHoanTien) { this.ngayHoanTien = ngayHoanTien; }
 
     public String getTrangThaiGiaoHang() { return trangThaiGiaoHang; }
     public void setTrangThaiGiaoHang(String trangThaiGiaoHang) { this.trangThaiGiaoHang = trangThaiGiaoHang; }

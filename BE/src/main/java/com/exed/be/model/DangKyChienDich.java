@@ -41,8 +41,14 @@ public class DangKyChienDich {
     @Column(name = "tongSoLuong", nullable = false)
     private Integer tongSoLuong;
     
-    @Column(name = "trangThaiHoanTien", nullable = false)
-    private Boolean trangThaiHoanTien = false;
+    @Column(name = "daHoanTien", nullable = false)
+    private Boolean daHoanTien = false;
+    
+    @Column(name = "soTienHoanLai")
+    private java.math.BigDecimal soTienHoanLai = java.math.BigDecimal.ZERO;
+    
+    @Column(name = "ngayHoanTien")
+    private LocalDateTime ngayHoanTien;
     
     @Column(name = "ngayDangKy")
     private LocalDateTime ngayDangKy;
@@ -55,8 +61,11 @@ public class DangKyChienDich {
         if (daHuy == null) {
             daHuy = false;
         }
-        if (trangThaiHoanTien == null) {
-            trangThaiHoanTien = false;
+        if (daHoanTien == null) {
+            daHoanTien = false;
+        }
+        if (soTienHoanLai == null) {
+            soTienHoanLai = java.math.BigDecimal.ZERO;
         }
     }
 }

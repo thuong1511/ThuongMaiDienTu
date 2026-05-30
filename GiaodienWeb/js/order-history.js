@@ -75,6 +75,9 @@ function createRegistrationCard(registration, details) {
     const sanPham = chienDich?.sanPham;
     const bangGia = registration.bangGiaBacThang;
     
+    // Get price from bangGia - use donGia instead of giaGoc
+    const giaBacThang = bangGia?.donGia || bangGia?.giaGoc || 0;
+    
     // Create tier text from bangGia (soLuongToiThieu - soLuongToiDa)
     let userTierText = 'Đang cập nhật';
     if (bangGia) {
@@ -93,8 +96,25 @@ function createRegistrationCard(registration, details) {
     const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
     const isCampaignEnded = campaignEndDate && campaignEndDate < now;
     
-    // Determine refund status (only for ended campaigns, not cancelled)
-    const isRefunded = thanhToan?.daHoanTien || false;
+    // Calculate refund amount for ended campaigns
+    let soTienHoanLai = 0;
+    let isRefunded = false;
+    
+    if (registration.daHuy) {
+        // For cancelled registrations, use the value from database (set by trigger)
+        soTienHoanLai = registration.soTienHoanLai || 0;
+        isRefunded = registration.daHoanTien || false;
+    } else if (isCampaignEnded) {
+        // For ended campaigns, calculate refund based on bet result
+        const soTienThanhToan = thanhToan?.soTienThanhToan || 0;
+        const phiThamGia = chienDich?.phiThamGia || 0;
+        
+        // Check if bet is correct first (will be calculated below)
+        // We'll update this after calculating isBetCorrect
+        
+        // Check if refund has been processed (from backend)
+        isRefunded = registration.daHoanTien || false;
+    }
     
     // Determine status - Simple status without refund info on badge
     let statusText = '';
@@ -176,6 +196,28 @@ function createRegistrationCard(registration, details) {
     if (isCampaignEnded) {
         betStatusText = isBetCorrect ? ' ✓ Đúng' : ' ✗ Sai';
         betStatusColor = isBetCorrect ? '#2e7d32' : '#d32f2f';
+        
+        // Calculate refund amount for ended campaigns (if not already set)
+        if (!registration.daHuy && soTienHoanLai === 0) {
+            const soTienThanhToan = thanhToan?.soTienThanhToan || 0;
+            const phiThamGia = chienDich?.phiThamGia || 0;
+            const soLuong = registration.tongSoLuong || 1;
+            
+            if (isBetCorrect) {
+                // Correct bet: Refund = Total payment - (Price per item × Quantity + Participation fee)
+                const giaSanPham = giaBacThang * soLuong;
+                const thucTePhaiTra = giaSanPham + phiThamGia;
+                soTienHoanLai = soTienThanhToan - thucTePhaiTra;
+                
+                // Fallback: if calculation doesn't work, use participation fee
+                if (soTienHoanLai <= 0 || isNaN(soTienHoanLai)) {
+                    soTienHoanLai = phiThamGia;
+                }
+            } else {
+                // Wrong bet: No refund
+                soTienHoanLai = 0;
+            }
+        }
     } else if (!registration.daHuy) {
         if (isBetCorrect) {
             betStatusText = ' ✓ Đang đạt';
@@ -222,6 +264,18 @@ function createRegistrationCard(registration, details) {
                         <span class="detail-label">Mốc đặt cược của bạn:</span>
                         <span class="detail-value bet-pending">${userTierText}${betStatusText ? `<span style="color: ${betStatusColor}; font-weight: 700;">${betStatusText}</span>` : ''}</span>
                     </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Giá gốc:</span>
+                        <span class="detail-value">${(chienDich?.giaGoc || 0).toLocaleString('vi-VN')} đ/sp</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Giá bậc thang:</span>
+                        <span class="detail-value">${giaBacThang.toLocaleString('vi-VN')} đ/sp</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phí tham gia:</span>
+                        <span class="detail-value">${(chienDich?.phiThamGia || 0).toLocaleString('vi-VN')} đ</span>
+                    </div>
                     ${!registration.daHuy && chienDich ? `
                     <div class="detail-row">
                         <span class="detail-label">Mốc hiện tại:</span>
@@ -260,21 +314,37 @@ function createRegistrationCard(registration, details) {
                 </div>
                 ` : ''}
                 <div class="payment-row">
-                    <span>Đã thanh toán:</span>
+                    <span>Tổng thanh toán:</span>
                     <span class="amount">${(thanhToan?.soTienThanhToan || 0).toLocaleString('vi-VN')} đ</span>
                 </div>
                 ${registration.daHuy ? `
-                <div class="payment-row" style="color: #d32f2f;">
+                <div class="payment-row" style="color: #d32f2f; margin-top: 8px;">
                     <span>Trạng thái:</span>
                     <span class="amount">Đã hủy</span>
                 </div>
+                <div class="payment-row" style="font-size: 13px; color: #666;">
+                    <span>Thời gian hủy:</span>
+                    <span>${registration.ngayHoanTien ? new Date(registration.ngayHoanTien).toLocaleString('vi-VN') : 'N/A'}</span>
+                </div>
+                <div class="payment-row" style="color: #2e7d32; font-weight: 600;">
+                    <span>Số tiền hoàn lại:</span>
+                    <span class="amount">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
+                </div>
                 ` : isCampaignEnded ? `
-                <div class="payment-row refund-status ${isRefunded ? 'refunded' : 'not-refunded'}">
-                    <span>${isRefunded ? '✓ Đã hoàn tiền' : '⏳ Chưa hoàn tiền'}</span>
-                    <span class="amount">${isRefunded ? (thanhToan?.soTienHoanLai || 0).toLocaleString('vi-VN') + ' đ' : 'Đang xử lý'}</span>
+                <div class="payment-row" style="color: ${isBetCorrect ? '#2e7d32' : '#d32f2f'}; font-weight: 600; margin-top: 8px;">
+                    <span>Kết quả:</span>
+                    <span class="amount">${isBetCorrect ? 'Cược đúng ✓' : 'Cược sai ✗'}</span>
+                </div>
+                <div class="payment-row" style="font-weight: 600;">
+                    <span>Thực tế phải trả:</span>
+                    <span class="amount">${((giaBacThang * (registration.tongSoLuong || 1)) + (chienDich?.phiThamGia || 0)).toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div class="payment-row" style="color: #2e7d32; font-weight: 600;">
+                    <span>Số tiền hoàn lại:</span>
+                    <span class="amount">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
                 </div>
                 ` : `
-                <div class="payment-row pending">
+                <div class="payment-row pending" style="margin-top: 8px;">
                     <span>Chờ kết quả:</span>
                     <span class="amount">Đang chờ</span>
                 </div>

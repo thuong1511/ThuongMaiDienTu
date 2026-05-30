@@ -215,7 +215,9 @@ CREATE TABLE DangKyChienDich (
     maChienDich       CHAR(5) NOT NULL,
     daHuy             BIT NOT NULL DEFAULT 0,
     tongSoLuong       INT NOT NULL CHECK (tongSoLuong >= 1),
-    trangThaiHoanTien BIT NOT NULL DEFAULT 0,
+    daHoanTien        BIT NOT NULL DEFAULT 0,
+    soTienHoanLai     DECIMAL(18,2) DEFAULT 0,
+    ngayHoanTien      DATETIME NULL,
     ngayDangKy        DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (maThanhToan)  REFERENCES ThanhToan(maThanhToan),
     FOREIGN KEY (maNguoiDung)  REFERENCES NguoiDung(maNguoiDung),
@@ -244,7 +246,9 @@ CREATE TABLE DonHang (
     maDonHang         CHAR(5) PRIMARY KEY,
     maDangKy          INT UNIQUE NOT NULL,
     giaChotCuoiCung   DECIMAL(18,2) NOT NULL,
+    daHoanTien        BIT NOT NULL DEFAULT 0,
     soTienHoanLai     DECIMAL(18,2) DEFAULT 0,
+    ngayHoanTien      DATETIME NULL,
     trangThaiGiaoHang NVARCHAR(50) DEFAULT N'Đang chuẩn bị'
         CHECK (trangThaiGiaoHang IN (N'Đang chuẩn bị', N'Đang giao', N'Đã giao')),
     ngayTaoDon        DATETIME DEFAULT GETDATE(),
@@ -315,6 +319,27 @@ CREATE TABLE Banner (
         ngayTao      DATETIME NOT NULL DEFAULT GETDATE()
 );
 
+-- 27. Wallet (Ví điện tử)
+CREATE TABLE Wallet (
+    maVi         INT PRIMARY KEY IDENTITY(1,1),
+    maNguoiDung  CHAR(5) UNIQUE NOT NULL,
+    soDu         DECIMAL(18,2) DEFAULT 0,
+    FOREIGN KEY (maNguoiDung) REFERENCES NguoiDung(maNguoiDung)
+);
+
+-- 28. WalletTransaction (Lịch sử giao dịch ví)
+CREATE TABLE WalletTransaction (
+    maGiaoDich   INT PRIMARY KEY IDENTITY(1,1),
+    maVi         INT NOT NULL,
+    loaiGiaoDich NVARCHAR(30) NOT NULL CHECK (loaiGiaoDich IN (N'Hoàn tiền', N'Thanh toán', N'Rút tiền')),
+    soTien       DECIMAL(18,2) NOT NULL,
+    moTa         NVARCHAR(MAX),
+    maDangKy     INT NULL,  -- Reference to DangKyChienDich if applicable
+    ngayGiaoDich DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (maVi) REFERENCES Wallet(maVi),
+    FOREIGN KEY (maDangKy) REFERENCES DangKyChienDich(maDangKy)
+);
+
 
 GO
 CREATE TRIGGER trg_CapNhatTrangThaiChienDich
@@ -366,6 +391,218 @@ BEGIN
 END;
 GO
 
+-- Trigger tự động hoàn tiền khi hủy đơn đăng ký
+CREATE TRIGGER trg_HoanTienKhiHuyDangKy
+ON DangKyChienDich
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Chỉ xử lý khi daHuy thay đổi từ 0 → 1 và chưa hoàn tiền
+    DECLARE @maDangKy INT, @maNguoiDung CHAR(5), @soTienThanhToan DECIMAL(18,2), 
+            @phiThamGia DECIMAL(18,2), @soTienHoan DECIMAL(18,2), @maVi INT, 
+            @tenChienDich NVARCHAR(255), @moTa NVARCHAR(MAX);
+    
+    DECLARE cur CURSOR FOR
+    SELECT i.maDangKy, i.maNguoiDung, tt.soTienThanhToan, cd.phiThamGia, cd.tenChienDich
+    FROM inserted i
+    INNER JOIN deleted d ON i.maDangKy = d.maDangKy
+    INNER JOIN ThanhToan tt ON i.maThanhToan = tt.maThanhToan
+    INNER JOIN ChienDich cd ON i.maChienDich = cd.maChienDich
+    WHERE i.daHuy = 1 AND d.daHuy = 0 AND i.daHoanTien = 0;
+    
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDangKy, @maNguoiDung, @soTienThanhToan, @phiThamGia, @tenChienDich;
+    
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Tính số tiền hoàn = tổng thanh toán - phí tham gia
+        SET @soTienHoan = @soTienThanhToan - @phiThamGia;
+        
+        -- Lấy mã ví của người dùng
+        SELECT @maVi = maVi FROM Wallet WHERE maNguoiDung = @maNguoiDung;
+        
+        IF @maVi IS NOT NULL AND @soTienHoan > 0
+        BEGIN
+            -- Cập nhật số dư ví
+            UPDATE Wallet SET soDu = soDu + @soTienHoan WHERE maVi = @maVi;
+            
+            -- Tạo mô tả chi tiết với tên chiến dịch và phí tham gia
+            SET @moTa = N'Hoàn tiền - Hủy đơn đăng ký. Chiến dịch ' + @tenChienDich + N' (Giữ lại phí tham gia: ' + CAST(@phiThamGia AS NVARCHAR(50)) + N' đ)';
+            
+            -- Tạo giao dịch hoàn tiền
+            INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
+            VALUES (@maVi, N'Hoàn tiền', @soTienHoan, @moTa, @maDangKy, GETDATE());
+            
+            -- Cập nhật trạng thái hoàn tiền trong DangKyChienDich
+            UPDATE DangKyChienDich
+            SET daHoanTien = 1, soTienHoanLai = @soTienHoan, ngayHoanTien = GETDATE()
+            WHERE maDangKy = @maDangKy;
+        END
+        
+        FETCH NEXT FROM cur INTO @maDangKy, @maNguoiDung, @soTienThanhToan, @phiThamGia, @tenChienDich;
+    END
+    
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+GO
+
+-- Trigger tự động tạo ví khi đăng ký người dùng mới (chỉ cho khách hàng)
+CREATE TRIGGER trg_TaoViKhiDangKy
+ON NguoiDung
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Tạo ví cho người dùng mới có vai trò là "Khách hàng"
+    INSERT INTO Wallet (maNguoiDung, soDu)
+    SELECT maNguoiDung, 0
+    FROM inserted
+    WHERE vaiTro = N'Khách hàng';
+END;
+GO
+
+-- Stored Procedure: Hoàn tiền tự động sau 6 giờ chiến dịch kết thúc
+CREATE PROCEDURE sp_HoanTienTuDongSauChienDich
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @maDangKy INT, @maNguoiDung CHAR(5), @maChienDich CHAR(5),
+            @soTienThanhToan DECIMAL(18,2), @phiThamGia DECIMAL(18,2),
+            @tongSoLuongHienTai INT, @soLuongToiThieu INT, @soLuongToiDa INT,
+            @trangThaiChienDich NVARCHAR(50), @soTienHoan DECIMAL(18,2), @maVi INT,
+            @maDonHang CHAR(5), @giaChotCuoiCung DECIMAL(18,2), @tenChienDich NVARCHAR(255),
+            @moTa NVARCHAR(MAX);
+    
+    -- Cursor cho các đơn đăng ký của chiến dịch đã kết thúc > 6 giờ, chưa hoàn tiền, chưa hủy
+    DECLARE cur CURSOR FOR
+    SELECT dk.maDangKy, dk.maNguoiDung, dk.maChienDich, tt.soTienThanhToan,
+           cd.phiThamGia, cd.tongSoLuongHienTai, cd.trangThai, cd.tenChienDich,
+           bg.soLuongToiThieu, bg.soLuongToiDa
+    FROM DangKyChienDich dk
+    INNER JOIN ChienDich cd ON dk.maChienDich = cd.maChienDich
+    INNER JOIN ThanhToan tt ON dk.maThanhToan = tt.maThanhToan
+    INNER JOIN BangGiaBacThang bg ON dk.maMucGia = bg.maMucGia
+    WHERE cd.thoiDiem = N'Đã kết thúc'
+      AND DATEADD(HOUR, 6, cd.ngayKetThuc) < GETDATE()
+      AND dk.daHuy = 0
+      AND dk.daHoanTien = 0;
+    
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDangKy, @maNguoiDung, @maChienDich, @soTienThanhToan,
+                              @phiThamGia, @tongSoLuongHienTai, @trangThaiChienDich, @tenChienDich,
+                              @soLuongToiThieu, @soLuongToiDa;
+    
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @soTienHoan = 0;
+        SET @maVi = NULL;
+        SET @maDonHang = NULL;
+        SET @moTa = N'';
+        
+        -- Lấy mã ví
+        SELECT @maVi = maVi FROM Wallet WHERE maNguoiDung = @maNguoiDung;
+        
+        -- Kiểm tra xem đã có đơn hàng chưa
+        SELECT @maDonHang = maDonHang, @giaChotCuoiCung = giaChotCuoiCung
+        FROM DonHang WHERE maDangKy = @maDangKy;
+        
+        -- LOGIC HOÀN TIỀN
+        IF @trangThaiChienDich = N'Thất bại'
+        BEGIN
+            -- Chiến dịch thất bại: Hoàn = Tổng thanh toán - Phí tham gia
+            SET @soTienHoan = @soTienThanhToan - @phiThamGia;
+            SET @moTa = N'Hoàn tiền - Chiến dịch thất bại. Chiến dịch ' + @tenChienDich + N' (không đạt MOQ)';
+            
+            -- Nếu chưa có đơn hàng, tạo đơn hàng
+            IF @maDonHang IS NULL
+            BEGIN
+                -- Tạo mã đơn hàng mới
+                DECLARE @nextNum INT;
+                SELECT @nextNum = ISNULL(MAX(CAST(SUBSTRING(maDonHang, 3, 3) AS INT)), 0) + 1 FROM DonHang;
+                SET @maDonHang = 'DH' + RIGHT('000' + CAST(@nextNum AS VARCHAR(3)), 3);
+                
+                INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang)
+                VALUES (@maDonHang, @maDangKy, 0, 1, @soTienHoan, GETDATE(), N'Đã giao');
+            END
+            ELSE
+            BEGIN
+                -- Cập nhật đơn hàng đã có
+                UPDATE DonHang
+                SET daHoanTien = 1, soTienHoanLai = @soTienHoan, ngayHoanTien = GETDATE()
+                WHERE maDonHang = @maDonHang;
+            END
+        END
+        ELSE IF @trangThaiChienDich = N'Thành công'
+        BEGIN
+            -- Kiểm tra cược đúng hay sai
+            IF @tongSoLuongHienTai >= @soLuongToiThieu AND @tongSoLuongHienTai <= @soLuongToiDa
+            BEGIN
+                -- Cược đúng: Hoàn = Phí tham gia
+                SET @soTienHoan = @phiThamGia;
+                SET @moTa = N'Hoàn tiền - Cược đúng. Chiến dịch ' + @tenChienDich;
+            END
+            ELSE
+            BEGIN
+                -- Cược sai: Không hoàn (soTienHoan = 0)
+                SET @soTienHoan = 0;
+                SET @moTa = N'Không hoàn tiền - Cược sai. Chiến dịch ' + @tenChienDich;
+            END
+            
+            -- Nếu chưa có đơn hàng, tạo đơn hàng
+            IF @maDonHang IS NULL
+            BEGIN
+                DECLARE @nextNum2 INT;
+                SELECT @nextNum2 = ISNULL(MAX(CAST(SUBSTRING(maDonHang, 3, 3) AS INT)), 0) + 1 FROM DonHang;
+                SET @maDonHang = 'DH' + RIGHT('000' + CAST(@nextNum2 AS VARCHAR(3)), 3);
+                
+                -- Tìm giá chốt từ bảng giá bậc thang
+                SELECT @giaChotCuoiCung = donGia
+                FROM BangGiaBacThang
+                WHERE maChienDich = @maChienDich
+                  AND @tongSoLuongHienTai >= soLuongToiThieu
+                  AND @tongSoLuongHienTai <= soLuongToiDa;
+                
+                INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang)
+                VALUES (@maDonHang, @maDangKy, ISNULL(@giaChotCuoiCung, 0), 1, @soTienHoan, GETDATE(), N'Đang chuẩn bị');
+            END
+            ELSE
+            BEGIN
+                -- Cập nhật đơn hàng đã có
+                UPDATE DonHang
+                SET daHoanTien = 1, soTienHoanLai = @soTienHoan, ngayHoanTien = GETDATE()
+                WHERE maDonHang = @maDonHang;
+            END
+        END
+        
+        -- Hoàn tiền vào ví nếu có số tiền hoàn > 0
+        IF @maVi IS NOT NULL AND @soTienHoan > 0
+        BEGIN
+            UPDATE Wallet SET soDu = soDu + @soTienHoan WHERE maVi = @maVi;
+            
+            INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
+            VALUES (@maVi, N'Hoàn tiền', @soTienHoan, @moTa, @maDangKy, GETDATE());
+        END
+        
+        -- Cập nhật trạng thái hoàn tiền trong DangKyChienDich
+        UPDATE DangKyChienDich
+        SET daHoanTien = 1, soTienHoanLai = @soTienHoan, ngayHoanTien = GETDATE()
+        WHERE maDangKy = @maDangKy;
+        
+        FETCH NEXT FROM cur INTO @maDangKy, @maNguoiDung, @maChienDich, @soTienThanhToan,
+                                  @phiThamGia, @tongSoLuongHienTai, @trangThaiChienDich, @tenChienDich,
+                                  @soLuongToiThieu, @soLuongToiDa;
+    END
+    
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+GO
+
 -- ============================================================
 -- 1. TinhThanh
 -- ============================================================
@@ -399,7 +636,7 @@ INSERT INTO NguoiDung (maNguoiDung, tenDangNhap, matKhau, email,
 ('ND002', 'beorom', '123', 'nguyenthu2018dn@gmail.com',  '0901000002', N'Nữ', N'Khách hàng', N'Hoạt động'),
 ('ND003', 'trieutien',   '123', 'trieutien@gmail.com',  '0901000003', N'Nữ',  N'Khách hàng', N'Hoạt động')
 GO
- 
+
 -- ============================================================
 -- 4. SoDiaChi
 -- ============================================================
@@ -878,6 +1115,65 @@ INSERT INTO CauHinh (khoa, nhom, giaTri, loai, moTa) VALUES
 GO
 INSERT INTO SoDiaChi (maSo, maNguoiDung, maPhuongXa, hoTen, soDienThoai, diaChiChiTiet, macDinh)
 VALUES ('SO001', 'ND002', 'PX005', N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi', 1);
+
+-- ============================================================
+-- DỮ LIỆU TEST CHO KHÁCH HÀNG ND002
+-- ============================================================
+
+-- 1. ThanhToan cho đơn đăng ký chiến dịch CD004 (Jisoo - đã kết thúc thành công)
+INSERT INTO ThanhToan (hoTenNguoiNhan, soDienThoaiNhan, diaChiGiaoHang, soTienThanhToan, phuongThuc, ngayThanhToan, ghiChu)
+VALUES 
+(N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi, Phường Hải Châu, Đà Nẵng', 91000000, N'VNPay', '2026-03-12 10:30:00', N'Thanh toán chiến dịch Jisoo');
+-- maThanhToan sẽ là 1
+
+-- 2. DangKyChienDich cho CD004 (Jisoo)
+INSERT INTO DangKyChienDich (maThanhToan, maMucGia, maNguoiDung, maChienDich, daHuy, tongSoLuong, daHoanTien, soTienHoanLai, ngayHoanTien, ngayDangKy)
+VALUES 
+(1, 16, 'ND002', 'CD004', 0, 2, 0, 0, null, '2026-03-12 10:30:00');
+-- maDangKy sẽ là 1
+
+-- 3. PhieuChiTietDangKy cho đơn đăng ký trên (2 đôi giày Dior)
+INSERT INTO PhieuChiTietDangKy (maDangKy, maSanPham, maMau, maSize, soLuong)
+VALUES 
+(1, 'SP004', 2, 5, 1),  -- 1 đôi màu Trắng, size 38
+(1, 'SP004', 1, 6, 1);  -- 1 đôi màu Đen, size 39
+
+-- 4. DonHang (chiến dịch thành công, cược đúng, đã giao hàng)
+INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang, ngayTaoDon)
+VALUES 
+('DH001', 1, 65000000, 1, 6000000, '2026-04-06 15:00:00', N'Đã giao', '2026-04-06 09:00:00');
+-- giaChotCuoiCung: 39tr (bậc 2 của CD004)
+-- soTienHoanLai: 46tr - 39tr - 1tr(phí) = 6tr
+-- Đã giao để có thể đánh giá
+
+-- 5. ChiTietDonHang
+INSERT INTO ChiTietDonHang (maDonHang, maMau, maSize, soLuong)
+VALUES 
+('DH001', 2, 5, 1),  -- Trắng, size 38
+('DH001', 1, 6, 1);  -- Đen, size 39
+
+
+-- 8. Wallet cho khách hàng ND002
+-- Trigger đã tự động tạo ví với số dư 0 khi INSERT NguoiDung
+-- Bây giờ cần thêm giao dịch và UPDATE số dư
+
+-- Lấy maVi của user ND002
+DECLARE @maViND002 INT;
+SELECT @maViND002 = maVi FROM Wallet WHERE maNguoiDung = 'ND002';
+
+-- 9. WalletTransaction - Lịch sử giao dịch
+INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
+VALUES 
+-- Hoàn tiền từ chiến dịch Jisoo (cược đúng)
+(@maViND002, N'Hoàn tiền', 26000000, N'Hoàn tiền - Cược đúng. Chiến dịch JISOO X EXED', 1, '2026-04-06 15:00:00');
+
+-- 10. UPDATE số dư ví sau khi có giao dịch
+UPDATE Wallet 
+SET soDu = 26000000 
+WHERE maNguoiDung = 'ND002';
+
+GO
+
 select * from ThanhToan
 select * from DangKyChienDich
 select * from PhieuChiTietDangKy
@@ -890,3 +1186,5 @@ select * from DanhGia
 Select * from DonHang
 select * from DangKyChienDich
 select * from MauSac
+select * from BangGiaBacThang
+select * from Wallet

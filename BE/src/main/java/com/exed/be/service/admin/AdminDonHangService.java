@@ -91,7 +91,7 @@ public class AdminDonHangService {
         if (!dk.getDaHuy()) {
             throw new RuntimeException("Chỉ hoàn tiền cho đơn đã hủy");
         }
-        dk.setTrangThaiHoanTien(true);
+        dk.setDaHoanTien(true);
         return dangKyChienDichRepository.save(dk);
     }
 

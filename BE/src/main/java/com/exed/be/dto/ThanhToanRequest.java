@@ -12,4 +12,5 @@ public class ThanhToanRequest {
     private BigDecimal soTienThanhToan;
     private String phuongThuc;
     private String ghiChu;
+    private String maNguoiDung; // For wallet payment validation
 }
