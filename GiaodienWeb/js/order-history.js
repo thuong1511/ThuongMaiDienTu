@@ -529,9 +529,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load registered campaigns (tab 1)
     loadRegisteredCampaigns();
     
-    // Load orders (tab 2) - will be loaded when user switches to that tab
-    // We'll load it on first tab switch to improve initial page load
-    
     // Add filter functionality for registered orders (tab buttons)
     const registeredFilterTabs = document.querySelectorAll('[data-registered-filter]');
     registeredFilterTabs.forEach(tab => {
@@ -548,17 +545,102 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add main tab switching functionality
     const mainTabs = document.querySelectorAll('.main-tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
     let ordersLoaded = false; // Track if orders have been loaded
     
     mainTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            // Remove active class from all main tabs
+            mainTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
             const mainTab = tab.getAttribute('data-main-tab');
+
+            // Show/hide panels
+            tabPanels.forEach(panel => {
+                if (panel.id === mainTab + '-panel') {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
             
             // If switching to orders tab and not loaded yet, load it
             if (mainTab === 'orders' && !ordersLoaded) {
                 loadOrders();
                 ordersLoaded = true;
             }
+        });
+    });
+
+    // Order filter functionality (for "Đơn hàng của tôi" tab)
+    const filterTabs = document.querySelectorAll('#orders-panel .tab-btn[data-filter]');
+    const subFilterContainer = document.getElementById('success-sub-filters');
+    const subFilterTabs = document.querySelectorAll('.sub-tab-btn');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            filterTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            const filter = tab.getAttribute('data-filter');
+
+            // Show/hide sub-filters
+            if (filter === 'success') {
+                subFilterContainer.style.display = 'flex';
+                // Reset to "Tất cả" sub-filter
+                subFilterTabs.forEach(st => st.classList.remove('active'));
+                subFilterTabs[0].classList.add('active');
+            } else {
+                subFilterContainer.style.display = 'none';
+            }
+
+            // Show/hide orders based on filter
+            const orderCards = document.querySelectorAll('#orders-panel .order-card');
+            orderCards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else if (filter === status) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Sub-filter functionality for "Chiến dịch thành công"
+    subFilterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all sub-tabs
+            subFilterTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            const subFilter = tab.getAttribute('data-sub-filter');
+
+            // Show/hide orders based on sub-filter
+            const orderCards = document.querySelectorAll('#orders-panel .order-card');
+            orderCards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                const shipping = card.getAttribute('data-shipping');
+                
+                // Only filter success orders
+                if (status === 'success') {
+                    if (subFilter === 'all-success') {
+                        card.style.display = 'block';
+                    } else if (subFilter === shipping) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
         });
     });
 });
@@ -781,4 +863,191 @@ function createOrderCard(donHang) {
 function viewOrderDetail(maDonHang) {
     // TODO: Navigate to order detail page or show modal
     alert('Chi tiết đơn hàng #' + maDonHang + '\n(Chức năng đang phát triển)');
+}
+
+
+// ============================================
+// LOAD ĐƠN HÀNG (Orders Tab)
+// ============================================
+
+// Load orders for current user
+async function loadOrders() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const container = document.querySelector('#orders-panel .order-list');
+    container.innerHTML = '<p style="text-align: center; padding: 40px;">Đang tải đơn hàng...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/donhang/nguoidung/${user.maNguoiDung}`);
+        const data = await response.json();
+
+        console.log('Orders API response:', data);
+
+        if (data.success && data.data && data.data.length > 0) {
+            container.innerHTML = '';
+            
+            data.data.forEach(order => {
+                const card = createOrderCard(order);
+                container.appendChild(card);
+            });
+        } else {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom: 20px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h3 style="color: #666; margin: 0;">Chưa có đơn hàng nào</h3>
+                    <p style="color: #999; margin: 10px 0;">Đơn hàng sẽ được tạo sau khi chiến dịch kết thúc</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #d32f2f;">
+                <p>❌ Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.</p>
+            </div>
+        `;
+    }
+}
+
+// Create order card HTML
+function createOrderCard(order) {
+    const card = document.createElement('div');
+    card.className = 'order-card';
+    
+    const registration = order.dangKyChienDich;
+    const chienDich = registration?.chienDich;
+    const sanPham = chienDich?.sanPham;
+    const thanhToan = registration?.thanhToan;
+    const phieuGiao = order.phieuGiaoHang;
+    const bangGia = registration?.bangGiaBacThang;
+    
+    // Determine campaign status (success/failed)
+    const campaignStatus = chienDich?.trangThai || 'Đang xử lý';
+    const isSuccess = campaignStatus === 'Thành công';
+    
+    // Set data attributes for filtering
+    card.setAttribute('data-status', isSuccess ? 'success' : 'failed');
+    
+    // Determine shipping status for sub-filtering
+    let shippingStatus = 'preparing';
+    let shippingStatusText = '📦 Đang chuẩn bị';
+    let shippingStatusClass = 'preparing';
+    
+    if (order.trangThaiGiaoHang === 'Đã giao') {
+        shippingStatus = 'delivered';
+        shippingStatusText = '✓ Đã giao hàng';
+        shippingStatusClass = 'delivered';
+    } else if (order.trangThaiGiaoHang === 'Đang giao') {
+        shippingStatus = 'shipping';
+        shippingStatusText = '🚚 Đang giao hàng';
+        shippingStatusClass = 'shipping';
+    }
+    card.setAttribute('data-shipping', shippingStatus);
+    
+    // Get campaign image
+    const campaignImage = chienDich?.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0
+        ? '../' + chienDich.hinhAnhChienDichs[0].duongDan
+        : '../images/banner.jpg';
+    
+    // Format dates
+    const orderDate = order.ngayTaoDon ? new Date(order.ngayTaoDon).toLocaleDateString('vi-VN') : 'N/A';
+    
+    // Calculate total quantity
+    const totalQuantity = registration?.tongSoLuong || 0;
+    
+    // Get refund info
+    const daHoanTien = order.daHoanTien;
+    const soTienHoanLai = order.soTienHoanLai || 0;
+    const giaChotCuoiCung = order.giaChotCuoiCung || 0;
+    const soTienThanhToan = thanhToan?.soTienThanhToan || 0;
+    
+    card.innerHTML = `
+        <div class="order-header">
+            <div class="order-id">
+                <span class="label">Mã đơn hàng:</span>
+                <span class="value">#${order.maDonHang}</span>
+            </div>
+            <span class="order-status ${shippingStatusClass}">${shippingStatusText}</span>
+        </div>
+
+        <div class="order-body">
+            <div class="order-image">
+                <img src="${campaignImage}" alt="${chienDich?.tenChienDich || 'Campaign'}" 
+                     onerror="this.src='../images/banner.jpg'">
+            </div>
+            <div class="order-info">
+                <h3>${chienDich?.tenChienDich || 'Đang cập nhật'}</h3>
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Sản phẩm:</span>
+                        <span class="detail-value">${sanPham?.tenSanPham || 'Đang cập nhật'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Ngày tạo đơn:</span>
+                        <span class="detail-value">${orderDate}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Số lượng:</span>
+                        <span class="detail-value">${totalQuantity} sản phẩm</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Giá chốt cuối cùng:</span>
+                        <span class="detail-value">${giaChotCuoiCung.toLocaleString('vi-VN')} đ/sp</span>
+                    </div>
+                    ${phieuGiao ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Đơn vị vận chuyển:</span>
+                        <span class="detail-value">${phieuGiao.donViVanChuyen}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Mã vận đơn:</span>
+                        <span class="detail-value tracking">${phieuGiao.maVanDon}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+            <div class="order-payment">
+                <div class="payment-row">
+                    <span>Tổng thanh toán:</span>
+                    <span class="amount">${soTienThanhToan.toLocaleString('vi-VN')} đ</span>
+                </div>
+                ${daHoanTien ? `
+                <div class="payment-row refund">
+                    <span>Đã hoàn tiền:</span>
+                    <span class="amount">-${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div class="payment-row total">
+                    <span>Thực trả:</span>
+                    <span class="amount">${(soTienThanhToan - soTienHoanLai).toLocaleString('vi-VN')} đ</span>
+                </div>
+                ` : `
+                <div class="payment-row total">
+                    <span>Thực trả:</span>
+                    <span class="amount">${soTienThanhToan.toLocaleString('vi-VN')} đ</span>
+                </div>
+                `}
+            </div>
+        </div>
+
+        <div class="order-footer">
+            <div class="order-actions">
+                <button class="btn-detail" onclick="viewOrderDetail('${order.maDonHang}')">Xem chi tiết</button>
+                ${shippingStatus === 'delivered' ? `
+                <button class="btn-review" onclick="window.location.href='review.html?orderId=${order.maDonHang}'">Đánh giá</button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+// View order detail
+function viewOrderDetail(maDonHang) {
+    window.location.href = `order-detail.html?orderId=${maDonHang}`;
 }

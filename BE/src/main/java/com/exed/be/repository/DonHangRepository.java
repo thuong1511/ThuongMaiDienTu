@@ -11,14 +11,16 @@ import java.util.Optional;
 
 @Repository
 public interface DonHangRepository extends JpaRepository<DonHang, String> {
-
-    Optional<DonHang> findByDangKyChienDich_MaDangKy(Integer maDangKy);
-
-    boolean existsByDangKyChienDich_MaDangKy(Integer maDangKy);
     
-    /**
-     * Lấy tất cả đơn hàng của một người dùng
-     */
-    @Query("SELECT dh FROM DonHang dh WHERE dh.dangKyChienDich.nguoiDung.maNguoiDung = :maNguoiDung ORDER BY dh.ngayTaoDon DESC")
+    // Lấy tất cả đơn hàng của một người dùng
+    @Query("SELECT dh FROM DonHang dh " +
+           "WHERE dh.dangKyChienDich.nguoiDung.maNguoiDung = :maNguoiDung " +
+           "ORDER BY dh.ngayTaoDon DESC")
     List<DonHang> findByNguoiDung(@Param("maNguoiDung") String maNguoiDung);
+    
+    // Lấy đơn hàng theo mã đăng ký
+    Optional<DonHang> findByDangKyChienDich_MaDangKy(Integer maDangKy);
+    
+    // Kiểm tra đơn hàng tồn tại theo mã đăng ký
+    boolean existsByDangKyChienDich_MaDangKy(Integer maDangKy);
 }

@@ -625,7 +625,243 @@
     transform: translateY(-2px);
 }
 
+/* Order Card for "Đơn hàng của tôi" Tab - Same layout as Registration Card */
+#orders-panel .order-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+#orders-panel .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: linear-gradient(135deg, rgba(236, 234, 229, 0.5), rgba(236, 234, 229, 0.3));
+    border-bottom: 2px solid rgba(196, 168, 127, 0.3);
+}
+
+#orders-panel .order-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#orders-panel .order-id .label {
+    font-size: 14px;
+    color: rgba(95, 7, 4, 0.7);
+    font-weight: 600;
+}
+
+#orders-panel .order-id .value {
+    font-size: 16px;
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+#orders-panel .order-status {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+#orders-panel .order-status.delivered {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: #2e7d32;
+    border: 2px solid #4caf50;
+}
+
+#orders-panel .order-status.shipping {
+    background-color: rgba(255, 152, 0, 0.15);
+    color: #e65100;
+    border: 2px solid #ff9800;
+}
+
+#orders-panel .order-status.preparing {
+    background-color: rgba(33, 150, 243, 0.15);
+    color: #1976d2;
+    border: 2px solid #2196f3;
+}
+
+#orders-panel .order-body {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 30px;
+    align-items: flex-start;
+}
+
+#orders-panel .order-image {
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px solid var(--accent-gold);
+    flex-shrink: 0;
+}
+
+#orders-panel .order-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#orders-panel .order-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#orders-panel .order-info h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+#orders-panel .order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#orders-panel .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(196, 168, 127, 0.2);
+}
+
+#orders-panel .detail-label {
+    font-size: 14px;
+    color: rgba(95, 7, 4, 0.7);
+    font-weight: 600;
+}
+
+#orders-panel .detail-value {
+    font-size: 14px;
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+#orders-panel .detail-value.tracking {
+    color: #1976d2;
+    font-family: 'Courier New', monospace;
+}
+
+#orders-panel .order-payment {
+    width: 250px;
+    min-width: 250px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(236, 234, 229, 0.5), rgba(236, 234, 229, 0.3));
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid rgba(196, 168, 127, 0.3);
+}
+
+#orders-panel .payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 13px;
+    white-space: nowrap;
+    gap: 8px;
+}
+
+#orders-panel .payment-row span:first-child {
+    color: rgba(95, 7, 4, 0.7);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+#orders-panel .payment-row .amount {
+    font-weight: 800;
+    color: var(--primary-dark);
+    text-align: right;
+    flex-shrink: 0;
+}
+
+#orders-panel .payment-row.refund .amount {
+    color: #2e7d32;
+}
+
+#orders-panel .payment-row.total {
+    border-top: 2px solid var(--accent-gold);
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 16px;
+}
+
+#orders-panel .payment-row.total .amount {
+    color: var(--accent-gold);
+    font-size: 18px;
+}
+
+#orders-panel .order-footer {
+    padding: 25px 30px;
+    background: linear-gradient(135deg, rgba(236, 234, 229, 0.3), rgba(236, 234, 229, 0.2));
+    border-top: 2px solid rgba(196, 168, 127, 0.3);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#orders-panel .order-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
+    #orders-panel .order-body {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    #orders-panel .order-image {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        height: 250px;
+    }
+    
+    #orders-panel .order-payment {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+    
+    #orders-panel .order-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    #orders-panel .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    #orders-panel .order-footer {
+        justify-content: center;
+    }
+    
+    #orders-panel .order-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    #orders-panel .btn-detail,
+    #orders-panel .btn-review {
+        width: 100%;
+    }
+    
     .registered-filter-container {
         flex-direction: column;
         gap: 10px;

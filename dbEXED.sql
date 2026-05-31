@@ -255,6 +255,21 @@ CREATE TABLE DonHang (
     FOREIGN KEY (maDangKy) REFERENCES DangKyChienDich(maDangKy)
 );
 
+-- 20a. PhieuGiaoHang - Lịch sử vận chuyển đơn hàng
+CREATE TABLE PhieuGiaoHang (
+    maVanDon          VARCHAR(50) PRIMARY KEY,
+    maDonHang         CHAR(5) NOT NULL,
+    donViVanChuyen    NVARCHAR(50) NOT NULL 
+        CHECK (donViVanChuyen IN (N'Giao Hàng Nhanh', N'Giao Hàng Tiết Kiệm')),
+    nguoiNhan         NVARCHAR(100),
+    ngayDangKy        DATETIME NOT NULL,  -- Thời gian đăng ký chiến dịch
+    ngayChuanBi       DATETIME NULL,      -- Thời gian chiến dịch kết thúc
+    ngayGiao          DATETIME NULL,      -- Admin cập nhật
+    ngayNhan          DATETIME NULL,      -- Admin cập nhật
+    ghiChu            NVARCHAR(MAX),
+    FOREIGN KEY (maDonHang) REFERENCES DonHang(maDonHang) ON DELETE CASCADE
+);
+
 -- 21. ChiTietDonHang
 CREATE TABLE ChiTietDonHang (
     maChiTietDonHang INT PRIMARY KEY IDENTITY(1,1),
@@ -462,6 +477,74 @@ BEGIN
     SELECT maNguoiDung, 0
     FROM inserted
     WHERE vaiTro = N'Khách hàng';
+END;
+GO
+
+-- Trigger tự động cập nhật trạng thái giao hàng trong DonHang
+CREATE TRIGGER trg_CapNhatTrangThaiGiaoHang
+ON PhieuGiaoHang
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Cập nhật trạng thái dựa trên thời gian
+    UPDATE DonHang
+    SET trangThaiGiaoHang = CASE
+        WHEN i.ngayNhan IS NOT NULL THEN N'Đã giao'
+        WHEN i.ngayGiao IS NOT NULL THEN N'Đang giao'
+        WHEN i.ngayChuanBi IS NOT NULL THEN N'Đang chuẩn bị'
+        ELSE N'Đang chuẩn bị'
+    END
+    FROM DonHang dh
+    INNER JOIN inserted i ON dh.maDonHang = i.maDonHang;
+END;
+GO
+
+-- Trigger tự động tạo PhieuGiaoHang khi tạo DonHang
+CREATE TRIGGER trg_TaoPhieuGiaoHangKhiTaoDonHang
+ON DonHang
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Tạo mã vận đơn và phiếu giao hàng cho đơn hàng mới
+    DECLARE @maDonHang CHAR(5), @maDangKy INT, @ngayDangKy DATETIME, 
+            @ngayKetThuc DATETIME, @hoTenNguoiNhan NVARCHAR(100), @maVanDon VARCHAR(50);
+    
+    DECLARE cur CURSOR FOR
+    SELECT i.maDonHang, i.maDangKy
+    FROM inserted i
+    WHERE i.maDonHang != 'DH001';  -- Bỏ qua DH001 vì đã có dữ liệu mẫu
+    
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @maDonHang, @maDangKy;
+    
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Lấy thông tin từ DangKyChienDich, ChienDich, ThanhToan
+        SELECT 
+            @ngayDangKy = dk.ngayDangKy,
+            @ngayKetThuc = cd.ngayKetThuc,
+            @hoTenNguoiNhan = tt.hoTenNguoiNhan
+        FROM DangKyChienDich dk
+        INNER JOIN ChienDich cd ON dk.maChienDich = cd.maChienDich
+        INNER JOIN ThanhToan tt ON dk.maThanhToan = tt.maThanhToan
+        WHERE dk.maDangKy = @maDangKy;
+        
+        -- Tạo mã vận đơn (GHN + maDonHang + timestamp)
+        SET @maVanDon = 'GHN' + @maDonHang + FORMAT(GETDATE(), 'yyyyMMddHHmmss');
+        
+        -- Tạo phiếu giao hàng với đơn vị mặc định là Giao Hàng Nhanh
+        INSERT INTO PhieuGiaoHang (maVanDon, maDonHang, donViVanChuyen, nguoiNhan, ngayDangKy, ngayChuanBi, ngayGiao, ngayNhan, ghiChu)
+        VALUES (@maVanDon, @maDonHang, N'Giao Hàng Nhanh', @hoTenNguoiNhan, @ngayDangKy, @ngayKetThuc, NULL, NULL, NULL);
+        
+        FETCH NEXT FROM cur INTO @maDonHang, @maDangKy;
+    END
+    
+    CLOSE cur;
+    DEALLOCATE cur;
 END;
 GO
 
@@ -1141,7 +1224,7 @@ VALUES
 -- 4. DonHang (chiến dịch thành công, cược đúng, đã giao hàng)
 INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang, ngayTaoDon)
 VALUES 
-('DH001', 1, 65000000, 1, 6000000, '2026-04-06 15:00:00', N'Đã giao', '2026-04-06 09:00:00');
+('DH001', 1, 65000000, 1, 26000000, '2026-04-06 15:00:00', N'Đã giao', '2026-04-06 09:00:00');
 -- giaChotCuoiCung: 39tr (bậc 2 của CD004)
 -- soTienHoanLai: 46tr - 39tr - 1tr(phí) = 6tr
 -- Đã giao để có thể đánh giá
@@ -1151,6 +1234,26 @@ INSERT INTO ChiTietDonHang (maDonHang, maMau, maSize, soLuong)
 VALUES 
 ('DH001', 2, 5, 1),  -- Trắng, size 38
 ('DH001', 1, 6, 1);  -- Đen, size 39
+
+-- 7a. PhieuGiaoHang - Lịch sử vận chuyển
+-- Lấy thông tin từ DangKyChienDich và ChienDich để điền ngayDangKy và ngayChuanBi
+INSERT INTO PhieuGiaoHang (maVanDon, maDonHang, donViVanChuyen, nguoiNhan, ngayDangKy, ngayChuanBi, ngayGiao, ngayNhan, ghiChu)
+SELECT 
+    'GHN123456789',
+    'DH001',
+    N'Giao Hàng Nhanh',
+    tt.hoTenNguoiNhan,
+    dk.ngayDangKy,  -- Thời gian đăng ký chiến dịch
+    cd.ngayKetThuc, -- Thời gian chiến dịch kết thúc
+    '2026-04-20 08:15:00',  -- Admin cập nhật
+    '2026-04-22 16:45:00',  -- Admin cập nhật
+    N'Giao hàng thành công'
+FROM DonHang dh
+INNER JOIN DangKyChienDich dk ON dh.maDangKy = dk.maDangKy
+INNER JOIN ChienDich cd ON dk.maChienDich = cd.maChienDich
+INNER JOIN ThanhToan tt ON dk.maThanhToan = tt.maThanhToan
+WHERE dh.maDonHang = 'DH001';
+GO
 
 
 -- 8. Wallet cho khách hàng ND002
@@ -1188,3 +1291,4 @@ select * from DangKyChienDich
 select * from MauSac
 select * from BangGiaBacThang
 select * from Wallet
+select * from PhieuGiaoHang

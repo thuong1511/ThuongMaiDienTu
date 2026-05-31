@@ -43,6 +43,9 @@ public class DonHang {
     @OneToMany(mappedBy = "donHang", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChiTietDonHang> chiTietDonHangs;
 
+    @OneToOne(mappedBy = "donHang", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private PhieuGiaoHang phieuGiaoHang;
+
     @PrePersist
     protected void onCreate() {
         if (ngayTaoDon == null) ngayTaoDon = LocalDateTime.now();
@@ -79,4 +82,7 @@ public class DonHang {
 
     public List<ChiTietDonHang> getChiTietDonHangs() { return chiTietDonHangs; }
     public void setChiTietDonHangs(List<ChiTietDonHang> chiTietDonHangs) { this.chiTietDonHangs = chiTietDonHangs; }
+
+    public PhieuGiaoHang getPhieuGiaoHang() { return phieuGiaoHang; }
+    public void setPhieuGiaoHang(PhieuGiaoHang phieuGiaoHang) { this.phieuGiaoHang = phieuGiaoHang; }
 }
