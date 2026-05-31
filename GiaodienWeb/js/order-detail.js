@@ -55,7 +55,7 @@ function renderOrderDetail(order) {
     const thanhToan = registration?.thanhToan;
     const phieuGiao = order.phieuGiaoHang;
     const bangGia = registration?.bangGiaBacThang;
-    const chiTietDangKy = registration?.phieuChiTietDangKys || [];
+    const chiTietDonHangs = order.chiTietDonHangs || [];
     
     // Update page title
     document.title = `Chi tiết đơn hàng #${order.maDonHang} - EXED`;
@@ -88,8 +88,8 @@ function renderOrderDetail(order) {
     // Update campaign info
     updateCampaignInfo(chienDich, sanPham);
     
-    // Update product info
-    updateProductInfo(sanPham, chiTietDangKy);
+    // Update product info - pass chiTietDonHangs instead of chiTietDangKy
+    updateProductInfo(sanPham, chiTietDonHangs);
     
     // Update betting info
     updateBettingInfo(chienDich, bangGia, registration);
@@ -158,55 +158,110 @@ function updateTimeline(phieuGiao) {
 function updateCampaignInfo(chienDich, sanPham) {
     if (!chienDich) return;
     
-    const campaignImg = document.querySelector('.campaign-img');
-    const campaignImage = chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0
-        ? '../' + chienDich.hinhAnhChienDichs[0].duongDan
-        : '../images/banner.jpg';
-    campaignImg.src = campaignImage;
-    
-    document.querySelector('.campaign-details h3').textContent = chienDich.tenChienDich;
-    
-    const ngheSi = chienDich.ngheSi;
-    const metaItems = document.querySelectorAll('.meta-item');
-    metaItems[0].querySelector('.meta-value').textContent = ngheSi?.tenNgheSi || 'Đang cập nhật';
-    
-    const startDate = chienDich.ngayBatDau ? new Date(chienDich.ngayBatDau).toLocaleDateString('vi-VN') : '';
-    const endDate = chienDich.ngayKetThuc ? new Date(chienDich.ngayKetThuc).toLocaleDateString('vi-VN') : '';
-    metaItems[1].querySelector('.meta-value').textContent = `${startDate} - ${endDate}`;
-    
-    const statusSpan = metaItems[2].querySelector('.status-success, .status-failed');
-    if (chienDich.trangThai === 'Thành công') {
-        statusSpan.className = 'status-success';
-        statusSpan.textContent = '✓ Thành công';
+    // Update campaign images - show all images
+    const campaignImgContainer = document.querySelector('.campaign-info-detail');
+    if (chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0) {
+        const imagesHTML = chienDich.hinhAnhChienDichs.map(img => 
+            `<img src="../${img.duongDan}" alt="Campaign" class="campaign-img" onerror="this.src='../images/banner.jpg'">`
+        ).join('');
+        
+        campaignImgContainer.innerHTML = `
+            <div class="campaign-images">
+                ${imagesHTML}
+            </div>
+            <div class="campaign-details">
+                <h3>${chienDich.tenChienDich}</h3>
+                <div class="campaign-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Nghệ sĩ:</span>
+                        <span class="meta-value">${chienDich.ngheSi?.tenNgheSi || 'Đang cập nhật'}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Thời gian:</span>
+                        <span class="meta-value">${chienDich.ngayBatDau ? new Date(chienDich.ngayBatDau).toLocaleDateString('vi-VN') : ''} - ${chienDich.ngayKetThuc ? new Date(chienDich.ngayKetThuc).toLocaleDateString('vi-VN') : ''}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Trạng thái:</span>
+                        <span class="${chienDich.trangThai === 'Thành công' ? 'status-success' : 'status-failed'}">${chienDich.trangThai === 'Thành công' ? '✓ Thành công' : '✗ Thất bại'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
     } else {
-        statusSpan.className = 'status-failed';
-        statusSpan.textContent = '✗ Thất bại';
+        const campaignImg = document.querySelector('.campaign-img');
+        campaignImg.src = '../images/banner.jpg';
+        
+        document.querySelector('.campaign-details h3').textContent = chienDich.tenChienDich;
+        
+        const metaItems = document.querySelectorAll('.meta-item');
+        const ngheSi = chienDich.ngheSi;
+        metaItems[0].querySelector('.meta-value').textContent = ngheSi?.tenNgheSi || 'Đang cập nhật';
+        
+        const startDate = chienDich.ngayBatDau ? new Date(chienDich.ngayBatDau).toLocaleDateString('vi-VN') : '';
+        const endDate = chienDich.ngayKetThuc ? new Date(chienDich.ngayKetThuc).toLocaleDateString('vi-VN') : '';
+        metaItems[1].querySelector('.meta-value').textContent = `${startDate} - ${endDate}`;
+        
+        const statusSpan = metaItems[2].querySelector('.status-success, .status-failed');
+        if (chienDich.trangThai === 'Thành công') {
+            statusSpan.className = 'status-success';
+            statusSpan.textContent = '✓ Thành công';
+        } else {
+            statusSpan.className = 'status-failed';
+            statusSpan.textContent = '✗ Thất bại';
+        }
     }
 }
 
 // Update product info
-function updateProductInfo(sanPham, chiTietDangKy) {
-    if (!sanPham) return;
+function updateProductInfo(sanPham, chiTietDonHangs) {
+    if (!sanPham || !chiTietDonHangs || chiTietDonHangs.length === 0) return;
     
-    const productImg = document.querySelector('.product-img');
-    const productImage = sanPham.hinhAnhSanPhams && sanPham.hinhAnhSanPhams.length > 0
-        ? '../' + sanPham.hinhAnhSanPhams[0].duongDan
-        : '../images/product-placeholder.jpg';
-    productImg.src = productImage;
+    const productContainer = document.querySelector('.info-card:has(.product-item)');
     
-    document.querySelector('.product-info h3').textContent = sanPham.tenSanPham;
+    // Get all product images
+    const productImages = sanPham.hinhAnhSanPhams && sanPham.hinhAnhSanPhams.length > 0
+        ? sanPham.hinhAnhSanPhams.map(img => '../' + img.duongDan)
+        : ['../images/product-placeholder.jpg'];
     
-    // Update product specs from chiTietDangKy
-    if (chiTietDangKy && chiTietDangKy.length > 0) {
-        const firstItem = chiTietDangKy[0];
-        const specs = document.querySelectorAll('.spec-item');
-        
-        specs[0].querySelector('span:last-child').textContent = firstItem.mauSac?.tenMau || 'Đang cập nhật';
-        specs[1].querySelector('span:last-child').textContent = firstItem.kichThuoc?.tenSize || 'Đang cập nhật';
-        
-        const totalQty = chiTietDangKy.reduce((sum, item) => sum + (item.soLuong || 0), 0);
-        specs[2].querySelector('span:last-child').textContent = totalQty;
-    }
+    // Create images HTML
+    const imagesHTML = productImages.map(imgSrc => 
+        `<img src="${imgSrc}" alt="Product" class="product-img" onerror="this.src='../images/product-placeholder.jpg'">`
+    ).join('');
+    
+    // Calculate total quantity
+    const totalQuantity = chiTietDonHangs.reduce((sum, chiTiet) => sum + (chiTiet.soLuong || 1), 0);
+    
+    // Group items by color and size - using table format for alignment
+    const groupedItems = chiTietDonHangs.map(chiTiet => {
+        const color = chiTiet.mauSac?.tenMau || 'Đang cập nhật';
+        const size = chiTiet.kichThuoc?.tenSize || 'Đang cập nhật';
+        const quantity = chiTiet.soLuong || 1;
+        return `
+            <div class="product-variant">
+                <span class="variant-color">Màu ${color}</span>
+                <span class="variant-separator">-</span>
+                <span class="variant-size">Size ${size}</span>
+                <span class="variant-separator">:</span>
+                <span class="variant-quantity">${quantity} đôi</span>
+            </div>
+        `;
+    }).join('');
+    
+    productContainer.innerHTML = `
+        <h2>Thông tin sản phẩm</h2>
+        <div class="product-display">
+            <h3 class="product-name">${sanPham.tenSanPham}</h3>
+            <div class="product-total-quantity">Tổng số lượng: <strong>${totalQuantity} đôi</strong></div>
+            <div class="product-content">
+                <div class="product-images-row">
+                    ${imagesHTML}
+                </div>
+                <div class="product-variants">
+                    ${groupedItems}
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 // Update betting info
@@ -263,15 +318,46 @@ function updatePaymentInfo(thanhToan, registration, order, bangGia) {
     const soTienThanhToan = thanhToan.soTienThanhToan || 0;
     const giaChotCuoiCung = order.giaChotCuoiCung || 0;
     const soTienHoanLai = order.soTienHoanLai || 0;
+    const daHoanTien = order.daHoanTien || false;
     
-    const paymentRows = document.querySelectorAll('.payment-breakdown .payment-row');
-    paymentRows[0].querySelector('.amount').textContent = phiThamGia.toLocaleString('vi-VN') + ' đ';
-    paymentRows[1].querySelector('.amount').textContent = (soTienThanhToan - phiThamGia).toLocaleString('vi-VN') + ' đ';
-    paymentRows[2].querySelector('.amount').textContent = soTienThanhToan.toLocaleString('vi-VN') + ' đ';
-    paymentRows[3].querySelector('.amount').textContent = '-' + soTienHoanLai.toLocaleString('vi-VN') + ' đ';
+    const paymentBreakdown = document.querySelector('.payment-breakdown');
     
-    const thucTra = soTienThanhToan - soTienHoanLai;
-    paymentRows[4].querySelector('.amount').textContent = thucTra.toLocaleString('vi-VN') + ' đ';
+    paymentBreakdown.innerHTML = `
+        <div class="payment-row">
+            <span>Phí tham gia chiến dịch:</span>
+            <span class="amount">${phiThamGia.toLocaleString('vi-VN')} đ</span>
+        </div>
+        <div class="payment-row">
+            <span>Tiền đặt cọc ban đầu:</span>
+            <span class="amount">${(soTienThanhToan - phiThamGia).toLocaleString('vi-VN')} đ</span>
+        </div>
+        <div class="payment-row subtotal">
+            <span>Tổng đã thanh toán:</span>
+            <span class="amount">${soTienThanhToan.toLocaleString('vi-VN')} đ</span>
+        </div>
+        <div class="divider"></div>
+        ${soTienHoanLai > 0 ? `
+        <div class="payment-row refund">
+            <span>Hoàn lại (cược đúng):</span>
+            <span class="amount">-${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
+        </div>
+        <div class="payment-row refund-status ${daHoanTien ? 'refunded' : 'pending'}">
+            <span>Trạng thái hoàn tiền:</span>
+            <span class="amount">${daHoanTien ? '✓ Đã hoàn tiền' : '⏳ Đang xử lý'}</span>
+        </div>
+        ${daHoanTien && order.ngayHoanTien ? `
+        <div class="payment-row refund-date">
+            <span>Ngày hoàn tiền:</span>
+            <span class="amount">${new Date(order.ngayHoanTien).toLocaleString('vi-VN')}</span>
+        </div>
+        ` : ''}
+        <div class="divider"></div>
+        ` : ''}
+        <div class="payment-row total">
+            <span>Thực trả:</span>
+            <span class="amount">${(soTienThanhToan - soTienHoanLai).toLocaleString('vi-VN')} đ</span>
+        </div>
+    `;
     
     document.querySelector('.payment-method .method-value').textContent = thanhToan.phuongThuc || 'Đang cập nhật';
 }
