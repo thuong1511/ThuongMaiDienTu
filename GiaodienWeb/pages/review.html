@@ -99,17 +99,23 @@
                 <div class="campaign-info-card">
                     <span class="info-label">BẠN ĐANG ĐÁNH GIÁ</span>
                     <div class="campaign-details">
-                        <img src="../images/lisa.jpg" alt="Campaign" class="campaign-thumb">
+                        <img src="../images/lisa.jpg" alt="Campaign" class="campaign-thumb" id="campaignThumb">
                         <div class="campaign-text">
-                            <h3>CHIẾN DỊCH ROSÉ X EXED</h3>
+                            <h3 id="campaignName">CHIẾN DỊCH ROSÉ X EXED</h3>
                             <div class="campaign-meta">
-                                <span class="meta-item">Đơn: #CD2024003</span>
-                                <span class="meta-item">Giày ngày: 10/03/2026</span>
-                                <span class="meta-item">
-                                    <span class="status-badge">Chiến dịch thành công</span>
-                                </span>
+                                <span class="meta-item" id="orderCode">Đơn: #CD2024003</span>
+                                <span class="meta-item" id="startDate">Bắt đầu: 10/03/2026</span>
+                                <span class="meta-item" id="endDate">Kết thúc: 20/03/2026</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info-card">
+                    <h3 class="section-title">SẢN PHẨM ĐÃ MUA</h3>
+                    <div class="product-list" id="productList">
+                        <!-- Products will be loaded here -->
                     </div>
                 </div>
 
@@ -127,68 +133,10 @@
                     <p class="rating-text">Chọn số sao</p>
                 </div>
 
-                <!-- Detailed Rating -->
-                <div class="detailed-rating-section">
-                    <h3 class="section-title">ĐÁNH GIÁ CHI TIẾT</h3>
-                    
-                    <div class="rating-item">
-                        <span class="rating-label">CHẤT LƯỢNG SẢN PHẨM</span>
-                        <div class="star-rating-small">
-                            <span class="star-small" data-category="quality" data-rating="1">★</span>
-                            <span class="star-small" data-category="quality" data-rating="2">★</span>
-                            <span class="star-small" data-category="quality" data-rating="3">★</span>
-                            <span class="star-small" data-category="quality" data-rating="4">★</span>
-                            <span class="star-small" data-category="quality" data-rating="5">★</span>
-                        </div>
-                    </div>
-
-                    <div class="rating-item">
-                        <span class="rating-label">ĐÚNG MÔ TẢ</span>
-                        <div class="star-rating-small">
-                            <span class="star-small" data-category="description" data-rating="1">★</span>
-                            <span class="star-small" data-category="description" data-rating="2">★</span>
-                            <span class="star-small" data-category="description" data-rating="3">★</span>
-                            <span class="star-small" data-category="description" data-rating="4">★</span>
-                            <span class="star-small" data-category="description" data-rating="5">★</span>
-                        </div>
-                    </div>
-
-                    <div class="rating-item">
-                        <span class="rating-label">TỐC ĐỘ GIAO HÀNG</span>
-                        <div class="star-rating-small">
-                            <span class="star-small" data-category="shipping" data-rating="1">★</span>
-                            <span class="star-small" data-category="shipping" data-rating="2">★</span>
-                            <span class="star-small" data-category="shipping" data-rating="3">★</span>
-                            <span class="star-small" data-category="shipping" data-rating="4">★</span>
-                            <span class="star-small" data-category="shipping" data-rating="5">★</span>
-                        </div>
-                    </div>
-
-                    <div class="rating-item">
-                        <span class="rating-label">DỊCH VỤ HỖ TRỢ</span>
-                        <div class="star-rating-small">
-                            <span class="star-small" data-category="support" data-rating="1">★</span>
-                            <span class="star-small" data-category="support" data-rating="2">★</span>
-                            <span class="star-small" data-category="support" data-rating="3">★</span>
-                            <span class="star-small" data-category="support" data-rating="4">★</span>
-                            <span class="star-small" data-category="support" data-rating="5">★</span>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Review Content -->
                 <div class="review-content-section">
                     <h3 class="section-title">NỘI DUNG ĐÁNH GIÁ</h3>
                     
-                    <div class="quick-tags">
-                        <button class="tag-btn">Chất lượng tốt</button>
-                        <button class="tag-btn">Giống hình ảnh</button>
-                        <button class="tag-btn">Đóng gói tốt</button>
-                        <button class="tag-btn">Đúng giá cả thỏa</button>
-                        <button class="tag-btn">Sẽ mua lại</button>
-                        <button class="tag-btn">Gửi hàng lỗi</button>
-                    </div>
-
                     <textarea 
                         class="review-textarea" 
                         placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm và chiến dịch này..."
@@ -302,6 +250,7 @@
         </div>
     </footer>
 
+    <script src="../js/api.js"></script>
     <script src="../js/auth-manager.js"></script>
     <script src="../js/review.js"></script>
 </body>

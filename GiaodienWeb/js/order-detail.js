@@ -99,6 +99,14 @@ function renderOrderDetail(order) {
     
     // Update payment info
     updatePaymentInfo(thanhToan, registration, order, bangGia);
+    
+    // Update review button to pass orderId
+    const reviewBtn = document.querySelector('.btn-primary');
+    if (reviewBtn) {
+        reviewBtn.onclick = () => {
+            window.location.href = `review.html?orderId=${order.maDonHang}`;
+        };
+    }
 }
 
 // Update timeline
