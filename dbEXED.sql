@@ -1,4 +1,4 @@
-﻿-- ============================================================
+-- ============================================================
 -- DATABASE: dbEXED
 -- Cập nhật: Chuẩn hoá PK về CHAR(5), trigger tự sinh mã,
 --           và dữ liệu mẫu
@@ -136,8 +136,8 @@ CREATE TABLE HinhAnhSanPham (
 CREATE TABLE SanPham_MauSac (
     maSanPham     CHAR(5) NOT NULL,
     maMau         INT NOT NULL,
-    soLuongToiDa  INT NOT NULL,
     soLuongDaDat  INT DEFAULT 0,
+    soLuongToiDa  INT DEFAULT 999999,
     PRIMARY KEY (maSanPham, maMau),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham) ON DELETE CASCADE,
     FOREIGN KEY (maMau)     REFERENCES MauSac(maMau)
@@ -373,7 +373,7 @@ BEGIN
                         ELSE N'Thất bại'
                     END
     WHERE maChienDich IN (SELECT maChienDich FROM inserted)
-      AND ngayKetThuc < GETDATE()
+      AND (ngayKetThuc < GETDATE() OR tongSoLuongHienTai >= nguongToiDa)
       AND thoiDiem != N'Đã kết thúc';
 END;
 GO
@@ -785,14 +785,14 @@ GO
 -- ============================================================
 -- 8. MauSac
 -- ============================================================
--- 8. MauSac
--- ============================================================
 INSERT INTO MauSac (tenMau, maHexa) VALUES
 (N'Đen',       '#000000'),  -- maMau = 1
 (N'Trắng',     '#FFFFFF'),  -- maMau = 2
 (N'Xanh Navy', '#001F3F'),  -- maMau = 3
 (N'Đỏ',        '#FF0000'),  -- maMau = 4
-(N'Xám',       '#808080');  -- maMau = 5
+(N'Vàng',      '#FFEEA9'),  -- maMau = 5
+(N'Xám',       '#808080'),  -- maMau = 6
+(N'Hồng',      '#F794B8');  -- maMau = 7
 GO
  
 -- ============================================================
@@ -830,11 +830,11 @@ GO
 -- ============================================================
 -- 12. SanPham_MauSac
 -- ============================================================
-INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongToiDa, soLuongDaDat) VALUES
-('SP001', 3, 800, 514), -- xanh navy
-('SP001', 4, 400, 400), -- đỏ
-('SP002', 1, 500, 490 ), -- Đen
-('SP002', 2, 500, 380) -- trắng
+INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongDaDat) VALUES
+('SP001', 3, 514), -- xanh navy
+('SP001', 4, 400), -- đỏ
+('SP002', 1, 490 ), -- Đen
+('SP002', 2, 380) -- trắng
 GO
  
 -- ============================================================
@@ -952,47 +952,47 @@ GO
 -- ============================================================
 -- PHẦN 3: MÀU SẮC TỪNG SẢN PHẨM (SanPham_MauSac)
 -- ============================================================
-INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongToiDa, soLuongDaDat) VALUES
+INSERT INTO SanPham_MauSac (maSanPham, maMau, soLuongDaDat) VALUES
 -- SP003 Adidas Samba (Trắng, Xám)
-('SP003', 2, 600, 600),  -- Trắng - hết (chiến dịch thất bại vì < MOQ nhưng đã đặt hết màu này)
-('SP003', 5, 300, 180),  -- Xám
+('SP003', 2, 600),  -- Trắng
+('SP003', 5, 180),  -- Xám
 
 -- SP004 Dior B23 (Trắng, Đen)
-('SP004', 2, 200, 200),  -- Trắng
-('SP004', 1, 200, 195),  -- Đen
+('SP004', 2, 200),  -- Trắng
+('SP004', 1, 195),  -- Đen
 
 -- SP005 New Balance 574 (Xám, Trắng)
-('SP005', 5, 500, 420),  -- Xám
-('SP005', 2, 300, 210),  -- Trắng
+('SP005', 5, 420),  -- Xám
+('SP005', 2, 210),  -- Trắng
 
 -- SP006 Fila Disruptor (Trắng, Đen)
-('SP006', 2, 400, 25),   -- Trắng - chiến dịch sắp bắt đầu
-('SP006', 1, 400, 0),    -- Đen   - chưa có đơn
+('SP006', 2, 25),   -- Trắng - chiến dịch sắp bắt đầu
+('SP006', 1, 0),    -- Đen   - chưa có đơn
 
 -- SP007 Nike Air Force 1 Shadow (Trắng, Đỏ)
-('SP007', 2, 700, 650),  -- Trắng
-('SP007', 4, 300, 280),  -- Đỏ
+('SP007', 2, 650),  -- Trắng
+('SP007', 4, 280),  -- Đỏ
 
 -- SP008 Converse Chuck 70 (Đen, Trắng)
-('SP008', 1, 500, 500),  -- Đen
-('SP008', 2, 500, 430),  -- Trắng
+('SP008', 1, 500),  -- Đen
+('SP008', 2, 430),  -- Trắng
 
 -- SP009 Vans Old Skool (Xanh Navy, Đen)
-('SP009', 3, 450, 0),   -- Xanh Navy - sắp bắt đầu
-('SP009', 1, 350, 0),    -- Đen       - chưa có đơn
+('SP009', 3, 0),   -- Xanh Navy - sắp bắt đầu
+('SP009', 1, 0),    -- Đen       - chưa có đơn
 
 -- SP010 New Balance Athletics Tee (Đen, Trắng, Xám)
-('SP010', 1, 800, 5),    -- Đen   - sắp bắt đầu
-('SP010', 2, 600, 0),    -- Trắng
-('SP010', 5, 400, 0),    -- Xám
+('SP010', 1, 5),    -- Đen   - sắp bắt đầu
+('SP010', 2, 0),    -- Trắng
+('SP010', 5, 0),    -- Xám
 
 -- SP011 Li-Ning Wade (Đen, Đỏ)
-('SP011', 1, 700, 680),  -- Đen
-('SP011', 4, 500, 350),  -- Đỏ
+('SP011', 1, 680),  -- Đen
+('SP011', 4, 350),  -- Đỏ
 
 -- SP012 Dickies Heavyweight (Đen, Xám)
-('SP012', 1, 300, 0),  -- Đen
-('SP012', 5, 200, 0);   -- Xám
+('SP012', 1, 0),  -- Đen
+('SP012', 5, 0);   -- Xám
 GO
 
 -- ============================================================

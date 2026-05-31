@@ -242,9 +242,7 @@ function renderProductSelectionForms() {
                                    data-size-id="${size.maSize}"
                                    data-color-name="${colorName}"
                                    data-size-name="${sizeName}"
-                                   data-max-stock="${maxCampaignStock}"
                                    min="0" 
-                                   max="${maxCampaignStock}" 
                                    value="${currentValue}" 
                                    placeholder="0">
                         </td>
@@ -272,22 +270,12 @@ function attachMatrixInputHandlers() {
         input.addEventListener('input', (e) => {
             const colorId = e.target.dataset.colorId;
             const sizeId = e.target.dataset.sizeId;
-            const maxStock = parseInt(e.target.dataset.maxStock) || 999999;
             let value = parseInt(e.target.value) || 0;
             
             // Validate value
             if (value < 0) {
                 value = 0;
                 e.target.value = 0;
-            }
-            
-            // Check if grand total of all colors and sizes exceeds campaign stock
-            const currentGrandTotal = getGrandTotalExcluding(colorId, sizeId, value);
-            if (currentGrandTotal > maxStock) {
-                const allowedValue = Math.max(0, maxStock - (currentGrandTotal - value));
-                value = allowedValue;
-                e.target.value = allowedValue;
-                showStockWarning(`Chiến dịch chỉ còn tối đa ${maxStock} sản phẩm để đăng ký!`);
             }
             
             // Update matrix
@@ -750,7 +738,7 @@ async function handleCheckout(e) {
     
     // Calculate total quantity from product matrix
     let totalQuantity = 0;
-    const selectedProducts = []; // Array to store {colorId, sizeId, quantity, colorName, sizeName}
+    let selectedProducts = []; // Array to store {colorId, sizeId, quantity, colorName, sizeName}
     
     Object.keys(productMatrix).forEach(colorId => {
         Object.keys(productMatrix[colorId]).forEach(sizeId => {
@@ -900,6 +888,24 @@ async function handleCheckout(e) {
         
         // STEP 3: Create PhieuChiTietDangKy (Registration Details) for each color-size combination
         console.log('📝 Step 3: Creating registration details...');
+        
+        // Adjust product detail quantities if backend approved a lower quantity
+        let approvedQuantity = dangKyResult.data.tongSoLuong;
+        if (approvedQuantity < totalQuantity) {
+            console.log(`⚠️ Quantity adjusted by backend: ${totalQuantity} -> ${approvedQuantity}`);
+            let excess = totalQuantity - approvedQuantity;
+            
+            for (let i = 0; i < selectedProducts.length; i++) {
+                if (excess <= 0) break;
+                const product = selectedProducts[i];
+                const reduction = Math.min(product.quantity, excess);
+                product.quantity -= reduction;
+                excess -= reduction;
+            }
+            
+            // Filter out items with 0 quantity
+            selectedProducts = selectedProducts.filter(p => p.quantity > 0);
+        }
         
         for (let i = 0; i < selectedProducts.length; i++) {
             const product = selectedProducts[i];
