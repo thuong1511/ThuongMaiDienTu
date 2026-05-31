@@ -1,4 +1,6 @@
 // Review Page JavaScript
+// API_BASE_URL is already defined in api.js
+
 let overallRating = 0;
 let detailedRatings = {
     quality: 0,
@@ -8,8 +10,103 @@ let detailedRatings = {
 };
 let selectedTags = [];
 let uploadedImages = [];
+let orderData = null;
+
+// Get order ID from URL
+function getOrderIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('orderId');
+}
+
+// Load order data
+async function loadOrderData() {
+    const orderId = getOrderIdFromURL();
+    if (!orderId) {
+        console.log('No orderId in URL, using default data');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/donhang/${orderId}`);
+        const data = await response.json();
+
+        if (data.success && data.data) {
+            orderData = data.data;
+            updateCampaignInfo(orderData);
+            updateProductInfo(orderData);
+        } else {
+            console.error('Failed to load order data');
+        }
+    } catch (error) {
+        console.error('Error loading order data:', error);
+    }
+}
+
+// Update campaign info
+function updateCampaignInfo(order) {
+    const registration = order.dangKyChienDich;
+    const chienDich = registration?.chienDich;
+    
+    if (!chienDich) return;
+    
+    // Update campaign image
+    const campaignThumb = document.getElementById('campaignThumb');
+    if (chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0) {
+        campaignThumb.src = '../' + chienDich.hinhAnhChienDichs[0].duongDan;
+    }
+    
+    // Update campaign name
+    document.getElementById('campaignName').textContent = chienDich.tenChienDich;
+    
+    // Update order code
+    document.getElementById('orderCode').textContent = `Đơn: #${order.maDonHang}`;
+    
+    // Update dates
+    const startDate = chienDich.ngayBatDau ? new Date(chienDich.ngayBatDau).toLocaleDateString('vi-VN') : '';
+    const endDate = chienDich.ngayKetThuc ? new Date(chienDich.ngayKetThuc).toLocaleDateString('vi-VN') : '';
+    
+    document.getElementById('startDate').textContent = `Bắt đầu: ${startDate}`;
+    document.getElementById('endDate').textContent = `Kết thúc: ${endDate}`;
+}
+
+// Update product info
+function updateProductInfo(order) {
+    const chiTietDonHangs = order.chiTietDonHangs || [];
+    const sanPham = order.dangKyChienDich?.chienDich?.sanPham;
+    
+    if (!sanPham || chiTietDonHangs.length === 0) return;
+    
+    const productList = document.getElementById('productList');
+    
+    // Calculate total quantity
+    const totalQuantity = chiTietDonHangs.reduce((sum, item) => sum + (item.soLuong || 1), 0);
+    
+    // Create product HTML
+    const productHTML = `
+        <div class="product-summary">
+            <div class="product-name-row">
+                <strong>${sanPham.tenSanPham}</strong>
+                <span class="total-quantity">Tổng: ${totalQuantity} đôi</span>
+            </div>
+            <div class="product-variants-list">
+                ${chiTietDonHangs.map(item => `
+                    <div class="variant-item">
+                        <span class="variant-color">Màu ${item.mauSac?.tenMau || 'N/A'}</span>
+                        <span class="variant-separator">-</span>
+                        <span class="variant-size">Size ${item.kichThuoc?.tenSize || 'N/A'}</span>
+                        <span class="variant-separator">:</span>
+                        <span class="variant-qty">${item.soLuong || 1} đôi</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    productList.innerHTML = productHTML;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+    loadOrderData(); // Load order data first
     initializeRatingStars();
     initializeQuickTags();
     initializeImageUpload();
@@ -228,7 +325,7 @@ function initializeTextarea() {
 function initializeSubmitButton() {
     const submitBtn = document.querySelector('.btn-submit');
     
-    submitBtn.addEventListener('click', function() {
+    submitBtn.addEventListener('click', async function() {
         // Validate
         if (overallRating === 0) {
             alert('Vui lòng chọn đánh giá tổng thể!');
@@ -240,24 +337,62 @@ function initializeSubmitButton() {
             alert('Vui lòng nhập nội dung đánh giá (tối thiểu 10 ký tự)!');
             return;
         }
+
+        // Check if we have order data
+        if (!orderData || !orderData.maDonHang) {
+            alert('Không tìm thấy thông tin đơn hàng!');
+            return;
+        }
+        
+        // Prepare image paths (for now, just placeholder paths)
+        const imagePaths = uploadedImages.map((file, index) => {
+            // In a real implementation, you would upload these files first
+            // and get back the server paths
+            return `images/reviews/${orderData.maDonHang}_${index + 1}.jpg`;
+        });
         
         // Collect data
         const reviewData = {
-            overallRating: overallRating,
-            detailedRatings: detailedRatings,
-            tags: selectedTags,
-            content: textarea.value.trim(),
-            images: uploadedImages,
-            anonymous: document.getElementById('anonymousReview').checked
+            maDonHang: orderData.maDonHang,
+            diemDanhGia: overallRating,
+            binhLuan: textarea.value.trim(),
+            anDanh: document.getElementById('anonymousReview').checked, // true or false
+            hinhAnhs: imagePaths.length > 0 ? imagePaths : null
         };
         
-        console.log('Review data:', reviewData);
+        console.log('Sending review data:', reviewData);
         
-        // Show success message
-        alert('Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.');
-        
-        // Redirect back to order history
-        window.location.href = 'order-history.html';
+        try {
+            // Disable button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang gửi...';
+            
+            // Send to API
+            const response = await fetch(`${API_BASE_URL}/danhgia`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reviewData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.');
+                // Redirect back to order history
+                window.location.href = 'order-history.html';
+            } else {
+                alert('Lỗi: ' + result.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✓ Gửi đánh giá';
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            alert('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '✓ Gửi đánh giá';
+        }
     });
 }
 

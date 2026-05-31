@@ -302,6 +302,7 @@ CREATE TABLE DanhGia (
     diemDanhGia INT CHECK (diemDanhGia BETWEEN 1 AND 5),
     binhLuan    NVARCHAR(MAX),
     ngayDanhGia DATETIME DEFAULT GETDATE(),
+	anDanh bit default 0,
     FOREIGN KEY (maDonHang) REFERENCES DonHang(maDonHang)
 );
 
@@ -1287,8 +1288,11 @@ select * from SoDiaChi
 select * from ChienDich
 select * from DanhGia
 Select * from DonHang
+select * from ChiTietDonHang
 select * from DangKyChienDich
 select * from MauSac
 select * from BangGiaBacThang
 select * from Wallet
 select * from PhieuGiaoHang
+select * from DanhGia
+select * from HinhAnhDanhGia
