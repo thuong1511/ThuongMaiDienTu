@@ -145,13 +145,13 @@ function updateCampaignInfo() {
     const progressAlert = document.querySelector('.bet-progress-alert p');
     if (progressAlert) {
         const current = currentCampaign.tongSoLuongHienTai || 0;
-        const nextTier = getNextTier(current);
+        const moq = currentCampaign.nguongMOQ || 0;
+        const isMOQMet = current >= moq;
         
-        if (nextTier) {
-            const remaining = nextTier.soLuongToiThieu - current;
-            progressAlert.innerHTML = `Chiến dịch hiện có <strong>${current} người tham gia</strong>. Chỉ còn thiếu <strong>${remaining} người</strong> để đạt mốc ${nextTier.soLuongToiThieu}!`;
+        if (isMOQMet) {
+            progressAlert.innerHTML = `Chiến dịch đã đạt ngưỡng MOQ sản xuất tối thiểu và đang tiếp tục gom số lượng để mở khóa các mốc giá ưu đãi tiếp theo!`;
         } else {
-            progressAlert.innerHTML = `Chiến dịch hiện có <strong>${current} người tham gia</strong>. Đã đạt mốc cao nhất!`;
+            progressAlert.innerHTML = `Chiến dịch đang thu thập lượt đăng ký để đạt ngưỡng MOQ sản xuất tối thiểu. Hãy chia sẻ chiến dịch để nhanh chóng đạt mốc sản xuất!`;
         }
     }
 }
@@ -207,6 +207,9 @@ function renderProductSelectionForms() {
     });
     
     // Render table rows
+    const campaignRemaining = (currentCampaign.nguongToiDa || 999999) - (currentCampaign.tongSoLuongHienTai || 0);
+    const maxCampaignStock = Math.max(0, campaignRemaining);
+    
     matrixBody.innerHTML = colors.map(color => {
         const colorName = color.mauSac?.tenMau || 'N/A';
         // Use maHexa from database, fallback to #cccccc if not available
@@ -216,8 +219,6 @@ function renderProductSelectionForms() {
         const colorPreviewStyle = isLightColor
             ? `background: ${colorHex}; box-shadow: inset 0 0 0 1px #ddd;`
             : `background: ${colorHex};`;
-        const totalStock = color.soLuongToiDa - color.soLuongDaDat;
-        const stockClass = totalStock <= 0 ? 'out-of-stock' : (totalStock < 50 ? 'low-stock' : '');
         
         return `
             <tr data-color-id="${color.maMau}">
@@ -226,14 +227,11 @@ function renderProductSelectionForms() {
                         <div class="color-preview" style="${colorPreviewStyle}"></div>
                         <div class="color-details">
                             <span class="color-name">${colorName}</span>
-                            <span class="color-stock ${stockClass}">Còn: ${totalStock} đôi</span>
                         </div>
                     </div>
                 </td>
                 ${sizes.map(size => {
                     const sizeName = size.kichThuoc?.tenSize || 'N/A';
-                    const maxStock = Math.min(totalStock, 999999); // Giới hạn tối đa
-                    const isDisabled = totalStock <= 0;
                     const currentValue = productMatrix[color.maMau]?.[size.maSize] || 0;
                     
                     return `
@@ -244,12 +242,11 @@ function renderProductSelectionForms() {
                                    data-size-id="${size.maSize}"
                                    data-color-name="${colorName}"
                                    data-size-name="${sizeName}"
-                                   data-max-stock="${totalStock}"
+                                   data-max-stock="${maxCampaignStock}"
                                    min="0" 
-                                   max="${maxStock}" 
+                                   max="${maxCampaignStock}" 
                                    value="${currentValue}" 
-                                   placeholder="0"
-                                   ${isDisabled ? 'disabled' : ''}>
+                                   placeholder="0">
                         </td>
                     `;
                 }).join('')}
@@ -275,22 +272,22 @@ function attachMatrixInputHandlers() {
         input.addEventListener('input', (e) => {
             const colorId = e.target.dataset.colorId;
             const sizeId = e.target.dataset.sizeId;
-            const maxStock = parseInt(e.target.dataset.maxStock) || 0;
+            const maxStock = parseInt(e.target.dataset.maxStock) || 999999;
             let value = parseInt(e.target.value) || 0;
             
-            // Validate value against color stock (not individual size stock)
+            // Validate value
             if (value < 0) {
                 value = 0;
                 e.target.value = 0;
             }
             
-            // Check if total for this color exceeds stock
-            const currentColorTotal = getCurrentColorTotal(colorId, sizeId, value);
-            if (currentColorTotal > maxStock) {
-                const allowedValue = Math.max(0, maxStock - (currentColorTotal - value));
+            // Check if grand total of all colors and sizes exceeds campaign stock
+            const currentGrandTotal = getGrandTotalExcluding(colorId, sizeId, value);
+            if (currentGrandTotal > maxStock) {
+                const allowedValue = Math.max(0, maxStock - (currentGrandTotal - value));
                 value = allowedValue;
                 e.target.value = allowedValue;
-                showStockWarning(`Màu ${e.target.dataset.colorName} chỉ còn ${maxStock} đôi!`);
+                showStockWarning(`Chiến dịch chỉ còn tối đa ${maxStock} sản phẩm để đăng ký!`);
             }
             
             // Update matrix
@@ -326,18 +323,20 @@ function attachMatrixInputHandlers() {
     });
 }
 
-// Get current total for a color (excluding the current input being changed)
-function getCurrentColorTotal(colorId, excludeSizeId, newValue) {
+// Get current grand total of selection excluding/replacing a specific input being changed
+function getGrandTotalExcluding(excludeColorId, excludeSizeId, newValue) {
     let total = 0;
-    if (productMatrix[colorId]) {
-        Object.keys(productMatrix[colorId]).forEach(sizeId => {
-            if (sizeId === excludeSizeId) {
-                total += newValue;
-            } else {
-                total += productMatrix[colorId][sizeId] || 0;
-            }
-        });
-    }
+    Object.keys(productMatrix).forEach(colorId => {
+        if (productMatrix[colorId]) {
+            Object.keys(productMatrix[colorId]).forEach(sizeId => {
+                if (colorId === excludeColorId && sizeId === excludeSizeId) {
+                    total += newValue;
+                } else {
+                    total += productMatrix[colorId][sizeId] || 0;
+                }
+            });
+        }
+    });
     return total;
 }
 

@@ -212,7 +212,10 @@ function renderPagination() {
 function createCampaignCard(campaign) {
     const currentPrice = getCurrentPrice(campaign);
     const discountPercent = ((campaign.giaGoc - currentPrice) / campaign.giaGoc * 100).toFixed(1);
-    const progressPercent = Math.min((campaign.tongSoLuongHienTai / campaign.nguongToiDa * 100), 100);
+    const moq = campaign.nguongMOQ || 0;
+    const current = campaign.tongSoLuongHienTai || 0;
+    const isMOQMet = current >= moq;
+    const progressPercent = moq > 0 ? Math.min((current / moq * 100), 100) : 0;
     
     // Get campaign image
     const imageUrl = fixImagePath(
@@ -251,9 +254,11 @@ function createCampaignCard(campaign) {
                 
                 <div class="campaign-progress">
                     <div class="progress-bar-small">
-                        <div class="progress-fill-small ${progressPercent >= 100 ? 'completed' : ''}" style="width: ${progressPercent}%"></div>
+                        <div class="progress-fill-small ${isMOQMet ? 'completed' : ''}" style="width: ${progressPercent}%${isMOQMet ? '; background: #81c784;' : ''}"></div>
                     </div>
-                    <span class="progress-text-small">${campaign.tongSoLuongHienTai}/${campaign.nguongToiDa} đã đăng ký</span>
+                    <span class="progress-text-small" style="font-weight: 700; color: ${isMOQMet ? '#81c784' : '#ffb74d'};">
+                        ${isMOQMet ? '✓ Đã đạt MOQ sản xuất' : '⏳ Đang gom số lượng đạt MOQ'}
+                    </span>
                 </div>
 
                 <div class="campaign-price-info">

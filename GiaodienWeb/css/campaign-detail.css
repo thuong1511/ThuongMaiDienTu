@@ -225,6 +225,7 @@
     border-radius: 20px;
     border: 3px solid var(--accent-gold);
     margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(95, 7, 4, 0.05);
 }
 
 .progress-header {
@@ -232,39 +233,104 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 15px;
-    font-weight: 700;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.progress-title {
+    font-size: 14px;
+    font-weight: 800;
     color: var(--primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.progress-count strong {
-    color: var(--accent-gold);
-    font-size: 18px;
+/* Badge Trạng thái MOQ dạng Pill cao cấp */
+.moq-badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
+.moq-badge-status.reached {
+    background-color: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.25);
+}
+
+.moq-badge-status.pending {
+    background-color: rgba(230, 81, 0, 0.12);
+    color: #e65100;
+    border: 1px solid rgba(230, 81, 0, 0.25);
+}
+
+.moq-badge-status .badge-icon {
+    font-size: 13px;
+}
+
+/* Thanh tiến độ thanh lịch */
 .progress-bar-detail {
     position: relative;
-    height: 40px;
-    background: rgba(196, 168, 127, 0.2);
-    border-radius: 20px;
+    height: 16px;
+    background: rgba(196, 168, 127, 0.15);
+    border-radius: 10px;
     overflow: hidden;
 }
 
 .progress-fill-detail {
     height: 100%;
     background: linear-gradient(90deg, var(--accent-gold), #D4AF6A);
-    border-radius: 20px;
-    transition: width 2s ease;
-    box-shadow: 0 0 20px rgba(196, 168, 127, 0.5);
+    border-radius: 10px;
+    transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(196, 168, 127, 0.3);
+    position: relative;
+}
+
+/* Hiệu ứng ánh sáng chạy dọc (Shimmer) cho thanh tiến độ */
+.progress-fill-detail::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.25),
+        transparent
+    );
+    animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 /* MOQ Section */
 .moq-section {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
     padding: 20px 25px;
     border-radius: 20px;
-    border: 3px solid #4caf50;
     margin-bottom: 25px;
+    transition: all 0.3s ease;
+}
+
+.moq-section.success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.08), rgba(76, 175, 80, 0.04));
+    border: 3px solid #4caf50;
+}
+
+.moq-section.warning {
+    background: linear-gradient(135deg, rgba(230, 81, 0, 0.08), rgba(230, 81, 0, 0.04));
+    border: 3px solid #e65100;
 }
 
 .moq-info {
@@ -279,23 +345,36 @@
     gap: 10px;
     font-size: 16px;
     font-weight: 800;
+}
+
+.moq-section.success .moq-badge {
     color: #2e7d32;
 }
 
-.moq-badge svg {
+.moq-section.success .moq-badge svg {
     color: #4caf50;
-    flex-shrink: 0;
+}
+
+.moq-section.warning .moq-badge {
+    color: #b25800;
+}
+
+.moq-section.warning .moq-badge svg {
+    color: #e65100;
 }
 
 .moq-status {
     font-size: 14px;
     font-weight: 700;
-    color: #2e7d32;
     margin: 0;
 }
 
 .moq-status.success {
     color: #2e7d32;
+}
+
+.moq-status.warning {
+    color: #e65100;
 }
 
 /* Pricing Table */
@@ -784,114 +863,87 @@
     padding: 25px;
     border: 3px solid var(--accent-gold);
     margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
 }
 
 .product-variants h3 {
     color: var(--primary-dark);
     font-size: 18px;
     font-weight: 800;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     text-transform: uppercase;
+    grid-column: span 2;
+    border-bottom: 2px solid rgba(196, 168, 127, 0.2);
+    padding-bottom: 12px;
 }
 
 .variant-section {
-    margin-bottom: 20px;
-}
-
-.variant-section:last-child {
     margin-bottom: 0;
 }
 
 .variant-section h4 {
-    color: var(--primary-dark);
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 12px;
+    color: rgba(95, 7, 4, 0.6);
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 15px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Color List */
 .color-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 .color-item {
     background: linear-gradient(135deg, rgba(95, 7, 4, 0.03), rgba(80, 6, 3, 0.03));
     border: 2px solid var(--accent-gold);
-    border-radius: 10px;
-    padding: 12px 15px;
+    border-radius: 8px;
+    padding: 0 16px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
     transition: all 0.3s;
+    cursor: default;
+    height: 44px; /* Đồng bộ chiều cao với ô kích thước */
 }
 
 .color-item:hover {
     background: linear-gradient(135deg, rgba(95, 7, 4, 0.08), rgba(80, 6, 3, 0.08));
-    transform: translateX(3px);
+    transform: translateY(-2px);
 }
 
 .color-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .color-swatch {
-    width: 32px;
-    height: 32px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 2px solid var(--accent-gold);
+    border: 1.5px solid var(--accent-gold);
     flex-shrink: 0;
 }
 
 .color-details {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
 }
 
 .color-name {
     font-weight: 700;
     color: var(--primary-dark);
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .color-stock {
-    font-size: 12px;
-    color: rgba(95, 7, 4, 0.7);
-}
-
-.color-stock.low-stock {
-    color: #ff6b6b;
-    font-weight: 600;
-}
-
-.color-stock.out-of-stock {
-    color: #999;
-    font-weight: 600;
-}
-
-.stock-badge {
-    background: var(--accent-gold);
-    color: var(--primary-dark);
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-weight: 700;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.stock-badge.low {
-    background: #ff6b6b;
-    color: #fff;
-}
-
-.stock-badge.out {
-    background: #666;
-    color: #fff;
+    display: none;
 }
 
 /* Size List */
@@ -905,12 +957,17 @@
     background: linear-gradient(135deg, rgba(95, 7, 4, 0.03), rgba(80, 6, 3, 0.03));
     border: 2px solid var(--accent-gold);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 0 16px;
     font-weight: 700;
     color: var(--primary-dark);
     font-size: 14px;
     transition: all 0.3s;
     cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px; /* Đồng bộ chiều cao */
+    min-width: 44px; /* Độ rộng tối thiểu tạo hình vuông/chữ nhật ngắn cân đối */
 }
 
 .size-item:hover {
@@ -918,8 +975,13 @@
     transform: translateY(-2px);
 }
 
-
-.size-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+/* Responsive Grid */
+@media (max-width: 768px) {
+    .product-variants {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .product-variants h3 {
+        grid-column: span 1;
+    }
 }

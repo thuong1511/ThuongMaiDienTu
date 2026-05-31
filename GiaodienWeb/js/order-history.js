@@ -228,8 +228,17 @@ function createRegistrationCard(registration, details) {
         }
     }
 
-    // Store details in data attribute for later use
+    // Store details and registration attributes for later use in detail popup
     card.dataset.details = JSON.stringify(details);
+    card.dataset.registration = JSON.stringify(registration);
+    card.dataset.isBetCorrect = isBetCorrect;
+    card.dataset.betStatusText = betStatusText || '';
+    card.dataset.betStatusColor = betStatusColor;
+    card.dataset.userTierText = userTierText;
+    card.dataset.giaBacThang = giaBacThang;
+    card.dataset.currentTierText = currentTierText;
+    card.dataset.soTienHoanLai = soTienHoanLai;
+    card.dataset.registrationDate = registrationDate;
 
     card.innerHTML = `
         <div class="order-header">
@@ -260,95 +269,19 @@ function createRegistrationCard(registration, details) {
                         <span class="detail-label">Số lượng:</span>
                         <span class="detail-value">${registration.tongSoLuong} sản phẩm</span>
                     </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Mốc đặt cược của bạn:</span>
-                        <span class="detail-value bet-pending">${userTierText}${betStatusText ? `<span style="color: ${betStatusColor}; font-weight: 700;">${betStatusText}</span>` : ''}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Giá gốc:</span>
-                        <span class="detail-value">${(chienDich?.giaGoc || 0).toLocaleString('vi-VN')} đ/sp</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Giá bậc thang:</span>
-                        <span class="detail-value">${giaBacThang.toLocaleString('vi-VN')} đ/sp</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Phí tham gia:</span>
-                        <span class="detail-value">${(chienDich?.phiThamGia || 0).toLocaleString('vi-VN')} đ</span>
-                    </div>
-                    ${!registration.daHuy && chienDich ? `
-                    <div class="detail-row">
-                        <span class="detail-label">Mốc hiện tại:</span>
-                        <span class="detail-value" style="color: #e65100; font-weight: 700;">${currentTierText}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Tiến độ hiện tại:</span>
-                        <span class="detail-value">${chienDich.tongSoLuongHienTai || 0} / ${chienDich.nguongToiDa || 0} sản phẩm</span>
-                    </div>
-                    ` : ''}
                 </div>
-                ${!registration.daHuy && campaignEndDate && !isCampaignEnded ? `
-                <div class="countdown-mini">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span>Kết thúc sau: <span class="campaign-countdown" data-deadline="${campaignEndDate.toISOString()}">Đang tính...</span></span>
-                </div>
-                ` : ''}
             </div>
             <div class="order-payment">
-                ${!registration.daHuy && !isCampaignEnded ? `
-                <div class="decision-countdown-box">
-                    <div class="decision-countdown-header">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                        <span>Thời gian quyết định:</span>
-                    </div>
-                    <div class="decision-countdown-time">
-                        <strong class="decision-countdown" data-deadline="${finalDecisionDeadline.toISOString()}">Đang tính...</strong>
-                    </div>
-                </div>
-                ` : ''}
                 <div class="payment-row">
                     <span>Tổng thanh toán:</span>
                     <span class="amount">${(thanhToan?.soTienThanhToan || 0).toLocaleString('vi-VN')} đ</span>
                 </div>
-                ${registration.daHuy ? `
-                <div class="payment-row" style="color: #d32f2f; margin-top: 8px;">
-                    <span>Trạng thái:</span>
-                    <span class="amount">Đã hủy</span>
-                </div>
-                <div class="payment-row" style="font-size: 13px; color: #666;">
-                    <span>Thời gian hủy:</span>
-                    <span>${registration.ngayHoanTien ? new Date(registration.ngayHoanTien).toLocaleString('vi-VN') : 'N/A'}</span>
-                </div>
-                <div class="payment-row" style="color: #2e7d32; font-weight: 600;">
-                    <span>Số tiền hoàn lại:</span>
-                    <span class="amount">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
-                </div>
-                ` : isCampaignEnded ? `
-                <div class="payment-row" style="color: ${isBetCorrect ? '#2e7d32' : '#d32f2f'}; font-weight: 600; margin-top: 8px;">
-                    <span>Kết quả:</span>
-                    <span class="amount">${isBetCorrect ? 'Cược đúng ✓' : 'Cược sai ✗'}</span>
-                </div>
-                <div class="payment-row" style="font-weight: 600;">
-                    <span>Thực tế phải trả:</span>
-                    <span class="amount">${((giaBacThang * (registration.tongSoLuong || 1)) + (chienDich?.phiThamGia || 0)).toLocaleString('vi-VN')} đ</span>
-                </div>
-                <div class="payment-row" style="color: #2e7d32; font-weight: 600;">
-                    <span>Số tiền hoàn lại:</span>
-                    <span class="amount">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
-                </div>
-                ` : `
                 <div class="payment-row pending" style="margin-top: 8px;">
-                    <span>Chờ kết quả:</span>
-                    <span class="amount">Đang chờ</span>
+                    <span>Kết quả:</span>
+                    <span class="amount" style="color: ${registration.daHuy ? '#777' : (isCampaignEnded ? (isBetCorrect ? '#2e7d32' : '#d32f2f') : '#e65100')}; font-weight: 700;">
+                        ${registration.daHuy ? 'Đã hủy' : (isCampaignEnded ? (isBetCorrect ? 'Cược đúng ✓' : 'Cược sai ✗') : 'Đang chờ')}
+                    </span>
                 </div>
-                `}
             </div>
         </div>
 
@@ -361,19 +294,6 @@ function createRegistrationCard(registration, details) {
             </div>
         </div>
     `;
-
-    // Debug log to check data
-    console.log('Registration data:', {
-        maDangKy: registration.maDangKy,
-        bangGia: bangGia,
-        tenBac: bangGia?.tenBac,
-        chienDich: chienDich,
-        bangGiaBacThangs: chienDich?.bangGiaBacThangs,
-        tongSoLuongHienTai: chienDich?.tongSoLuongHienTai,
-        currentTierText: currentTierText,
-        isCampaignEnded: isCampaignEnded,
-        isRefunded: isRefunded
-    });
 
     return card;
 }
@@ -435,33 +355,54 @@ function viewRegistrationDetail(maDangKy) {
     if (!card) return;
     
     const details = JSON.parse(card.dataset.details || '[]');
+    const registration = JSON.parse(card.dataset.registration || '{}');
     
     if (details.length === 0) {
         alert('Chưa có chi tiết sản phẩm cho đơn đăng ký này.');
         return;
     }
     
+    const chienDich = registration.chienDich;
+    const thanhToan = registration.thanhToan;
+    const sanPham = chienDich?.sanPham;
+    
+    const registrationDate = card.dataset.registrationDate;
+    const userTierText = card.dataset.userTierText;
+    const betStatusText = card.dataset.betStatusText;
+    const betStatusColor = card.dataset.betStatusColor;
+    const currentTierText = card.dataset.currentTierText;
+    const giaBacThang = parseFloat(card.dataset.giaBacThang || 0);
+    const soTienHoanLai = parseFloat(card.dataset.soTienHoanLai || 0);
+    const isBetCorrect = card.dataset.isBetCorrect === 'true';
+    
+    // Determine campaign status
+    const now = new Date();
+    const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
+    const isCampaignEnded = campaignEndDate && campaignEndDate < now;
+    
     const detailsHTML = details.map((detail, index) => `
-        <div style="background: #f9f9f9; padding: 12px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #d4af37;">
-            <strong style="color: #5f0704; font-size: 15px;">Đôi ${index + 1}:</strong>
-            <div style="margin-top: 8px; font-size: 14px;">
-                <div style="margin: 5px 0;">
-                    <span style="color: #666;">Màu sắc:</span> 
-                    <strong>${detail.mauSac?.tenMau || 'N/A'}</strong>
+        <div style="background: #fdfbf7; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(196, 168, 127, 0.3); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong style="color: #5f0704; font-size: 15px;">Phân loại #${index + 1}</strong>
+                <div style="margin-top: 5px; font-size: 14px; color: #555;">
+                    Màu sắc: <strong style="color: #111;">${detail.mauSac?.tenMau || 'N/A'}</strong> | 
+                    Kích thước: <strong style="color: #111;">${detail.kichThuoc?.tenSize || 'N/A'}</strong>
                 </div>
-                <div style="margin: 5px 0;">
-                    <span style="color: #666;">Kích thước:</span> 
-                    <strong>${detail.kichThuoc?.tenSize || 'N/A'}</strong>
-                </div>
-                <div style="margin: 5px 0;">
-                    <span style="color: #666;">Số lượng:</span> 
-                    <strong>${detail.soLuong} đôi</strong>
-                </div>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 13px; color: #666;">Số lượng</span>
+                <div style="font-size: 16px; font-weight: 800; color: #5f0704;">${detail.soLuong} đôi</div>
             </div>
         </div>
     `).join('');
-    
-    // Create modal
+
+    let betBadge = '';
+    if (registration.daHuy) {
+        betBadge = '<span style="color: #777; font-weight: 700;">Đơn đã hủy</span>';
+    } else {
+        betBadge = `${userTierText} ${betStatusText ? `<span style="color: ${betStatusColor}; font-weight: 700;">(${betStatusText.trim()})</span>` : ''}`;
+    }
+
     const modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed;
@@ -469,29 +410,208 @@ function viewRegistrationDetail(maDangKy) {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 10000;
+        font-family: 'Nunito', sans-serif;
     `;
     
     modal.innerHTML = `
-        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #d4af37; padding-bottom: 15px;">
-                <h3 style="margin: 0; color: #5f0704; font-size: 20px;">Chi tiết sản phẩm</h3>
-                <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #999; line-height: 1;">&times;</button>
+        <div style="background: white; border-radius: 24px; border: 3px solid #d4af37; max-width: 600px; width: 92%; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(95, 7, 4, 0.15); animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden;">
+            <style>
+                @keyframes modalFadeIn {
+                    from { transform: translateY(15px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                .modal-body::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .modal-body::-webkit-scrollbar-track {
+                    background: #fdfbf7;
+                }
+                .modal-body::-webkit-scrollbar-thumb {
+                    background: #c4a87f;
+                    border-radius: 10px;
+                }
+                .modal-body::-webkit-scrollbar-thumb:hover {
+                    background: #5f0704;
+                }
+                .modal-card {
+                    background: #fdfbf7;
+                    border: 1px solid rgba(196, 168, 127, 0.3);
+                    border-radius: 16px;
+                    padding: 18px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(95, 7, 4, 0.02);
+                }
+                .modal-card-title {
+                    font-size: 13px;
+                    font-weight: 800;
+                    color: #5f0704;
+                    margin-bottom: 14px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    border-left: 3px solid #d4af37;
+                    padding-left: 8px;
+                }
+                .modal-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px 0;
+                    border-bottom: 1px dashed rgba(196, 168, 127, 0.2);
+                    font-size: 14px;
+                }
+                .modal-row:last-child {
+                    border-bottom: none;
+                }
+                .modal-label {
+                    color: #666;
+                    font-weight: 600;
+                }
+                .modal-value {
+                    color: #111;
+                    font-weight: 700;
+                    text-align: right;
+                }
+                .modal-badge {
+                    padding: 4px 10px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 700;
+                }
+            </style>
+            
+            <!-- Header -->
+            <div style="background: #5f0704; padding: 22px 30px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid rgba(196, 168, 127, 0.2);">
+                <h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">Chi Tiết Đơn Đăng Ký</h3>
+                <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; font-size: 32px; cursor: pointer; color: #d4af37; line-height: 1; transition: transform 0.2s; display: flex; align-items: center;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">&times;</button>
             </div>
-            <div style="margin-bottom: 15px;">
-                <strong style="color: #5f0704;">Mã đơn đăng ký:</strong> #${maDangKy}
+            
+            <!-- Scrollable Body -->
+            <div class="modal-body" style="padding: 30px; overflow-y: auto; flex: 1;">
+                <!-- Registration ID & Date -->
+                <div style="display: flex; justify-content: space-between; background: linear-gradient(135deg, #5f0704, #870b07); padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; color: white; box-shadow: 0 4px 15px rgba(95, 7, 4, 0.15);">
+                    <div>
+                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700;">Mã đơn đăng ký</span>
+                        <div style="font-size: 22px; font-weight: 800; color: #d4af37; margin-top: 4px;">#${registration.maDangKy}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700;">Ngày tham gia</span>
+                        <div style="font-size: 16px; font-weight: 700; color: white; margin-top: 8px;">${registrationDate}</div>
+                    </div>
+                </div>
+
+                <!-- Campaign Info Card -->
+                <div class="modal-card">
+                    <div class="modal-card-title">Thông tin chiến dịch</div>
+                    <div class="modal-row">
+                        <span class="modal-label">Chiến dịch:</span>
+                        <span class="modal-value" style="color: #5f0704;">${chienDich?.tenChienDich || 'N/A'}</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">Sản phẩm:</span>
+                        <span class="modal-value">${sanPham?.tenSanPham || 'N/A'}</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">Tổng số lượng đặt mua:</span>
+                        <span class="modal-value">${registration.tongSoLuong} sản phẩm</span>
+                    </div>
+                </div>
+
+                <!-- Bet & Progress Card -->
+                <div class="modal-card">
+                    <div class="modal-card-title">Tiến độ &amp; Đặt cược</div>
+                    <div class="modal-row">
+                        <span class="modal-label">Mốc cược của bạn:</span>
+                        <span class="modal-value">${betBadge}</span>
+                    </div>
+                    ${!registration.daHuy && chienDich ? `
+                    <div class="modal-row">
+                        <span class="modal-label">Trạng thái MOQ chiến dịch:</span>
+                        <span class="modal-value" style="color: ${chienDich.tongSoLuongHienTai >= (chienDich.nguongMOQ || 0) ? '#2e7d32' : '#e65100'}; font-weight: 800;">
+                            ${chienDich.tongSoLuongHienTai >= (chienDich.nguongMOQ || 0) ? '✓ Đã đạt MOQ sản xuất (Chắc chắn sản xuất)' : '⏳ Đang gom số lượng đạt MOQ'}
+                        </span>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <!-- Product Variation Card -->
+                <div class="modal-card">
+                    <div class="modal-card-title">Chi tiết phân loại sản phẩm</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
+                        ${detailsHTML}
+                    </div>
+                </div>
+
+                <!-- Financial Card -->
+                <div class="modal-card" style="margin-bottom: 5px;">
+                    <div class="modal-card-title">Thông tin thanh toán</div>
+                    <div class="modal-row">
+                        <span class="modal-label">Giá gốc của sản phẩm:</span>
+                        <span class="modal-value">${(chienDich?.giaGoc || 0).toLocaleString('vi-VN')} đ/sp</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">Giá bậc thang đặt cược:</span>
+                        <span class="modal-value">${giaBacThang.toLocaleString('vi-VN')} đ/sp</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">Phí tham gia chiến dịch:</span>
+                        <span class="modal-value">${(chienDich?.phiThamGia || 0).toLocaleString('vi-VN')} đ</span>
+                    </div>
+                    
+                    <div style="background: rgba(95, 7, 4, 0.03); border: 1px solid rgba(95, 7, 4, 0.1); border-radius: 10px; padding: 12px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 700; color: #5f0704; font-size: 14px;">Tổng thanh toán đặt cọc:</span>
+                        <span style="font-size: 18px; color: #5f0704; font-weight: 800;">${(thanhToan?.soTienThanhToan || 0).toLocaleString('vi-VN')} đ</span>
+                    </div>
+                    
+                    ${registration.daHuy ? `
+                    <div style="background: rgba(158, 158, 158, 0.08); border: 1px dashed #9e9e9e; border-radius: 10px; padding: 12px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-weight: 600;">Trạng thái:</span>
+                            <span style="color: #d32f2f; font-weight: 700;">Đã hủy &amp; hoàn tiền</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 8px;">
+                            <span style="color: #2e7d32; font-weight: 700;">Số tiền hoàn lại:</span>
+                            <span style="color: #2e7d32; font-weight: 800; font-size: 16px;">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
+                        </div>
+                    </div>
+                    ` : isCampaignEnded ? `
+                    <div style="background: rgba(76, 175, 80, 0.05); border: 1px dashed #4caf50; border-radius: 10px; padding: 12px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-weight: 600;">Kết quả cược:</span>
+                            <span style="color: ${isBetCorrect ? '#2e7d32' : '#d32f2f'}; font-weight: 700;">${isBetCorrect ? 'Cược đúng ✓' : 'Cược sai ✗'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-weight: 600;">Thực tế phải trả:</span>
+                            <span style="color: #111; font-weight: 700;">${((giaBacThang * (registration.tongSoLuong || 1)) + (chienDich?.phiThamGia || 0)).toLocaleString('vi-VN')} đ</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(76, 175, 80, 0.15); padding-top: 8px;">
+                            <span style="color: #2e7d32; font-weight: 700;">Số tiền hoàn lại:</span>
+                            <span style="color: #2e7d32; font-weight: 800; font-size: 16px;">${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
+                        </div>
+                    </div>
+                    ` : `
+                    <div style="background: rgba(255, 152, 0, 0.05); border: 1px dashed #ff9800; border-radius: 10px; padding: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                        <span style="color: #e65100; font-weight: 700;">Kết quả chiến dịch:</span>
+                        <span style="color: #e65100; font-weight: 800;">Đang chờ kết quả</span>
+                    </div>
+                    `}
+                </div>
             </div>
-            ${detailsHTML}
+            
+            <!-- Footer -->
+            <div style="background: #fdfbf7; padding: 20px 30px; border-top: 1px solid rgba(196, 168, 127, 0.3); text-align: right; flex-shrink: 0; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button onclick="this.closest('div[style*=fixed]').remove()" style="padding: 12px 30px; background: #5f0704; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px; box-shadow: 0 4px 10px rgba(95, 7, 4, 0.2);" onmouseover="this.style.background='#be9d4a'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='#5f0704'; this.style.transform='none';">Đóng</button>
+            </div>
         </div>
     `;
     
     document.body.appendChild(modal);
     
-    // Close on background click
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.remove();
@@ -673,197 +793,6 @@ function filterRegisteredOrders(filterValue) {
 // ═══════════════════════════════════════════════════════════════
 // ĐƠN HÀNG CỦA TÔI (Orders Tab)
 // ═══════════════════════════════════════════════════════════════
-
-// Load orders (DonHang) for current user
-async function loadOrders() {
-    const user = getCurrentUser();
-    if (!user) return;
-
-    const container = document.querySelector('#orders-panel .order-list');
-    container.innerHTML = '<p style="text-align: center; padding: 40px;">Đang tải...</p>';
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/donhang/nguoidung/${user.maNguoiDung}`);
-        const data = await response.json();
-
-        if (data.success && data.data.length > 0) {
-            container.innerHTML = '';
-            
-            for (const donHang of data.data) {
-                const card = createOrderCard(donHang);
-                container.appendChild(card);
-            }
-        } else {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom: 20px;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <h3 style="color: #666; margin: 0;">Chưa có đơn hàng nào</h3>
-                    <p style="color: #999; margin: 10px 0 20px 0;">Đơn hàng sẽ được tạo sau khi chiến dịch thành công!</p>
-                    <a href="campaigns.html" style="display: inline-block; background: #5f0704; color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none;">
-                        Khám phá chiến dịch
-                    </a>
-                </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Error loading orders:', error);
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #d32f2f;">
-                <p>❌ Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.</p>
-            </div>
-        `;
-    }
-}
-
-// Create order card HTML
-function createOrderCard(donHang) {
-    const card = document.createElement('div');
-    card.className = 'order-card';
-    
-    const dangKy = donHang.dangKyChienDich;
-    const chienDich = dangKy?.chienDich;
-    const sanPham = chienDich?.sanPham;
-    const bangGia = dangKy?.bangGiaBacThang;
-    
-    // Determine if bet was correct
-    const currentQty = chienDich?.tongSoLuongHienTai || 0;
-    let isBetCorrect = false;
-    if (bangGia && currentQty >= bangGia.soLuongToiThieu && currentQty <= bangGia.soLuongToiDa) {
-        isBetCorrect = true;
-    }
-    
-    // Campaign image
-    const campaignImage = chienDich?.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0
-        ? '../' + chienDich.hinhAnhChienDichs[0].duongDan
-        : '../images/banner.jpg';
-    
-    // Shipping status mapping
-    const trangThai = donHang.trangThaiGiaoHang || 'Đang chuẩn bị';
-    let shippingStatus = 'preparing';
-    let statusText = '✓ Cược đúng - Đang chuẩn bị';
-    
-    if (trangThai.includes('Đang giao') || trangThai.includes('giao')) {
-        shippingStatus = 'shipping';
-        statusText = '✓ Cược đúng - Đang giao hàng';
-    } else if (trangThai.includes('Đã giao') || trangThai.includes('hoàn thành')) {
-        shippingStatus = 'delivered';
-        statusText = '✓ Cược đúng - Đã giao hàng';
-    }
-    
-    // If bet was wrong, this shouldn't exist, but handle it
-    if (!isBetCorrect) {
-        statusText = '✗ Cược sai - Đã hoàn tiền';
-    }
-    
-    // Set data attributes for filtering
-    card.setAttribute('data-status', isBetCorrect ? 'success' : 'failed');
-    card.setAttribute('data-shipping', shippingStatus);
-    
-    // Format dates
-    const ngayTaoDon = donHang.ngayTaoDon ? new Date(donHang.ngayTaoDon).toLocaleDateString('vi-VN') : 'N/A';
-    const ngayDangKy = dangKy?.ngayDangKy ? new Date(dangKy.ngayDangKy).toLocaleDateString('vi-VN') : 'N/A';
-    
-    // Tier text
-    let tierText = 'N/A';
-    if (bangGia) {
-        tierText = `${bangGia.soLuongToiThieu || 0} - ${bangGia.soLuongToiDa || 0}`;
-    }
-    
-    // Prices
-    const giaChotCuoiCung = donHang.giaChotCuoiCung || 0;
-    const soTienHoanLai = donHang.soTienHoanLai || 0;
-    const soTienThanhToan = dangKy?.thanhToan?.soTienThanhToan || 0;
-    const thucTra = soTienThanhToan - soTienHoanLai;
-    
-    card.innerHTML = `
-        <div class="order-header">
-            <div class="order-id">
-                <span class="label">Mã đơn hàng:</span>
-                <span class="value">#${donHang.maDonHang}</span>
-            </div>
-            <span class="order-status ${isBetCorrect ? 'success' : 'failed'}">${statusText}</span>
-        </div>
-
-        <div class="order-body">
-            <div class="order-image">
-                <img src="${campaignImage}" alt="${chienDich?.tenChienDich || 'Campaign'}" 
-                     onerror="this.src='../images/banner.jpg'">
-            </div>
-            <div class="order-info">
-                <h3>${chienDich?.tenChienDich || 'Chiến dịch'}</h3>
-                <div class="order-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Ngày tham gia:</span>
-                        <span class="detail-value">${ngayDangKy}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Số lượng:</span>
-                        <span class="detail-value">${dangKy?.tongSoLuong || 0} sản phẩm</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Mốc đặt cược:</span>
-                        <span class="detail-value bet-${isBetCorrect ? 'correct' : 'wrong'}">${tierText} ${isBetCorrect ? '(Đúng ✓)' : '(Sai ✗)'}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Tổng thực tế:</span>
-                        <span class="detail-value">${currentQty} sản phẩm</span>
-                    </div>
-                </div>
-            </div>
-            <div class="order-payment">
-                <div class="payment-row">
-                    <span>Đã thanh toán:</span>
-                    <span class="amount">${soTienThanhToan.toLocaleString('vi-VN')} đ</span>
-                </div>
-                <div class="payment-row refund">
-                    <span>Đã hoàn lại:</span>
-                    <span class="amount">-${soTienHoanLai.toLocaleString('vi-VN')} đ</span>
-                </div>
-                <div class="payment-row total">
-                    <span>Thực trả:</span>
-                    <span class="amount">${thucTra.toLocaleString('vi-VN')} đ</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="order-footer">
-            ${isBetCorrect ? `
-            <div class="shipping-status">
-                <div class="status-step ${shippingStatus === 'preparing' || shippingStatus === 'shipping' || shippingStatus === 'delivered' ? 'completed' : ''}">
-                    <div class="step-icon">${shippingStatus === 'preparing' || shippingStatus === 'shipping' || shippingStatus === 'delivered' ? '✓' : '1'}</div>
-                    <span>Đang chuẩn bị</span>
-                </div>
-                <div class="status-line ${shippingStatus === 'shipping' || shippingStatus === 'delivered' ? 'completed' : ''}"></div>
-                <div class="status-step ${shippingStatus === 'shipping' || shippingStatus === 'delivered' ? 'completed' : ''}">
-                    <div class="step-icon">${shippingStatus === 'shipping' || shippingStatus === 'delivered' ? '✓' : '2'}</div>
-                    <span>Đang giao</span>
-                </div>
-                <div class="status-line ${shippingStatus === 'delivered' ? 'completed' : ''}"></div>
-                <div class="status-step ${shippingStatus === 'delivered' ? 'completed' : ''}">
-                    <div class="step-icon">${shippingStatus === 'delivered' ? '✓' : '3'}</div>
-                    <span>Đã giao</span>
-                </div>
-            </div>
-            ` : ''}
-            <div class="order-actions">
-                <button class="btn-detail" onclick="viewOrderDetail('${donHang.maDonHang}')">Xem chi tiết</button>
-                ${shippingStatus === 'delivered' ? '<button class="btn-review">Đánh giá</button>' : ''}
-            </div>
-        </div>
-    `;
-    
-    return card;
-}
-
-// View order detail
-function viewOrderDetail(maDonHang) {
-    // TODO: Navigate to order detail page or show modal
-    alert('Chi tiết đơn hàng #' + maDonHang + '\n(Chức năng đang phát triển)');
-}
 
 
 // ============================================

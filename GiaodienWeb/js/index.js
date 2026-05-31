@@ -164,16 +164,29 @@ function renderChienDichList(chienDichList) {
     const timeRemaining = calculateTimeRemaining(chienDich.ngayKetThuc);
     const isActive = chienDich.thoiDiem === 'Đang diễn ra';
     
+    const isMOQMet = chienDich.tongSoLuongHienTai >= (chienDich.nguongMOQ || 0);
+    
     campaignElement.innerHTML = `
       <div class="campaign-image-wrapper">
         <img src="${imageUrl}" alt="${chienDich.tenChienDich}">
         <div class="campaign-badge-discount">-${discountPercent}%</div>
       </div>
       <div class="campaign-info">
-        <h3>${chienDich.tenChienDich}</h3>
-        <p class="campaign-status">Trạng thái: <span class="status-${getStatusClass(chienDich.thoiDiem)}">${chienDich.thoiDiem}</span></p>
-        <p class="campaign-participants">Sản phẩm đăng ký: <strong>${chienDich.tongSoLuongHienTai}</strong></p>
-        <p class="campaign-price">Giá hiện tại: <strong>${formatCurrency(giaHienTai)}</strong></p>
+        <div class="campaign-header-block">
+          <h3>${chienDich.tenChienDich}</h3>
+        </div>
+        <div class="campaign-middle-block">
+          <div class="campaign-details-left">
+            <p class="campaign-status">Trạng thái: <span class="status-${getStatusClass(chienDich.thoiDiem)}">${chienDich.thoiDiem}</span></p>
+            <p class="campaign-participants" style="font-weight: 700; color: ${isMOQMet ? '#81c784' : '#ffb74d'}; font-size: 14px;">
+              ${isMOQMet ? '✓ Đã vượt MOQ sản xuất' : '⏳ Đang gom số lượng đạt MOQ'}
+            </p>
+          </div>
+          <div class="campaign-price-right">
+            <span class="price-label">Giá hiện tại:</span>
+            <div class="price-value">${formatCurrency(giaHienTai)}</div>
+          </div>
+        </div>
         <div class="campaign-actions">
           <div class="campaign-time ${!isActive ? 'empty' : ''}" data-campaign-id="${chienDich.maChienDich}">
             ${isActive ? `
@@ -389,13 +402,34 @@ function updateInfoPriceSection(campaign) {
     console.error('❌ Campaign has no ngayKetThuc!');
   }
   
-  // Update progress bar with accurate tier divisions
+  const currentQty = campaign.tongSoLuongHienTai || 0;
+  const moq = campaign.nguongMOQ || 0;
+  const isMOQMet = currentQty >= moq;
+
+  // Update MOQ status row (second row in info bar)
+  const infoRows = document.querySelectorAll('.info-left-box .info-row-compact');
+  if (infoRows.length >= 2) {
+    const statusRow = infoRows[1];
+    const span = statusRow.querySelector('span');
+    if (span) {
+      if (isMOQMet) {
+        statusRow.classList.add('moq-met');
+        statusRow.classList.remove('moq-pending');
+        span.innerHTML = `<strong>✓ Đã vượt MOQ (Chiến dịch chắc chắn sản xuất)</strong>`;
+      } else {
+        statusRow.classList.add('moq-pending');
+        statusRow.classList.remove('moq-met');
+        span.innerHTML = `<strong>⏳ Đang gom số lượng đạt MOQ sản xuất (${moq} sp)</strong>`;
+      }
+    }
+  }
+
+  // Update progress bar
   updateProgressBar(campaign);
   
-  // Update participants count
-  const participantsElement = document.querySelector('.info-row-compact:last-child strong');
-  if (participantsElement) {
-    participantsElement.textContent = campaign.nguoiThamGia;
+  // Hide participants row to prevent leaking numbers
+  if (infoRows.length >= 3) {
+    infoRows[2].style.display = 'none';
   }
   
   // Update price table
@@ -404,74 +438,9 @@ function updateInfoPriceSection(campaign) {
 
 // Update progress bar with accurate tier divisions
 function updateProgressBar(campaign) {
-  const bangGia = campaign.bangGiaBacThangs || [];
-  const currentQty = campaign.tongSoLuongHienTai;
-  const maxQty = campaign.nguongToiDa;
-  
-  // Update progress fill
-  const progressPercent = Math.min((currentQty / maxQty * 100), 100);
-  const progressFill = document.querySelector('.progress-fill-compact');
-  const progressMarker = document.querySelector('.progress-marker-current');
-  
-  if (progressFill) {
-    progressFill.style.width = `${progressPercent}%`;
-  }
-  
-  if (progressMarker) {
-    progressMarker.style.left = `${progressPercent}%`;
-    progressMarker.textContent = currentQty;
-  }
-  
-  // Update progress labels based on price tiers
-  const labelsContainer = document.querySelector('.progress-labels');
-  if (labelsContainer && bangGia.length > 0) {
-    labelsContainer.innerHTML = '';
-    
-    // Add 0 label at the start
-    const label0 = document.createElement('span');
-    label0.style.left = '0%';
-    label0.textContent = '0';
-    labelsContainer.appendChild(label0);
-    
-    // Add tier boundary labels (only the starting point of each tier)
-    bangGia.forEach((tier, index) => {
-      const minPercent = (tier.soLuongToiThieu / maxQty * 100);
-      
-      // Add min label if not 0 (to avoid duplicate with label0)
-      if (tier.soLuongToiThieu > 0) {
-        const labelMin = document.createElement('span');
-        labelMin.style.left = `${minPercent}%`;
-        labelMin.textContent = tier.soLuongToiThieu;
-        labelsContainer.appendChild(labelMin);
-      }
-    });
-    
-    // Add max quantity label at the end
-    const labelMax = document.createElement('span');
-    labelMax.style.left = '100%';
-    labelMax.textContent = maxQty;
-    labelsContainer.appendChild(labelMax);
-  }
-  
-  // Update progress dividers based on price tiers
-  const progressBarContainer = document.querySelector('.progress-bar-compact');
-  if (progressBarContainer && bangGia.length > 0) {
-    // Remove old dividers
-    const oldDividers = progressBarContainer.querySelectorAll('.progress-divider');
-    oldDividers.forEach(div => div.remove());
-    
-    // Add new dividers at tier boundaries (only at the starting point of each tier, except first)
-    bangGia.forEach((tier, index) => {
-      const minPercent = (tier.soLuongToiThieu / maxQty * 100);
-      
-      // Add divider at min boundary (except for 0)
-      if (tier.soLuongToiThieu > 0) {
-        const dividerMin = document.createElement('div');
-        dividerMin.className = 'progress-divider';
-        dividerMin.style.left = `${minPercent}%`;
-        progressBarContainer.appendChild(dividerMin);
-      }
-    });
+  const progressContainer = document.querySelector('.progress-container-compact');
+  if (progressContainer) {
+    progressContainer.style.display = 'none';
   }
 }
 

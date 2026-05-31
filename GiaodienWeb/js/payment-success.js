@@ -198,21 +198,18 @@ function updateProgressAlert() {
     if (!progressAlert) return;
     
     const currentTotal = campaignData.tongSoLuongHienTai || 0;
-    const tiers = campaignData.bangGiaBacThangs || [];
+    const moq = campaignData.nguongMOQ || 0;
+    const isMOQMet = currentTotal >= moq;
     
-    // Find next tier
-    const nextTier = tiers.find(tier => tier.soLuongToiThieu > currentTotal);
-    
-    if (nextTier) {
-        const remaining = nextTier.soLuongToiThieu - currentTotal;
+    if (isMOQMet) {
         progressAlert.innerHTML = `
-            <strong>Chỉ còn thiếu ${remaining} sản phẩm nữa để đạt mốc ${nextTier.soLuongToiThieu}!</strong>
-            <p>Chia sẻ ngay để tăng cơ hội nhận giá tốt nhất</p>
+            <strong>Chiến dịch đã vượt ngưỡng MOQ tối thiểu và chắc chắn sản xuất!</strong>
+            <p>Hãy chia sẻ chiến dịch để cùng mở khóa các mốc giá ưu đãi tốt nhất nhé!</p>
         `;
     } else {
         progressAlert.innerHTML = `
-            <strong>Chiến dịch đã đạt mốc cao nhất với ${currentTotal} sản phẩm được đăng ký!</strong>
-            <p>Cảm ơn bạn đã tham gia</p>
+            <strong>Chiến dịch đang thu gom số lượng đạt ngưỡng MOQ sản xuất tối thiểu!</strong>
+            <p>Hãy cùng chia sẻ chiến dịch để sớm đạt mốc sản xuất nhé!</p>
         `;
     }
 }

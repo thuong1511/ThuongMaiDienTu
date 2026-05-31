@@ -265,6 +265,7 @@ function updateProductInfo(sanPham, chiTietDonHangs) {
 }
 
 // Update betting info
+// Update betting info
 function updateBettingInfo(chienDich, bangGia, registration) {
     if (!chienDich || !bangGia) return;
     
@@ -274,19 +275,53 @@ function updateBettingInfo(chienDich, bangGia, registration) {
     
     // Check if bet is correct
     const isBetCorrect = tongSoLuongHienTai >= userMin && tongSoLuongHienTai <= userMax;
+    const isCampaignOngoing = chienDich.thoiDiem === 'Đang diễn ra' || chienDich.thoiDiem === 'Sắp diễn ra';
     
     const bettingResult = document.querySelector('.betting-result');
-    if (isBetCorrect) {
+    if (isCampaignOngoing) {
+        bettingResult.className = 'betting-result warning';
+        bettingResult.style.background = '#fff9f0';
+        bettingResult.style.color = '#e65100';
+        bettingResult.style.border = '2px dashed #ffe0b2';
+        bettingResult.querySelector('span').textContent = 'Chiến dịch đang diễn ra - Kết quả đặt cược sẽ có khi chiến dịch kết thúc.';
+        bettingResult.querySelector('svg').innerHTML = `
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        `;
+    } else if (isBetCorrect) {
         bettingResult.className = 'betting-result success';
+        bettingResult.style.background = '#e8f5e9';
+        bettingResult.style.color = '#2e7d32';
+        bettingResult.style.border = '1px solid #c8e6c9';
         bettingResult.querySelector('span').textContent = 'Cược đúng - Bạn đã nhận được giá ưu đãi!';
+        bettingResult.querySelector('svg').innerHTML = `
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        `;
     } else {
         bettingResult.className = 'betting-result failed';
+        bettingResult.style.background = '#ffebee';
+        bettingResult.style.color = '#c62828';
+        bettingResult.style.border = '1px solid #ffcdd2';
         bettingResult.querySelector('span').textContent = 'Cược sai - Không nhận được giá ưu đãi';
+        bettingResult.querySelector('svg').innerHTML = `
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+        `;
     }
     
     const bettingRows = document.querySelectorAll('.betting-row');
     bettingRows[0].querySelector('.value').textContent = `${userMin} - ${userMax} sản phẩm`;
-    bettingRows[1].querySelector('.value').textContent = `${tongSoLuongHienTai} sản phẩm`;
+    
+    if (isCampaignOngoing) {
+        bettingRows[1].querySelector('.value').textContent = 'Chờ chiến dịch kết thúc';
+        bettingRows[1].querySelector('.value').style.color = '#e65100';
+    } else {
+        bettingRows[1].querySelector('.value').textContent = `${tongSoLuongHienTai} sản phẩm`;
+        bettingRows[1].querySelector('.value').style.color = '';
+    }
+    
     bettingRows[2].querySelector('.value').textContent = (chienDich.giaGoc || 0).toLocaleString('vi-VN') + ' đ';
     bettingRows[3].querySelector('.value').textContent = (bangGia.donGia || 0).toLocaleString('vi-VN') + ' đ';
     
