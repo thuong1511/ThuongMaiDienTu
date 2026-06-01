@@ -41,6 +41,7 @@ const authManager = {
             
             if (response.success) {
                 this.saveUser(response.data);
+                sessionStorage.setItem('justLoggedIn', 'true');
                 
                 // Chuyển hướng dựa trên vai trò
                 if (response.data.vaiTro === 'Admin') {
@@ -65,6 +66,7 @@ const authManager = {
             
             if (response.success) {
                 this.saveUser(response.data);
+                sessionStorage.setItem('justLoggedIn', 'true');
                 
                 // Chuyển hướng dựa trên vai trò
                 if (response.data.vaiTro === 'Admin') {
@@ -89,6 +91,7 @@ const authManager = {
             
             if (response.success) {
                 this.saveUser(response.data);
+                sessionStorage.setItem('justLoggedIn', 'true');
                 window.location.href = '../index.html';
                 return { success: true, message: response.message };
             } else {
@@ -237,7 +240,224 @@ const authManager = {
 window.authManager = authManager;
 window.AuthManager = authManager; // Alias for compatibility
 
+// Tự động kiểm tra cài đặt OTP giao dịch cho người dùng
+async function checkUserOTP() {
+    const user = authManager.getCurrentUser();
+    if (!user) return; // Bỏ qua nếu chưa đăng nhập
+    if (user.vaiTro === 'Admin') return; // Bỏ qua admin
+
+    // CHỈ kiểm tra khi người dùng vừa mới đăng nhập thành công
+    if (sessionStorage.getItem('justLoggedIn') !== 'true') return;
+    
+    // Xóa cờ ngay lập tức để không lặp lại ở các trang khác
+    sessionStorage.removeItem('justLoggedIn');
+
+    try {
+        const response = await api.checkTransactionOTP(user.maNguoiDung);
+        if (response.success && response.data === false) {
+            // Hiển thị thông báo thân thiện và trực tiếp mở modal thiết lập OTP giao dịch
+            alert('Chào mừng bạn! Tài khoản của bạn chưa được thiết lập mã OTP bảo mật giao dịch. Vui lòng thiết lập ngay để bảo vệ số dư tài khoản.');
+            openOTPSetupModal();
+        }
+    } catch (e) {
+        console.error('Lỗi kiểm tra OTP giao dịch:', e);
+    }
+}
+
+function openOTPSetupModal() {
+    if (document.getElementById('otp-setup-modal')) return;
+    
+    // Inject style to hide default password reveal buttons and force geometric centering
+    if (!document.getElementById('otp-reveal-hide-style')) {
+        const style = document.createElement('style');
+        style.id = 'otp-reveal-hide-style';
+        style.innerHTML = `
+            #otp-setup-modal input[type="password"]::-ms-reveal,
+            #otp-setup-modal input[type="password"]::-ms-clear,
+            #checkout-otp-verify-modal input[type="password"]::-ms-reveal,
+            #checkout-otp-verify-modal input[type="password"]::-ms-clear {
+                display: none !important;
+            }
+            #otp-setup-modal input[type="password"]::-webkit-contacts-auto-fill-button,
+            #otp-setup-modal input[type="password"]::-webkit-credentials-auto-fill-button,
+            #checkout-otp-verify-modal input[type="password"]::-webkit-contacts-auto-fill-button,
+            #checkout-otp-verify-modal input[type="password"]::-webkit-credentials-auto-fill-button {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'otp-setup-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(4px);
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: #470200;
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 35px 30px;
+            width: 460px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            color: var(--primary-light);
+            font-family: 'Nunito', sans-serif;
+            position: relative;
+        ">
+            <h2 style="color: var(--accent-gold); margin-bottom: 12px; font-weight: 800; font-size: 22px; letter-spacing: 1px; text-transform: uppercase;">Thiết lập OTP Giao dịch</h2>
+            <p style="color: rgba(236, 234, 229, 0.8); font-size: 14px; margin-bottom: 25px; line-height: 1.5;">
+                Thiết lập mã khóa OTP gồm 6 chữ số để bảo mật tài khoản. Mã này sẽ được yêu cầu khi bạn thực hiện bất kỳ giao dịch thanh toán nào.
+            </p>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; text-align: left; color: var(--accent-gold); font-size: 13px; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Nhập mã OTP mới (6 số):</label>
+                <input type="password" id="otp-setup-code" maxlength="6" style="
+                    width: 100%;
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1.5px solid var(--accent-gold);
+                    border-radius: 8px;
+                    padding: 12px;
+                    color: #fff;
+                    font-size: 22px;
+                    letter-spacing: 6px;
+                    text-indent: 6px;
+                    text-align: center;
+                    font-weight: 700;
+                    margin-bottom: 20px;
+                    transition: border-color 0.2s;
+                " placeholder="••••••">
+                
+                <label style="display: block; text-align: left; color: var(--accent-gold); font-size: 13px; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Xác nhận mã OTP mới:</label>
+                <input type="password" id="otp-setup-confirm" maxlength="6" style="
+                    width: 100%;
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1.5px solid var(--accent-gold);
+                    border-radius: 8px;
+                    padding: 12px;
+                    color: #fff;
+                    font-size: 22px;
+                    letter-spacing: 6px;
+                    text-indent: 6px;
+                    text-align: center;
+                    font-weight: 700;
+                " placeholder="••••••">
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
+                <button onclick="submitOTPSetup()" style="
+                    background: var(--accent-gold);
+                    color: var(--primary-dark);
+                    border: none;
+                    padding: 12px 18px;
+                    border-radius: 30px;
+                    font-family: 'Nunito', sans-serif;
+                    font-weight: 800;
+                    font-size: 13px;
+                    cursor: pointer;
+                    flex: 1.2;
+                    white-space: nowrap;
+                    transition: all 0.3s;
+                    text-transform: uppercase;
+                    box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(196, 168, 127, 0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(196, 168, 127, 0.3)';">Xác nhận Thiết lập</button>
+                <button onclick="closeOTPSetupModal()" style="
+                    background: rgba(236, 234, 229, 0.1);
+                    color: var(--primary-light);
+                    border: 1px solid rgba(236, 234, 229, 0.3);
+                    padding: 12px 18px;
+                    border-radius: 30px;
+                    font-family: 'Nunito', sans-serif;
+                    font-weight: 700;
+                    font-size: 13px;
+                    cursor: pointer;
+                    flex: 0.8;
+                    white-space: nowrap;
+                    transition: all 0.3s;
+                    text-transform: uppercase;
+                " onmouseover="this.style.background='rgba(236, 234, 229, 0.2)';" onmouseout="this.style.background='rgba(236, 234, 229, 0.1)';">Hủy</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Auto-focus the first OTP input
+    const setupInput = document.getElementById('otp-setup-code');
+    const confirmInput = document.getElementById('otp-setup-confirm');
+    
+    if (setupInput) setupInput.focus();
+    
+    // Pressing Enter in the confirm input submits the form
+    if (confirmInput) {
+        confirmInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitOTPSetup();
+            }
+        });
+    }
+    if (setupInput) {
+        setupInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && confirmInput) {
+                confirmInput.focus();
+            }
+        });
+    }
+}
+
+async function submitOTPSetup() {
+    const code = document.getElementById('otp-setup-code').value;
+    const confirm = document.getElementById('otp-setup-confirm').value;
+    const user = authManager.getCurrentUser();
+    
+    if (!code || !/^\d{6}$/.test(code)) {
+        alert('Mã OTP phải chứa đúng 6 chữ số!');
+        return;
+    }
+    
+    if (code !== confirm) {
+        alert('Mã OTP xác nhận không trùng khớp!');
+        return;
+    }
+    
+    try {
+        const response = await api.setTransactionOTP(user.maNguoiDung, code);
+        if (response.success) {
+            alert('Thiết lập mã OTP giao dịch bảo mật thành công! Khóa bảo vệ đã có hiệu lực.');
+            closeOTPSetupModal();
+        } else {
+            alert('Thiết lập thất bại: ' + response.message);
+        }
+    } catch (e) {
+        alert('Lỗi kết nối đến máy chủ.');
+    }
+}
+
+function closeOTPSetupModal() {
+    const modal = document.getElementById('otp-setup-modal');
+    if (modal) modal.remove();
+}
+
+window.openOTPSetupModal = openOTPSetupModal;
+window.submitOTPSetup = submitOTPSetup;
+window.closeOTPSetupModal = closeOTPSetupModal;
+
 // Tự động cập nhật UI khi trang load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     authManager.updateHeaderUI();
+    // Chờ Header render xong rồi kiểm tra OTP
+    setTimeout(checkUserOTP, 500);
 });

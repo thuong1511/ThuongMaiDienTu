@@ -376,3 +376,196 @@ window.addEventListener('scroll', () => {
         hero.style.backgroundPositionY = scrolled * 0.5 + 'px';
     }
 });
+
+// ==========================================
+// EXED PREMIUM GLASSMORPHIC DIALOGS
+// ==========================================
+window.showPremiumAlert = function(message, isSuccess = false) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            font-family: 'Nunito', sans-serif;
+        `;
+        
+        const iconSvg = isSuccess 
+            ? `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c4a87f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+            : `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c4a87f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
+        overlay.innerHTML = `
+            <div style="background: #470200; border: 2px solid #c4a87f; border-radius: 16px; max-width: 440px; width: 90%; padding: 35px 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); animation: alertPop 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative;">
+                <style>
+                    @keyframes alertPop {
+                        from { transform: translateY(20px) scale(0.96); opacity: 0; }
+                        to { transform: translateY(0) scale(1); opacity: 1; }
+                    }
+                    .btn-alert-ok {
+                        width: 100%;
+                        padding: 12px 18px;
+                        background: #c4a87f;
+                        color: #0c0c0e;
+                        border: none;
+                        border-radius: 30px;
+                        font-weight: 800;
+                        cursor: pointer;
+                        font-size: 13px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+                        font-family: 'Nunito', sans-serif;
+                    }
+                    .btn-alert-ok:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 20px rgba(196, 168, 127, 0.5);
+                    }
+                    .btn-alert-ok:active {
+                        transform: translateY(0);
+                    }
+                </style>
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: rgba(196, 168, 127, 0.08); border-radius: 50%; border: 1px solid rgba(196, 168, 127, 0.15); margin-bottom: 24px;">
+                    ${iconSvg}
+                </div>
+                <h2 style="color: #c4a87f; margin: 0 0 12px 0; font-weight: 800; font-size: 22px; letter-spacing: 1px; text-transform: uppercase; font-family: 'Nunito', sans-serif;">
+                    ${isSuccess ? 'Thành công' : 'Thông báo'}
+                </h2>
+                <p style="color: rgba(236, 234, 229, 0.8); font-size: 14px; margin-bottom: 25px; line-height: 1.5; font-family: 'Nunito', sans-serif;">
+                    ${message}
+                </p>
+                <button class="btn-alert-ok" id="btnAlertOk">Xác nhận</button>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        const close = () => {
+            overlay.remove();
+            resolve();
+        };
+
+        overlay.querySelector('#btnAlertOk').addEventListener('click', close);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                close();
+            }
+        });
+    });
+};
+
+window.showPremiumConfirm = function(message, onConfirm) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            font-family: 'Nunito', sans-serif;
+        `;
+
+        const iconSvg = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c4a87f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+
+        const isCancelAction = message.toLowerCase().includes('hủy') || message.toLowerCase().includes('huy');
+        const titleText = isCancelAction ? 'Xác nhận hủy đơn hàng' : 'Xác nhận';
+        const okButtonText = isCancelAction ? 'Xác nhận hủy' : 'Đồng ý';
+
+        overlay.innerHTML = `
+            <div style="background: #470200; border: 2px solid #c4a87f; border-radius: 16px; max-width: 440px; width: 90%; padding: 35px 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); animation: alertPop 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative;">
+                <style>
+                    @keyframes alertPop {
+                        from { transform: translateY(20px) scale(0.96); opacity: 0; }
+                        to { transform: translateY(0) scale(1); opacity: 1; }
+                    }
+                    .btn-confirm-no {
+                        flex: 0.8;
+                        padding: 12px 18px;
+                        background: rgba(236, 234, 229, 0.1);
+                        color: #eceae5;
+                        border: 1px solid rgba(236, 234, 229, 0.3);
+                        border-radius: 30px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        font-size: 13px;
+                        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                        text-transform: uppercase;
+                        font-family: 'Nunito', sans-serif;
+                        white-space: nowrap;
+                    }
+                    .btn-confirm-no:hover {
+                        background: rgba(236, 234, 229, 0.2);
+                    }
+                    .btn-confirm-yes {
+                        flex: 1.2;
+                        padding: 12px 18px;
+                        background: #c4a87f;
+                        color: #0c0c0e;
+                        border: none;
+                        border-radius: 30px;
+                        font-weight: 800;
+                        cursor: pointer;
+                        font-size: 13px;
+                        text-transform: uppercase;
+                        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                        box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+                        font-family: 'Nunito', sans-serif;
+                        white-space: nowrap;
+                    }
+                    .btn-confirm-yes:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 20px rgba(196, 168, 127, 0.5);
+                    }
+                    .btn-confirm-yes:active {
+                        transform: translateY(0);
+                    }
+                </style>
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: rgba(196, 168, 127, 0.08); border-radius: 50%; border: 1px solid rgba(196, 168, 127, 0.15); margin-bottom: 24px;">
+                    ${iconSvg}
+                </div>
+                <h2 style="color: #c4a87f; margin: 0 0 12px 0; font-weight: 800; font-size: 22px; letter-spacing: 1px; text-transform: uppercase; font-family: 'Nunito', sans-serif;">
+                    ${titleText}
+                </h2>
+                <p style="color: rgba(236, 234, 229, 0.8); font-size: 14px; margin-bottom: 25px; line-height: 1.5; font-family: 'Nunito', sans-serif;">
+                    ${message}
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn-confirm-no" id="btnConfirmCancel">Quay lại</button>
+                    <button class="btn-confirm-yes" id="btnConfirmOk">${okButtonText}</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        const close = (confirmed) => {
+            overlay.remove();
+            resolve(confirmed);
+            if (confirmed && onConfirm) onConfirm();
+        };
+
+        overlay.querySelector('#btnConfirmCancel').addEventListener('click', () => close(false));
+        overlay.querySelector('#btnConfirmOk').addEventListener('click', () => close(true));
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                close(false);
+            }
+        });
+    });
+};
+

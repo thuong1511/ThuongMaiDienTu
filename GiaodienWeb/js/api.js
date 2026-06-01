@@ -15,6 +15,14 @@ const api = {
       });
       
       if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.success === false) {
+            return errorData; // Return custom backend JSON error directly
+          }
+        } catch (jsonErr) {
+          // Fallback to throw standard error if response is not JSON
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
@@ -85,6 +93,57 @@ const api = {
 
   async getDonHangById(maDonHang) {
     return this.fetchData(`/donhang/${maDonHang}`);
+  },
+
+  // Đánh giá APIs
+  async getDanhGiaByChienDich(campaignId) {
+    return this.fetchData(`/danhgia/chiendich/${campaignId}`);
+  },
+
+  // Thông báo APIs
+  async getNotificationsByUserId(userId) {
+    return this.fetchData(`/thongbao/nguoidung/${userId}`);
+  },
+
+  async getUnreadNotificationsCount(userId) {
+    return this.fetchData(`/thongbao/nguoidung/${userId}/unread-count`);
+  },
+
+  async markNotificationAsRead(id) {
+    return this.fetchData(`/thongbao/${id}/read`, {
+      method: 'PATCH'
+    });
+  },
+
+  async markAllNotificationsAsRead(userId) {
+    return this.fetchData(`/thongbao/nguoidung/${userId}/read-all`, {
+      method: 'PATCH'
+    });
+  },
+
+  async deleteNotification(id) {
+    return this.fetchData(`/thongbao/${id}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // OTP APIs
+  async checkTransactionOTP(userId) {
+    return this.fetchData(`/otp/nguoidung/${userId}/check`);
+  },
+
+  async setTransactionOTP(userId, otpCode) {
+    return this.fetchData('/otp/set', {
+      method: 'POST',
+      body: JSON.stringify({ maNguoiDung: userId, otpCode })
+    });
+  },
+
+  async verifyTransactionOTP(userId, otpCode) {
+    return this.fetchData('/otp/verify', {
+      method: 'POST',
+      body: JSON.stringify({ maNguoiDung: userId, otpCode })
+    });
   },
 
   // ── Admin APIs ──────────────────────────────────────────────

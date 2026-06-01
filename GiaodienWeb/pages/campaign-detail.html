@@ -88,14 +88,14 @@
                 <div class="detail-left">
                     <div class="product-gallery">
                         <div class="main-image">
-                            <img src="../images/chiendich1.jpg" alt="ROSÉ X EXED" id="mainImg">
+                            <img src="../images/banner.jpg" alt="ROSÉ X EXED" id="mainImg">
                             <div class="badge-discount">-25.3%</div>
                         </div>
                         <div class="thumbnail-list">
-                            <img src="../images/chiendich1.jpg" alt="Thumb 1" class="thumb active">
-                            <img src="../images/chiendich2.jpg" alt="Thumb 2" class="thumb">
-                            <img src="../images/chiendich1.jpg" alt="Thumb 3" class="thumb">
-                            <img src="../images/chiendich2.jpg" alt="Thumb 4" class="thumb">
+                            <img src="../images/banner.jpg" alt="Thumb 1" class="thumb active">
+                            <img src="../images/banner.jpg" alt="Thumb 2" class="thumb">
+                            <img src="../images/banner.jpg" alt="Thumb 3" class="thumb">
+                            <img src="../images/banner.jpg" alt="Thumb 4" class="thumb">
                         </div>
                     </div>
 
@@ -398,56 +398,10 @@
         });
     </script>
     <script>
-        const campaignReviews = [
-            {
-                id: 1,
-                name: 'Trần Văn A',
-                rating: 5,
-                comment: 'Sản phẩm chất lượng tuyệt vời! Đúng như mô tả, giao hàng nhanh. Rất hài lòng với lần mua này.',
-                images: ['../images/review1.jpg', '../images/review1.1.jpg'],
-                createdAt: '2026-03-15',
-                replies: [
-                    {
-                        author: 'EXED',
-                        message: 'Cảm ơn bạn đã tin tưởng và ủng hộ! Chúng tôi luôn nỗ lực để mang đến sản phẩm tốt nhất.',
-                        createdAt: '2026-03-16'
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: 'Nguyễn Thị B',
-                rating: 4,
-                comment: 'Thiết kế đẹp, chất liệu ưng ý nhưng giao hàng hơi chậm một chút.',
-                images: [],
-                createdAt: '2026-01-10',
-                replies: []
-            },
-            {
-                id: 3,
-                name: 'Lê Văn C',
-                rating: 3,
-                comment: 'Chất lượng tốt nhưng sizing hơi nhỏ, cần xem kỹ size chart trước khi đặt.',
-                images: [],
-                createdAt: '2025-11-05',
-                replies: [
-                    {
-                        author: 'EXED',
-                        message: 'Cảm ơn phản hồi của bạn! Chúng tôi sẽ cập nhật thông tin size chính xác hơn.',
-                        createdAt: '2025-11-06'
-                    }
-                ]
-            },
-            {
-                id: 4,
-                name: 'Phạm Thị D',
-                rating: 5,
-                comment: 'Mua tặng bạn và cả hai đều rất hài lòng. Sản phẩm xịn xò, logo và packaging rất đẹp.',
-                images: ['../images/review2.png'],
-                createdAt: '2025-09-02',
-                replies: []
-            }
-        ];
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaignId = urlParams.get('id');
+        let campaignReviews = [];
+        let reviewsLoaded = false;
 
         const reviewList = document.getElementById('reviewList');
         const timeFilter = document.getElementById('timeFilter');
@@ -464,11 +418,11 @@
         }
 
         function renderReviewItem(review) {
-            const imagesMarkup = review.images.length
+            const imagesMarkup = review.images && review.images.length
                 ? `<div class="review-images">${review.images.map(src => `<img src="${src}" alt="Review image">`).join('')}</div>`
                 : '';
 
-            const repliesMarkup = review.replies.length
+            const repliesMarkup = review.replies && review.replies.length
                 ? `<div class="reply-list">${review.replies.map(reply => `
                         <div class="reply-item">
                             <h5>${reply.author} • ${formatDate(reply.createdAt)}</h5>
@@ -519,9 +473,23 @@
             reviewList.innerHTML = list.map(renderReviewItem).join('');
         }
 
-        function filterReviews() {
+        async function filterReviews() {
             if (!reviewList) return; // Guard clause if element doesn't exist
             
+            // Tải dữ liệu đánh giá thực tế từ API nếu chưa tải
+            if (!reviewsLoaded && campaignId) {
+                try {
+                    const response = await api.getDanhGiaByChienDich(campaignId);
+                    if (response.success && response.data) {
+                        campaignReviews = response.data;
+                    }
+                } catch (error) {
+                    console.error('Không thể tải đánh giá từ API:', error);
+                } finally {
+                    reviewsLoaded = true;
+                }
+            }
+
             const now = new Date();
             const daysValue = timeFilter ? timeFilter.value : 'all';
             const minRating = ratingFilter && ratingFilter.value === 'all' ? 0 : Number(ratingFilter ? ratingFilter.value : 0);

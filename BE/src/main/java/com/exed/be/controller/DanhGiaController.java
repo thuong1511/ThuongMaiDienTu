@@ -101,4 +101,19 @@ public class DanhGiaController {
                     .body(new ApiResponse<>(false, "Có lỗi xảy ra: " + e.getMessage(), null));
         }
     }
+
+    /**
+     * Get reviews by campaign ID
+     * GET /api/danhgia/chiendich/{maChienDich}
+     */
+    @GetMapping("/chiendich/{maChienDich}")
+    public ResponseEntity<ApiResponse<List<java.util.Map<String, Object>>>> getDanhGiaByMaChienDich(@PathVariable String maChienDich) {
+        try {
+            List<java.util.Map<String, Object>> dto = danhGiaService.getDanhGiaByMaChienDichDTO(maChienDich);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Lấy danh sách đánh giá của chiến dịch thành công", dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Có lỗi xảy ra: " + e.getMessage(), null));
+        }
+    }
 }

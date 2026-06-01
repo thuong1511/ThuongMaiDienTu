@@ -129,7 +129,7 @@ function updateCampaignInfo() {
     const productInfo = productPreview.querySelector('.product-info');
     if (!productInfo) return;
     
-    const campaignImage = currentCampaign.hinhAnhChienDichs?.[0]?.duongDan || '../images/chiendich1.jpg';
+    const campaignImage = currentCampaign.hinhAnhChienDichs?.[0]?.duongDan || '../images/banner.jpg';
     
     const imgElement = productPreview.querySelector('img');
     const h3Element = productInfo.querySelector('h3');
@@ -768,6 +768,12 @@ async function handleCheckout(e) {
         return;
     }
     
+    // Calculate total payment early to avoid TDZ ReferenceError when checking wallet balance
+    const basePrice = currentCampaign.giaGoc || 0;
+    const participationFee = currentCampaign.phiThamGia || 0;
+    const totalBasePrice = basePrice * totalQuantity;
+    const totalPayment = totalBasePrice + participationFee;
+    
     const selectedBet = document.querySelector('input[name="bet"]:checked')?.value;
     const selectedBetRadio = document.querySelector('input[name="bet"]:checked');
     
@@ -820,19 +826,40 @@ async function handleCheckout(e) {
         return;
     }
     
-    // Calculate total payment
-    const basePrice = currentCampaign.giaGoc || 0;
-    const participationFee = currentCampaign.phiThamGia || 0;
-    const totalBasePrice = basePrice * totalQuantity;
-    const totalPayment = totalBasePrice + participationFee;
-    
     // Disable checkout button to prevent double submission
     const checkoutBtn = e.target;
     checkoutBtn.disabled = true;
     checkoutBtn.textContent = 'ĐANG XỬ LÝ...';
     
     try {
-        console.log('🚀 Starting checkout process...');
+        console.log('🚀 Checking user transaction OTP status...');
+        const hasOTPResponse = await api.checkTransactionOTP(currentUser.maNguoiDung);
+        if (!hasOTPResponse.success) {
+            throw new Error('Không thể kiểm tra trạng thái OTP bảo mật.');
+        }
+
+        if (hasOTPResponse.data === false) {
+            console.log('⚠️ User has no transaction OTP set up. Opening setup modal directly...');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'XÁC NHẬN THANH TOÁN';
+            if (typeof window.openOTPSetupModal === 'function') {
+                window.openOTPSetupModal();
+            } else {
+                alert('Không thể mở màn hình thiết lập OTP. Vui lòng thiết lập trong mục tài khoản.');
+            }
+            return;
+        }
+
+        // Prompt user to enter and verify their OTP code
+        const isOTPVerified = await promptAndVerifyOTP(currentUser.maNguoiDung);
+        if (!isOTPVerified) {
+            console.log('❌ Checkout cancelled by user or incorrect OTP verification.');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'XÁC NHẬN THANH TOÁN';
+            return;
+        }
+
+        console.log('🚀 Starting checkout process after successful OTP verification...');
         
         // STEP 1: Create ThanhToan (Payment)
         console.log('📝 Step 1: Creating payment record...');
@@ -1194,4 +1221,180 @@ function updateCountdownDisplay(days, hours, minutes, seconds) {
         const secondsValue = timeBoxes[3].querySelector('.time-value');
         if (secondsValue) secondsValue.textContent = String(seconds).padStart(2, '0');
     }
+}
+
+// Sleek promise-based modal prompting for transaction OTP
+async function promptAndVerifyOTP(userId) {
+    return new Promise((resolve) => {
+        // Inject style to hide default password reveal buttons and force geometric centering
+        if (!document.getElementById('otp-reveal-hide-style')) {
+            const style = document.createElement('style');
+            style.id = 'otp-reveal-hide-style';
+            style.innerHTML = `
+                #otp-setup-modal input[type="password"]::-ms-reveal,
+                #otp-setup-modal input[type="password"]::-ms-clear,
+                #checkout-otp-verify-modal input[type="password"]::-ms-reveal,
+                #checkout-otp-verify-modal input[type="password"]::-ms-clear {
+                    display: none !important;
+                }
+                #otp-setup-modal input[type="password"]::-webkit-contacts-auto-fill-button,
+                #otp-setup-modal input[type="password"]::-webkit-credentials-auto-fill-button,
+                #checkout-otp-verify-modal input[type="password"]::-webkit-contacts-auto-fill-button,
+                #checkout-otp-verify-modal input[type="password"]::-webkit-credentials-auto-fill-button {
+                    display: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        const modal = document.createElement('div');
+        modal.id = 'checkout-otp-verify-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        `;
+        
+        modal.innerHTML = `
+            <div style="
+                background: #470200;
+                border: 2px solid var(--accent-gold);
+                border-radius: 16px;
+                padding: 35px 30px;
+                width: 460px;
+                max-width: 90%;
+                text-align: center;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+                color: var(--primary-light);
+                font-family: 'Nunito', sans-serif;
+            ">
+                <h3 style="color: var(--accent-gold); margin-bottom: 12px; font-weight: 800; font-size: 22px; letter-spacing: 1px; text-transform: uppercase;">Xác thực giao dịch</h3>
+                <p style="color: rgba(236, 234, 229, 0.8); font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Nhập mã OTP giao dịch bảo mật để hoàn tất thanh toán của bạn.</p>
+                
+                <input type="password" id="checkout-otp-input" maxlength="6" style="
+                    width: 100%;
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1.5px solid var(--accent-gold);
+                    border-radius: 8px;
+                    padding: 12px;
+                    color: #fff;
+                    font-size: 24px;
+                    letter-spacing: 8px;
+                    text-indent: 8px;
+                    text-align: center;
+                    font-weight: 700;
+                    margin-bottom: 20px;
+                    transition: border-color 0.2s;
+                " placeholder="••••••" autofocus>
+                
+                <p id="checkout-otp-error" style="color: #ff5252; font-size: 13px; margin: -10px 0 20px 0; display: none;">Mã OTP không đúng hoặc đã hết hạn!</p>
+                
+                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 15px;">
+                    <button id="checkout-otp-submit-btn" style="
+                        background: var(--accent-gold);
+                        color: var(--primary-dark);
+                        border: none;
+                        padding: 12px 18px;
+                        border-radius: 30px;
+                        font-family: 'Nunito', sans-serif;
+                        font-weight: 800;
+                        font-size: 13px;
+                        cursor: pointer;
+                        flex: 1.2;
+                        white-space: nowrap;
+                        transition: all 0.3s;
+                        text-transform: uppercase;
+                        box-shadow: 0 4px 15px rgba(196, 168, 127, 0.3);
+                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(196, 168, 127, 0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(196, 168, 127, 0.3)';">Xác nhận thanh toán</button>
+                    <button id="checkout-otp-cancel-btn" style="
+                        background: rgba(236, 234, 229, 0.1);
+                        color: var(--primary-light);
+                        border: 1px solid rgba(236, 234, 229, 0.3);
+                        padding: 12px 18px;
+                        border-radius: 30px;
+                        font-family: 'Nunito', sans-serif;
+                        font-weight: 700;
+                        font-size: 13px;
+                        cursor: pointer;
+                        flex: 0.8;
+                        white-space: nowrap;
+                        transition: all 0.3s;
+                        text-transform: uppercase;
+                    " onmouseover="this.style.background='rgba(236, 234, 229, 0.2)';" onmouseout="this.style.background='rgba(236, 234, 229, 0.1)';">Hủy</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const input = document.getElementById('checkout-otp-input');
+        const errorText = document.getElementById('checkout-otp-error');
+        const submitBtn = document.getElementById('checkout-otp-submit-btn');
+        const cancelBtn = document.getElementById('checkout-otp-cancel-btn');
+        
+        input.focus();
+        
+        // Allow pressing Enter in the input to trigger submit
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                console.log('⌨️ Enter key pressed inside checkout OTP input.');
+                submitBtn.click();
+            }
+        });
+        
+        submitBtn.addEventListener('click', async () => {
+            const otpCode = input.value;
+            console.log('🔘 Submit payment clicked. OTP code length:', otpCode ? otpCode.length : 0);
+            
+            if (!otpCode || !/^\d{6}$/.test(otpCode)) {
+                console.warn('⚠️ OTP code validation failed. Input value:', otpCode);
+                errorText.textContent = 'Mã OTP phải chứa đúng 6 chữ số!';
+                errorText.style.display = 'block';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Xác minh...';
+            
+            try {
+                console.log('📡 Calling API to verify OTP for user:', userId);
+                const response = await api.verifyTransactionOTP(userId, otpCode);
+                console.log('📥 API response received:', response);
+                
+                if (response.success && response.data === true) {
+                    console.log('✅ OTP verified successfully! Closing modal...');
+                    modal.remove();
+                    resolve(true);
+                } else {
+                    console.warn('❌ OTP verification failed:', response.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Xác nhận thanh toán';
+                    errorText.textContent = response.message || 'Mã OTP không chính xác!';
+                    errorText.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                }
+            } catch (e) {
+                console.error('❌ Connection error during OTP verification:', e);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Xác nhận thanh toán';
+                errorText.textContent = 'Lỗi kết nối đến máy chủ!';
+                errorText.style.display = 'block';
+            }
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            console.log('🚫 Verification cancelled by user.');
+            modal.remove();
+            resolve(false);
+        });
+    });
 }

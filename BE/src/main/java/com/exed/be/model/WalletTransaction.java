@@ -1,5 +1,6 @@
 package com.exed.be.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class WalletTransaction {
     @Column(name = "maGiaoDich")
     private Integer maGiaoDich;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "maVi", nullable = false)
     private Wallet wallet;
@@ -33,6 +35,7 @@ public class WalletTransaction {
     @Column(name = "moTa", columnDefinition = "NVARCHAR(MAX)")
     private String moTa;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "maDangKy")
     private DangKyChienDich dangKyChienDich;

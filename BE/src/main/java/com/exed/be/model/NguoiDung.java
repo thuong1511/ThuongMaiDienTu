@@ -35,7 +35,18 @@ public class NguoiDung {
     @Column(name = "ngayTao")
     private LocalDateTime ngayTao;
     
+    @Column(name = "otp", length = 6)
+    private String otpGiaoDich;
+    
     // Getters and Setters
+    public String getOtpGiaoDich() {
+        return otpGiaoDich;
+    }
+    
+    public void setOtpGiaoDich(String otpGiaoDich) {
+        this.otpGiaoDich = otpGiaoDich;
+    }
+    
     public String getMaNguoiDung() {
         return maNguoiDung;
     }

@@ -249,13 +249,13 @@ function initializeImageUpload() {
         filesToAdd.forEach(file => {
             // Validate file size (5MB max)
             if (file.size > 5 * 1024 * 1024) {
-                alert(`File ${file.name} quá lớn. Kích thước tối đa là 5MB.`);
+                showPremiumAlert(`File ${file.name} quá lớn. Kích thước tối đa là 5MB.`, false);
                 return;
             }
             
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                alert(`File ${file.name} không phải là hình ảnh.`);
+                showPremiumAlert(`File ${file.name} không phải là hình ảnh.`, false);
                 return;
             }
             
@@ -286,7 +286,7 @@ function initializeImageUpload() {
         
         // Show warning if limit reached
         if (uploadedImages.length >= 5) {
-            alert('Bạn đã đạt giới hạn 5 ảnh.');
+            showPremiumAlert('Bạn đã đạt giới hạn 5 ảnh.', false);
         }
     });
 }
@@ -328,28 +328,56 @@ function initializeSubmitButton() {
     submitBtn.addEventListener('click', async function() {
         // Validate
         if (overallRating === 0) {
-            alert('Vui lòng chọn đánh giá tổng thể!');
+            showPremiumAlert('Vui lòng chọn đánh giá tổng thể!', false);
             return;
         }
         
         const textarea = document.querySelector('.review-textarea');
         if (textarea.value.trim().length < 10) {
-            alert('Vui lòng nhập nội dung đánh giá (tối thiểu 10 ký tự)!');
+            showPremiumAlert('Vui lòng nhập nội dung đánh giá (tối thiểu 10 ký tự)!', false);
             return;
         }
 
         // Check if we have order data
         if (!orderData || !orderData.maDonHang) {
-            alert('Không tìm thấy thông tin đơn hàng!');
+            showPremiumAlert('Không tìm thấy thông tin đơn hàng!', false);
             return;
         }
-        
-        // Prepare image paths (for now, just placeholder paths)
-        const imagePaths = uploadedImages.map((file, index) => {
-            // In a real implementation, you would upload these files first
-            // and get back the server paths
-            return `images/reviews/${orderData.maDonHang}_${index + 1}.jpg`;
-        });
+        // Disable button to prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang tải ảnh lên...';
+
+        let imagePaths = [];
+        if (uploadedImages.length > 0) {
+            const formData = new FormData();
+            uploadedImages.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            try {
+                // Call multi-upload endpoint
+                const uploadResponse = await fetch(`${API_BASE_URL}/admin/upload/multi?folder=danhgia`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const uploadResult = await uploadResponse.json();
+                if (uploadResult.success && uploadResult.data) {
+                    imagePaths = uploadResult.data.map(item => item.duongDan);
+                } else {
+                    console.error('File upload failed:', uploadResult.message);
+                    showPremiumAlert('Lỗi khi tải ảnh lên: ' + uploadResult.message, false);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✓ Gửi đánh giá';
+                    return;
+                }
+            } catch (err) {
+                console.error('Error uploading files:', err);
+                showPremiumAlert('Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại!', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✓ Gửi đánh giá';
+                return;
+            }
+        }
         
         // Collect data
         const reviewData = {
@@ -363,8 +391,6 @@ function initializeSubmitButton() {
         console.log('Sending review data:', reviewData);
         
         try {
-            // Disable button to prevent double submission
-            submitBtn.disabled = true;
             submitBtn.textContent = 'Đang gửi...';
             
             // Send to API
@@ -379,17 +405,17 @@ function initializeSubmitButton() {
             const result = await response.json();
             
             if (result.success) {
-                alert('Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.');
+                await showPremiumAlert('Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.', true);
                 // Redirect back to order history
                 window.location.href = 'order-history.html';
             } else {
-                alert('Lỗi: ' + result.message);
+                showPremiumAlert('Lỗi: ' + result.message, false);
                 submitBtn.disabled = false;
                 submitBtn.textContent = '✓ Gửi đánh giá';
             }
         } catch (error) {
             console.error('Error submitting review:', error);
-            alert('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!');
+            showPremiumAlert('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!', false);
             submitBtn.disabled = false;
             submitBtn.textContent = '✓ Gửi đánh giá';
         }

@@ -71,10 +71,14 @@ public class DangKyChienDichController {
     
     @DeleteMapping("/{maDangKy}")
     public ResponseEntity<ApiResponse<Void>> deleteDangKy(@PathVariable Integer maDangKy) {
-        boolean deleted = dangKyChienDichService.deleteDangKy(maDangKy);
-        if (deleted) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "Xóa đăng ký thành công", null));
+        try {
+            boolean deleted = dangKyChienDichService.deleteDangKy(maDangKy);
+            if (deleted) {
+                return ResponseEntity.ok(new ApiResponse<>(true, "Xóa đăng ký thành công", null));
+            }
+            return ResponseEntity.ok(new ApiResponse<>(false, "Không tìm thấy đăng ký", null));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ApiResponse<>(false, "Lỗi: " + e.getMessage(), null));
         }
-        return ResponseEntity.ok(new ApiResponse<>(false, "Không tìm thấy đăng ký", null));
     }
 }

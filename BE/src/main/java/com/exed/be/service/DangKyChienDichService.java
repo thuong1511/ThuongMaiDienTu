@@ -179,6 +179,18 @@ public class DangKyChienDichService {
         Optional<DangKyChienDich> existing = dangKyChienDichRepository.findById(maDangKy);
         if (existing.isPresent()) {
             DangKyChienDich dangKy = existing.get();
+            ChienDich cd = dangKy.getChienDich();
+            
+            // 1. Kiểm tra nếu đơn hàng này là đơn gom sản phẩm cuối cùng (đã bị giới hạn số lượng và hoàn tiền phần dư)
+            if (dangKy.getThanhToan() != null && dangKy.getThanhToan().getGhiChu() != null 
+                    && dangKy.getThanhToan().getGhiChu().contains("vượt giới hạn")) {
+                throw new RuntimeException("Bạn không thể hủy vì đây là sản phẩm cuối cùng của chiến dịch");
+            }
+            
+            // 2. Kiểm tra nếu chiến dịch đã hoàn thành đạt tối đa số lượng và kết thúc thành công
+            if ("Đã kết thúc".equals(cd.getThoiDiem()) && "Thành công".equals(cd.getTrangThai())) {
+                throw new RuntimeException("Chiến dịch đã hoàn thành đạt tối đa số lượng, không thể hủy đơn đăng ký");
+            }
             
             // Get all PhieuChiTietDangKy for this registration
             List<PhieuChiTietDangKy> chiTiets = phieuChiTietDangKyRepository.findByDangKyChienDich_MaDangKy(maDangKy);
@@ -213,7 +225,20 @@ public class DangKyChienDichService {
     }
     
     public boolean deleteDangKy(Integer maDangKy) {
-        if (dangKyChienDichRepository.existsById(maDangKy)) {
+        Optional<DangKyChienDich> existing = dangKyChienDichRepository.findById(maDangKy);
+        if (existing.isPresent()) {
+            DangKyChienDich dangKy = existing.get();
+            ChienDich cd = dangKy.getChienDich();
+            
+            if (dangKy.getThanhToan() != null && dangKy.getThanhToan().getGhiChu() != null 
+                    && dangKy.getThanhToan().getGhiChu().contains("vượt giới hạn")) {
+                throw new RuntimeException("Bạn không thể hủy vì đây là sản phẩm cuối cùng của chiến dịch");
+            }
+            
+            if ("Đã kết thúc".equals(cd.getThoiDiem()) && "Thành công".equals(cd.getTrangThai())) {
+                throw new RuntimeException("Chiến dịch đã hoàn thành đạt tối đa số lượng, không thể xóa đơn đăng ký");
+            }
+            
             dangKyChienDichRepository.deleteById(maDangKy);
             return true;
         }

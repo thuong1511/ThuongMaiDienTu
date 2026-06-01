@@ -619,29 +619,33 @@ function viewRegistrationDetail(maDangKy) {
     });
 }
 
+
 // Cancel registration
-async function cancelRegistration(maDangKy) {
-    if (!confirm('Bạn có chắc chắn muốn hủy đơn đăng ký này?')) {
-        return;
-    }
+function cancelRegistration(maDangKy) {
+    showPremiumConfirm('Bạn có chắc chắn muốn hủy đơn đăng ký này?', async function() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/dangkychiendich/${maDangKy}/huy`, {
+                method: 'PUT'
+            });
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/dangkychiendich/${maDangKy}/huy`, {
-            method: 'PUT'
-        });
+            const data = await response.json();
 
-        const data = await response.json();
-
-        if (data.success) {
-            alert('✓ Hủy đơn đăng ký thành công!');
-            loadRegisteredCampaigns(); // Reload list
-        } else {
-            alert('✗ ' + (data.message || 'Không thể hủy đơn đăng ký'));
+            if (data.success) {
+                showPremiumAlert('Hủy đơn đăng ký thành công!', true);
+                loadRegisteredCampaigns(); // Reload list
+            } else {
+                // Remove prefix "Lỗi: " if present in data.message for cleaner custom display
+                let cleanMessage = data.message || 'Không thể hủy đơn đăng ký';
+                if (cleanMessage.startsWith('Lỗi: ')) {
+                    cleanMessage = cleanMessage.substring(5);
+                }
+                showPremiumAlert(cleanMessage, false);
+            }
+        } catch (error) {
+            console.error('Error canceling registration:', error);
+            showPremiumAlert('Có lỗi xảy ra. Vui lòng thử lại sau.', false);
         }
-    } catch (error) {
-        console.error('Error canceling registration:', error);
-        alert('✗ Có lỗi xảy ra. Vui lòng thử lại sau.');
-    }
+    });
 }
 
 // Initialize when page loads
