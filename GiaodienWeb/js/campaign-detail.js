@@ -56,6 +56,9 @@ async function loadCampaignDetail(campaignId) {
         startCountdownTimer(campaign.ngayKetThuc, false);
     }
 
+    // Check if user already has a registration for this campaign
+    await checkUserRegistration(campaignId);
+
     // Handle status-based UI changes
     handleStatusBasedUI(campaign.thoiDiem);
 }
@@ -543,3 +546,81 @@ function fixImagePath(path) {
     return path;
 }
 
+
+
+// Check if user already has a registration for this campaign
+async function checkUserRegistration(campaignId) {
+    // Only check if user is logged in
+    if (!AuthManager.isLoggedIn()) {
+        return;
+    }
+
+    const currentUser = AuthManager.getCurrentUser();
+    if (!currentUser || !currentUser.maNguoiDung) {
+        return;
+    }
+
+    try {
+        console.log('Checking if user has existing registration for campaign:', campaignId);
+        
+        // Fetch all user registrations
+        const response = await fetch(`${API_BASE_URL}/dangkychiendich/nguoidung/${currentUser.maNguoiDung}`);
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.length > 0) {
+            // Check if any registration matches this campaign (including cancelled ones)
+            const existingRegistration = data.data.find(reg => 
+                reg.chienDich && reg.chienDich.maChienDich == campaignId
+            );
+
+            if (existingRegistration) {
+                console.log('User already has a registration for this campaign:', existingRegistration);
+                disableJoinButton(existingRegistration.daHuy);
+            }
+        }
+    } catch (error) {
+        console.error('Error checking user registration:', error);
+        // Don't block the UI if check fails
+    }
+}
+
+// Disable the join button and show message
+function disableJoinButton(isCancelled) {
+    const joinBtn = document.getElementById('joinBtn');
+    const actionButtons = document.getElementById('actionButtons');
+    
+    if (!joinBtn || !actionButtons) return;
+
+    // Hide the join button completely
+    joinBtn.style.display = 'none';
+
+    // Update action buttons container to display items on same row
+    actionButtons.style.display = 'flex';
+    actionButtons.style.flexDirection = 'row';
+    actionButtons.style.justifyContent = 'space-between';
+    actionButtons.style.alignItems = 'center';
+    actionButtons.style.gap = '15px';
+
+    // Add a note next to the share button (if not already added)
+    if (!document.getElementById('registration-note')) {
+        const note = document.createElement('div');
+        note.id = 'registration-note';
+        note.style.cssText = `
+            color: ${isCancelled ? '#d32f2f' : '#2e7d32'};
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 16px;
+            background: ${isCancelled ? 'rgba(211, 47, 47, 0.1)' : 'rgba(46, 125, 50, 0.1)'};
+            border-radius: 8px;
+            border: 1px solid ${isCancelled ? 'rgba(211, 47, 47, 0.3)' : 'rgba(46, 125, 50, 0.3)'};
+            flex: 1;
+            text-align: left;
+        `;
+        note.innerHTML = isCancelled 
+            ? '⚠️ Bạn đã có đơn đăng ký bị hủy cho chiến dịch này. Không thể đăng ký lại.'
+            : '✓ Bạn đã tham gia chiến dịch này. Xem chi tiết tại <a href="order-history.html" style="color: #5f0704; text-decoration: underline; font-weight: 700;">Lịch sử đơn hàng</a>.';
+        
+        // Insert the note as the first child of action buttons
+        actionButtons.insertBefore(note, actionButtons.firstChild);
+    }
+}
