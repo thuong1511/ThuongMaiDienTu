@@ -985,3 +985,361 @@
         grid-column: span 1;
     }
 }
+
+/* Compact balanced campaign detail layout */
+.campaign-detail {
+    padding: 24px 0 64px;
+}
+
+.campaign-detail > .container {
+    max-width: 1180px;
+    width: min(1180px, calc(100% - 48px));
+}
+
+.detail-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 24px;
+}
+
+.detail-left,
+.detail-right {
+    gap: 16px;
+}
+
+.product-gallery,
+.campaign-header,
+.countdown-box,
+.progress-section,
+.moq-section,
+.pricing-table,
+.artist-collab-box,
+.product-variants,
+.product-description,
+.reviews-section {
+    border-width: 2px;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(95, 7, 4, 0.06);
+}
+
+.product-gallery {
+    padding: 14px;
+}
+
+.main-image {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    margin-bottom: 12px;
+    border-radius: 10px;
+}
+
+.thumbnail-list {
+    gap: 10px;
+}
+
+.thumb {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-width: 2px;
+    border-radius: 8px;
+}
+
+.artist-collab-box {
+    padding: 18px;
+}
+
+.artist-collab-box h3,
+.product-variants h3,
+.pricing-table h3,
+.product-description h2,
+.reviews-section h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.artist-profile {
+    gap: 14px;
+}
+
+.artist-profile img {
+    width: 72px;
+    height: 72px;
+}
+
+.artist-info h4 {
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.artist-info p {
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.product-variants {
+    margin-top: 0;
+    padding: 18px;
+    gap: 14px 22px;
+}
+
+.product-variants h3 {
+    padding-bottom: 10px;
+}
+
+.variant-section h4 {
+    margin-bottom: 10px;
+}
+
+.color-list,
+.size-list {
+    gap: 8px;
+}
+
+.color-item,
+.size-item {
+    height: 34px;
+    min-width: 34px;
+    padding: 0 12px;
+    border-width: 1.5px;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+.color-swatch {
+    width: 14px;
+    height: 14px;
+}
+
+.campaign-header,
+.countdown-box,
+.progress-section,
+.moq-section,
+.pricing-table {
+    padding: 18px;
+}
+
+.progress-section,
+.moq-section {
+    margin-bottom: 0;
+}
+
+.status-badge {
+    margin-bottom: 10px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border-width: 1.5px;
+}
+
+.campaign-header h1 {
+    font-size: 26px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+}
+
+.product-name {
+    font-size: 14px;
+}
+
+.countdown-label {
+    margin-bottom: 12px;
+}
+
+.countdown-timer {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.time-unit {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 10px;
+    border-width: 1px;
+    border-radius: 10px;
+}
+
+.time-value {
+    font-size: 28px;
+}
+
+.time-sep {
+    font-size: 24px;
+}
+
+.progress-header {
+    margin-bottom: 14px;
+}
+
+.progress-title {
+    font-size: 12px;
+}
+
+.progress-bar-detail {
+    height: 10px;
+}
+
+.moq-info {
+    gap: 8px;
+}
+
+.moq-badge {
+    font-size: 14px;
+}
+
+.moq-status {
+    font-size: 13px;
+}
+
+.pricing-table h3 {
+    line-height: 1.25;
+}
+
+.pricing-desc {
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+}
+
+.bet-warning-box {
+    padding: 14px;
+    gap: 10px;
+    margin-bottom: 14px;
+    animation: none;
+}
+
+.bet-warning-box svg {
+    width: 18px;
+    height: 18px;
+}
+
+.bet-warning-box strong {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.bet-warning-box p {
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.price-tiers {
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.tier-row {
+    grid-template-columns: 1.1fr 1.3fr 0.7fr;
+    gap: 10px;
+    padding: 12px 14px;
+    border-width: 1.5px;
+    border-radius: 10px;
+}
+
+.tier-row:hover,
+.tier-row.highlight {
+    transform: translateX(3px);
+}
+
+.tier-range,
+.tier-discount {
+    font-size: 13px;
+}
+
+.tier-price {
+    font-size: 14px;
+}
+
+.price-note {
+    padding: 10px 12px;
+    font-size: 12px;
+}
+
+.action-buttons {
+    gap: 10px;
+}
+
+.btn-join-campaign,
+.btn-share {
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.btn-share {
+    border-width: 2px;
+}
+
+.product-description,
+.reviews-section {
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.product-description p {
+    margin-bottom: 14px;
+}
+
+.product-description ul li {
+    padding: 9px 0 9px 26px;
+}
+
+@media (max-width: 1180px) {
+    .campaign-detail > .container {
+        width: min(1080px, calc(100% - 32px));
+    }
+
+    .detail-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .campaign-detail {
+        padding-top: 18px;
+    }
+
+    .campaign-detail > .container {
+        width: min(720px, calc(100% - 28px));
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .campaign-detail > .container {
+        width: min(100% - 20px, 520px);
+    }
+
+    .campaign-header h1 {
+        font-size: 22px;
+    }
+
+    .countdown-timer {
+        gap: 6px;
+    }
+
+    .time-unit {
+        padding: 10px 6px;
+    }
+
+    .time-value {
+        font-size: 22px;
+    }
+
+    .time-sep {
+        font-size: 18px;
+    }
+
+    .tier-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .tier-discount {
+        grid-column: span 2;
+        text-align: left;
+    }
+}

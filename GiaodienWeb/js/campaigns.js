@@ -217,8 +217,8 @@ function createCampaignCard(campaign) {
     const isMOQMet = current >= moq;
     const progressPercent = moq > 0 ? Math.min((current / moq * 100), 100) : 0;
     
-    // Get campaign image
     const imageUrl = fixImagePath(
+        window.getCampaignCoverImage?.(campaign) ||
         campaign.hinhAnhChienDichs?.[0]?.duongDan || 
         campaign.sanPham?.hinhAnhSanPhams?.[0]?.duongDan || 
         '../images/chiendich1.jpg'

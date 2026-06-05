@@ -6,6 +6,20 @@
 const ADMIN_API_BASE = 'http://localhost:8080/api/admin';
 const IMG_BASE = 'http://localhost:8080';  // BE serve ảnh qua /images/**
 
+const ADMIN_CAMPAIGN_COVER_MAP = {
+    CD001: '../images/coverCampaignRose.png',
+    CD002: '../images/coverCampaignJen.png',
+    CD003: '../images/coverCampaignLisa.png',
+    CD004: '../images/coverCampaignJisoo.png',
+    CD005: '../images/coverCampaignJiChangWook.png',
+    CD006: '../images/coverCampaignParkBoGum.png',
+    CD007: '../images/coverCampaignGoYounJung.png',
+    CD008: '../images/coverCampaignKimJiWon.png',
+    CD009: '../images/coverCampaignChuongNhuocNam.png',
+    CD010: '../images/coverCampaignNamtan.png',
+    CD011: '../images/coverCampaignMartin.png'
+};
+
 /** Trả về URL ảnh đầy đủ từ đường dẫn trong DB (vd: "images/avt_rose.jpg") */
 function imgUrl(duongDan, fallback = '../images/banner.jpg') {
     if (!duongDan) return fallback;
@@ -39,6 +53,9 @@ function avatarNgheSi(ns) {
 
 /** Ảnh đầu tiên của chiến dịch */
 function imgChienDich(cd) {
+    if (ADMIN_CAMPAIGN_COVER_MAP[cd?.maChienDich]) {
+        return ADMIN_CAMPAIGN_COVER_MAP[cd.maChienDich];
+    }
     if (cd?.hinhAnhChienDichs?.[0]?.duongDan) {
         return imgUrl(cd.hinhAnhChienDichs[0].duongDan);
     }

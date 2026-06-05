@@ -158,6 +158,11 @@ const api = {
     });
   },
 
+  // Public Banner APIs
+  async getActiveBanners() {
+    return this.fetchData('/banner');
+  },
+
   // ── Admin APIs ──────────────────────────────────────────────
   async adminGetDashboard() {
     return this.fetchData('/admin/dashboard');
@@ -181,3 +186,42 @@ const api = {
 
 // Export for use in other files
 window.api = api;
+
+const CAMPAIGN_COVER_MAP = {
+  CD001: 'images/coverCampaignRose.png',
+  CD002: 'images/coverCampaignJen.png',
+  CD003: 'images/coverCampaignLisa.png',
+  CD004: 'images/coverCampaignJisoo.png',
+  CD005: 'images/coverCampaignJiChangWook.png',
+  CD006: 'images/coverCampaignParkBoGum.png',
+  CD007: 'images/coverCampaignGoYounJung.png',
+  CD008: 'images/coverCampaignKimJiWon.png',
+  CD009: 'images/coverCampaignChuongNhuocNam.png',
+  CD010: 'images/coverCampaignNamtan.png',
+  CD011: 'images/coverCampaignMartin.png'
+};
+
+const ARTIST_COVER_MAP = {
+  NS001: CAMPAIGN_COVER_MAP.CD001,
+  NS004: CAMPAIGN_COVER_MAP.CD002,
+  NS002: CAMPAIGN_COVER_MAP.CD003,
+  NS003: CAMPAIGN_COVER_MAP.CD004,
+  NS005: CAMPAIGN_COVER_MAP.CD005,
+  NS006: CAMPAIGN_COVER_MAP.CD006,
+  NS007: CAMPAIGN_COVER_MAP.CD007,
+  NS008: CAMPAIGN_COVER_MAP.CD008,
+  NS011: CAMPAIGN_COVER_MAP.CD009,
+  NS009: CAMPAIGN_COVER_MAP.CD010,
+  NS012: CAMPAIGN_COVER_MAP.CD011
+};
+
+function getCampaignCoverImage(campaign, fallback) {
+  return CAMPAIGN_COVER_MAP[campaign?.maChienDich]
+    || ARTIST_COVER_MAP[campaign?.ngheSi?.maNgheSi]
+    || fallback
+    || campaign?.hinhAnhChienDichs?.[0]?.duongDan
+    || campaign?.sanPham?.hinhAnhSanPhams?.[0]?.duongDan
+    || 'images/default-campaign.jpg';
+}
+
+window.getCampaignCoverImage = getCampaignCoverImage;

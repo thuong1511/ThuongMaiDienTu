@@ -267,15 +267,38 @@ function renderProductSelectionForms() {
 // Attach event handlers to matrix inputs
 function attachMatrixInputHandlers() {
     document.querySelectorAll('.matrix-input').forEach(input => {
+        input.addEventListener('focus', (e) => {
+            if (e.target.value === '0') {
+                e.target.select();
+            }
+        });
+
+        input.addEventListener('click', (e) => {
+            if (e.target.value === '0') {
+                e.target.select();
+            }
+        });
+
         input.addEventListener('input', (e) => {
             const colorId = e.target.dataset.colorId;
             const sizeId = e.target.dataset.sizeId;
-            let value = parseInt(e.target.value) || 0;
+
+            if (e.target.value === '') {
+                if (!productMatrix[colorId]) productMatrix[colorId] = {};
+                productMatrix[colorId][sizeId] = 0;
+                calculateTotals();
+                updateOrderSummary();
+                return;
+            }
+
+            let value = parseInt(e.target.value, 10) || 0;
             
             // Validate value
             if (value < 0) {
                 value = 0;
                 e.target.value = 0;
+            } else if (String(value) !== e.target.value) {
+                e.target.value = value;
             }
             
             // Update matrix
@@ -298,15 +321,17 @@ function attachMatrixInputHandlers() {
         
         // Validate on blur
         input.addEventListener('blur', (e) => {
-            const value = parseInt(e.target.value) || 0;
-            if (value < 0) {
-                e.target.value = 0;
-                const colorId = e.target.dataset.colorId;
-                const sizeId = e.target.dataset.sizeId;
-                productMatrix[colorId][sizeId] = 0;
-                calculateTotals();
-                updateOrderSummary();
-            }
+            const colorId = e.target.dataset.colorId;
+            const sizeId = e.target.dataset.sizeId;
+            let value = parseInt(e.target.value, 10) || 0;
+
+            if (value < 0) value = 0;
+
+            e.target.value = value;
+            if (!productMatrix[colorId]) productMatrix[colorId] = {};
+            productMatrix[colorId][sizeId] = value;
+            calculateTotals();
+            updateOrderSummary();
         });
     });
 }

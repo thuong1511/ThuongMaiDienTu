@@ -88,20 +88,25 @@
         </div>
     </header>
 
-
     <!-- Success Section -->
     <section class="success-section">
         <div class="container">
             <div class="success-card">
-                <div class="success-icon">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
+                <div class="success-header">
+                    <div class="success-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="success-title">
+                        <h1>THANH TOÁN THÀNH CÔNG!</h1>
+                        <p class="success-subtitle">Bạn đã tham gia chiến dịch ROSÉ X EXED</p>
+                    </div>
                 </div>
-                
-                <h1>THANH TOÁN THÀNH CÔNG!</h1>
-                <p class="success-subtitle">Bạn đã tham gia chiến dịch ROSÉ X EXED</p>
+
+                <div class="success-content">
+                    <div class="success-left">
 
                 <!-- Countdown Timer -->
                 <div class="decision-timer-box">
@@ -128,37 +133,6 @@
                         </div>
                     </div>
                     <p class="timer-warning">Nếu hết thời gian mà mốc chưa đạt đủ số lượng, bạn sẽ phải trả giá cao nhất!</p>
-                </div>
-
-                <!-- Order Info -->
-                <div class="order-info-box">
-                    <h3>Thông tin đơn đăng ký</h3>
-                    <div class="info-row">
-                        <span>Mã đơn đăng ký:</span>
-                        <strong id="order-id">#EXED2026-001234</strong>
-                    </div>
-                    <div class="info-row">
-                        <span>Sản phẩm:</span>
-                        <strong id="product-name">ROSÉ X EXED Sneaker</strong>
-                    </div>
-                    
-                    <!-- Product Details -->
-                    <div class="product-details-section" id="product-details">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                    
-                    <div class="info-row">
-                        <span>Mốc cược đã chọn:</span>
-                        <strong id="bet-tier">500 - 799 sản phẩm</strong>
-                    </div>
-                    <div class="info-row">
-                        <span>Số tiền đã thanh toán:</span>
-                        <strong class="price-highlight" id="total-payment">29.350.000 đ</strong>
-                    </div>
-                    <div class="info-row refund-info">
-                        <span>Hoàn tiền nếu cược đúng:</span>
-                        <strong class="refund-amount" id="refund-amount">5.300.000 đ</strong>
-                    </div>
                 </div>
 
                 <!-- Progress Alert -->
@@ -203,6 +177,42 @@
                         </button>
                     </div>
                 </div>
+                    </div>
+
+                    <div class="success-right">
+
+                <!-- Order Info -->
+                <div class="order-info-box">
+                    <h3>Thông tin đơn đăng ký</h3>
+                    <div class="info-row">
+                        <span>Mã đơn đăng ký:</span>
+                        <strong id="order-id">#EXED2026-001234</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Sản phẩm:</span>
+                        <strong id="product-name">ROSÉ X EXED Sneaker</strong>
+                    </div>
+                    
+                    <!-- Product Details -->
+                    <div class="product-details-section" id="product-details">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="info-row">
+                        <span>Mốc cược đã chọn:</span>
+                        <strong id="bet-tier">500 - 799 sản phẩm</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Số tiền đã thanh toán:</span>
+                        <strong class="price-highlight" id="total-payment">29.350.000 đ</strong>
+                    </div>
+                    <div class="info-row refund-info">
+                        <span>Hoàn tiền nếu cược đúng:</span>
+                        <strong class="refund-amount" id="refund-amount">5.300.000 đ</strong>
+                    </div>
+                </div>
+                    </div>
+                </div>
 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
@@ -225,7 +235,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">

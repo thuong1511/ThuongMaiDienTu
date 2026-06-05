@@ -165,8 +165,8 @@ function renderChienDichList(chienDichList) {
     // Calculate discount percentage based on lowest possible price
     const discountPercent = ((chienDich.giaGoc - giaThapNhat) / chienDich.giaGoc * 100).toFixed(1);
     
-    // Get campaign image from HinhAnhChienDich (thuTu = 1) or fallback to product image
-    const imageUrl = fixImagePath(chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
+    const imageUrl = fixImagePath(window.getCampaignCoverImage?.(chienDich) || 
+                     chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
                      chienDich.sanPham?.hinhAnhSanPhams?.[0]?.duongDan || 
                      'images/default-campaign.jpg');
     
@@ -231,61 +231,21 @@ function renderChienDichList(chienDichList) {
 // Load active campaign for hero section
 async function loadHeroCampaign() {
   try {
-    const response = await api.getActiveChienDich();
+    console.log('Step 3: Loading banners and campaigns for hero section...');
+    const bannerResponse = await api.getActiveBanners();
+    const campaignResponse = await api.getAllChienDich();
     
-    if (response.success && response.data && response.data.length > 0) {
-      console.log(`✅ Loaded ${response.data.length} active campaign(s)`);
+    if (bannerResponse.success && bannerResponse.data && bannerResponse.data.length > 0) {
+      const banners = bannerResponse.data;
+      const campaigns = campaignResponse.success ? campaignResponse.data : [];
       
-      // Ưu tiên chiến dịch đang diễn ra có ngày bắt đầu gần với ngày hiện tại nhất
-      // Sort by ngayBatDau descending (chiến dịch bắt đầu gần đây nhất sẽ hiển thị trước)
-      const sortedCampaigns = response.data.sort((a, b) => {
-        return new Date(b.ngayBatDau) - new Date(a.ngayBatDau);
-      });
-      
-      console.log('📊 Campaigns sorted by start date (most recent first):');
-      sortedCampaigns.forEach((c, i) => {
-        console.log(`  ${i + 1}. ${c.tenChienDich} - Bắt đầu: ${c.ngayBatDau}`);
-      });
-      
-      // Initialize hero banner slider with all active campaigns
-      initHeroBannerSlider(sortedCampaigns);
-      
-      // Update info section with first campaign
-      updateInfoPriceSection(sortedCampaigns[0]);
+      console.log(`✅ Loaded ${banners.length} active banner(s)`);
+      initHeroBannerSlider(banners, campaigns);
     } else {
-      console.warn('⚠️ No active campaigns found. Fetching most recent campaign as fallback...');
-      // Fallback: Fetch all campaigns to display the most recent ended campaign
-      const allResponse = await api.getAllChienDich();
-      if (allResponse.success && allResponse.data && allResponse.data.length > 0) {
-        // Sort by ngayBatDau descending
-        const sortedAll = allResponse.data.sort((a, b) => new Date(b.ngayBatDau) - new Date(a.ngayBatDau));
-        const latestCampaign = sortedAll[0];
-        
-        console.log('📋 Displaying latest campaign as fallback:', latestCampaign.tenChienDich);
-        
-        // Update hero banner
-        updateHeroBanner(latestCampaign);
-        
-        // Update info section
-        updateInfoPriceSection(latestCampaign);
-        
-        // Update button text for ended campaigns
-        const heroButton = document.querySelector('.hero-content .btn-primary');
-        if (heroButton) {
-          heroButton.textContent = 'XEM CHI TIẾT';
-        }
-      } else {
-        const countdownElement = document.getElementById('countdown-banner');
-        if (countdownElement) {
-          countdownElement.textContent = '00 ngày : 00 giờ : 00 phút : 00 giây';
-        }
-        const statusRow = document.querySelectorAll('.info-left-box .info-row-compact')[1];
-        if (statusRow) {
-          const span = statusRow.querySelector('span');
-          if (span) {
-            span.textContent = 'Không có chiến dịch nào đang diễn ra';
-          }
-        }
+      console.warn('⚠️ No active banners found.');
+      const countdownElement = document.getElementById('countdown-banner');
+      if (countdownElement) {
+        countdownElement.textContent = '00 ngày : 00 giờ : 00 phút : 00 giây';
       }
     }
   } catch (error) {
@@ -293,33 +253,57 @@ async function loadHeroCampaign() {
   }
 }
 
+// Find campaign associated with a banner
+function findCampaignForBanner(banner, campaigns) {
+  if (!campaigns || campaigns.length === 0) return null;
+  const path = (banner.duongDan || '').toLowerCase();
+  const title = (banner.tieuDe || '').toLowerCase();
+  
+  const artistKeywords = [
+    { id: 'NS001', keywords: ['rose', 'rosé'] },
+    { id: 'NS002', keywords: ['lisa'] },
+    { id: 'NS003', keywords: ['jisoo'] },
+    { id: 'NS004', keywords: ['jennie', 'jen'] },
+    { id: 'NS005', keywords: ['jichangwook', 'ji chang wook'] },
+    { id: 'NS006', keywords: ['parkbogum', 'park bo gum'] },
+    { id: 'NS007', keywords: ['goyounjung', 'go youn jung'] },
+    { id: 'NS008', keywords: ['kimjiwon', 'kim ji won'] },
+    { id: 'NS009', keywords: ['namtan'] },
+    { id: 'NS010', keywords: ['sieun'] },
+    { id: 'NS011', keywords: ['chuongnhuocnam', 'chương nhược nam'] },
+    { id: 'NS012', keywords: ['martin', 'cortis'] }
+  ];
+  
+  for (const artist of artistKeywords) {
+    if (artist.keywords.some(kw => path.includes(kw) || title.includes(kw))) {
+      return campaigns.find(c => c.maNgheSi === artist.id);
+    }
+  }
+  return null;
+}
+
 // Initialize hero banner slider
 let currentBannerIndex = 0;
 let heroBannerInterval;
-let activeCampaigns = [];
+let activeBanners = [];
+let allCampaigns = [];
 
-function initHeroBannerSlider(campaigns) {
-  if (!campaigns || campaigns.length === 0) return;
+function initHeroBannerSlider(banners, campaigns) {
+  if (!banners || banners.length === 0) return;
   
-  // Store campaigns globally
-  activeCampaigns = campaigns;
+  activeBanners = banners;
+  allCampaigns = campaigns;
   
-  // Update banner with first campaign
-  updateHeroBanner(campaigns[0]);
-  updateInfoPriceSection(campaigns[0]);
+  const initialCampaign = findCampaignForBanner(banners[0], campaigns);
+  updateHeroBanner(banners[0], initialCampaign);
+  updateInfoPriceSection(initialCampaign);
+  updateBannerDots(banners.length, 0);
   
-  // Update dots
-  updateBannerDots(campaigns.length, 0);
-  
-  // Auto slide every 15 seconds if multiple campaigns
-  if (campaigns.length > 1) {
+  if (banners.length > 1) {
     startAutoSlide();
   }
   
-  // Add click handlers to dots
   setupDotClickHandlers();
-  
-  // Add keyboard navigation
   setupKeyboardNavigation();
 }
 
@@ -327,11 +311,13 @@ function initHeroBannerSlider(campaigns) {
 function startAutoSlide() {
   clearInterval(heroBannerInterval);
   heroBannerInterval = setInterval(() => {
-    currentBannerIndex = (currentBannerIndex + 1) % activeCampaigns.length;
-    updateHeroBanner(activeCampaigns[currentBannerIndex]);
-    updateBannerDots(activeCampaigns.length, currentBannerIndex);
-    updateInfoPriceSection(activeCampaigns[currentBannerIndex]);
-  }, 15000); // 15 seconds
+    currentBannerIndex = (currentBannerIndex + 1) % activeBanners.length;
+    const banner = activeBanners[currentBannerIndex];
+    const campaign = findCampaignForBanner(banner, allCampaigns);
+    updateHeroBanner(banner, campaign);
+    updateBannerDots(activeBanners.length, currentBannerIndex);
+    updateInfoPriceSection(campaign);
+  }, 15000);
 }
 
 // Setup dot click handlers
@@ -346,12 +332,13 @@ function setupDotClickHandlers() {
       
       if (index !== -1) {
         currentBannerIndex = index;
-        updateHeroBanner(activeCampaigns[currentBannerIndex]);
-        updateBannerDots(activeCampaigns.length, currentBannerIndex);
-        updateInfoPriceSection(activeCampaigns[currentBannerIndex]);
+        const banner = activeBanners[currentBannerIndex];
+        const campaign = findCampaignForBanner(banner, allCampaigns);
+        updateHeroBanner(banner, campaign);
+        updateBannerDots(activeBanners.length, currentBannerIndex);
+        updateInfoPriceSection(campaign);
         
-        // Reset auto slide timer
-        if (activeCampaigns.length > 1) {
+        if (activeBanners.length > 1) {
           startAutoSlide();
         }
       }
@@ -362,61 +349,46 @@ function setupDotClickHandlers() {
 // Setup keyboard navigation
 function setupKeyboardNavigation() {
   document.addEventListener('keydown', (e) => {
-    if (activeCampaigns.length <= 1) return;
+    if (activeBanners.length <= 1) return;
     
     if (e.key === 'ArrowLeft') {
-      // Previous slide
-      currentBannerIndex = (currentBannerIndex - 1 + activeCampaigns.length) % activeCampaigns.length;
-      updateHeroBanner(activeCampaigns[currentBannerIndex]);
-      updateBannerDots(activeCampaigns.length, currentBannerIndex);
-      updateInfoPriceSection(activeCampaigns[currentBannerIndex]);
+      currentBannerIndex = (currentBannerIndex - 1 + activeBanners.length) % activeBanners.length;
+      const banner = activeBanners[currentBannerIndex];
+      const campaign = findCampaignForBanner(banner, allCampaigns);
+      updateHeroBanner(banner, campaign);
+      updateBannerDots(activeBanners.length, currentBannerIndex);
+      updateInfoPriceSection(campaign);
       startAutoSlide();
     } else if (e.key === 'ArrowRight') {
-      // Next slide
-      currentBannerIndex = (currentBannerIndex + 1) % activeCampaigns.length;
-      updateHeroBanner(activeCampaigns[currentBannerIndex]);
-      updateBannerDots(activeCampaigns.length, currentBannerIndex);
-      updateInfoPriceSection(activeCampaigns[currentBannerIndex]);
+      currentBannerIndex = (currentBannerIndex + 1) % activeBanners.length;
+      const banner = activeBanners[currentBannerIndex];
+      const campaign = findCampaignForBanner(banner, allCampaigns);
+      updateHeroBanner(banner, campaign);
+      updateBannerDots(activeBanners.length, currentBannerIndex);
+      updateInfoPriceSection(campaign);
       startAutoSlide();
     }
   });
 }
 
 // Update hero banner with campaign data
-function updateHeroBanner(campaign) {
+function updateHeroBanner(banner, campaign) {
   const heroSection = document.querySelector('.hero');
-  const heroTitle = document.querySelector('.hero-title');
-  const heroPrice = document.querySelector('.hero-price');
-  const heroButton = document.querySelector('.hero-content .btn-primary');
+  const heroImg = document.getElementById('hero-banner-img');
+  const bannerImage = fixImagePath(banner.duongDan || 'images/banner.png');
   
-  // Get banner image (first image from HinhAnhChienDich)
-  const bannerImage = fixImagePath(campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0
-    ? campaign.hinhAnhChienDichs[0].duongDan
-    : 'images/banner.jpg');
+  if (heroImg) {
+    heroImg.src = bannerImage;
+  }
   
-  // Update background image with contain to show full image without cropping
   if (heroSection) {
-    heroSection.style.backgroundImage = `linear-gradient(rgba(95, 7, 4, 0.3), rgba(95, 7, 4, 0.3)), url('${bannerImage}')`;
-    heroSection.style.backgroundSize = 'contain';
-    heroSection.style.backgroundPosition = 'center';
-    heroSection.style.backgroundRepeat = 'no-repeat';
-    heroSection.style.backgroundColor = '#1a1a1a';
-  }
-  
-  // Update title
-  if (heroTitle) {
-    heroTitle.textContent = campaign.tenChienDich;
-  }
-  
-  // Update price
-  if (heroPrice) {
-    heroPrice.textContent = `Chỉ với ${formatCurrency(campaign.phiThamGia)}`;
-  }
-  
-  // Update button link
-  if (heroButton) {
-    heroButton.onclick = () => {
-      window.location.href = `pages/campaign-detail.html?id=${campaign.maChienDich}`;
+    // Make the entire banner clickable
+    heroSection.onclick = () => {
+      if (campaign) {
+        window.location.href = `pages/campaign-detail.html?id=${campaign.maChienDich}`;
+      } else {
+        window.location.href = 'pages/campaigns.html';
+      }
     };
   }
 }
@@ -426,10 +398,8 @@ function updateBannerDots(totalDots, activeIndex) {
   const dotsContainer = document.querySelector('.slider-dots');
   if (!dotsContainer) return;
   
-  // Clear existing dots
   dotsContainer.innerHTML = '';
   
-  // Create dots
   for (let i = 0; i < totalDots; i++) {
     const dot = document.createElement('span');
     dot.className = 'dot';
@@ -442,11 +412,18 @@ function updateBannerDots(totalDots, activeIndex) {
 
 // Update hero section with active campaign (legacy function - kept for compatibility)
 function updateHeroSection(campaign) {
-  updateHeroBanner(campaign);
+  // Legacy support
 }
 
 // Update info-price section with active campaign
 function updateInfoPriceSection(campaign) {
+  const infoPriceSection = document.querySelector('.info-price-combined');
+  if (!campaign) {
+    if (infoPriceSection) infoPriceSection.style.display = 'none';
+    return;
+  }
+  if (infoPriceSection) infoPriceSection.style.display = 'block';
+
   // Update countdown - MUST be called first
   if (campaign.thoiDiem === 'Đã kết thúc') {
     updateCountdown(new Date(0));

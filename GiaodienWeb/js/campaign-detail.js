@@ -156,32 +156,24 @@ function updateCampaignHeader(campaign) {
     }
 }
 
-// Update gallery with images (2 from HinhAnhChienDich + 2 from HinhAnhSanPham)
+// Update gallery with 4 campaign images (from HinhAnhChienDich)
 function updateGallery(campaign) {
     const mainImg = document.getElementById('mainImg');
     const thumbnailList = document.querySelector('.thumbnail-list');
     const badgeDiscount = document.querySelector('.badge-discount');
 
-    // Collect images: 2 from campaign + 2 from product
+    // Collect images: up to 4 from HinhAnhChienDich
     const images = [];
 
-    // Add campaign images first (max 2)
     if (campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0) {
-        campaign.hinhAnhChienDichs.slice(0, 2).forEach(img => {
-            images.push(fixImagePath(img.duongDan));
-        });
-    }
-
-    // Add product images (max 2)
-    if (campaign.sanPham?.hinhAnhSanPhams && campaign.sanPham.hinhAnhSanPhams.length > 0) {
-        campaign.sanPham.hinhAnhSanPhams.slice(0, 2).forEach(img => {
+        campaign.hinhAnhChienDichs.forEach(img => {
             images.push(fixImagePath(img.duongDan));
         });
     }
 
     // Fallback if no images
     if (images.length === 0) {
-        images.push('../images/chiendich1.jpg');
+        images.push('../images/default-campaign.jpg');
     }
 
     console.log('Gallery images:', images);

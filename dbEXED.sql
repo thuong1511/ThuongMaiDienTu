@@ -1003,10 +1003,14 @@ INSERT INTO BangGiaBacThang (maChienDich, soLuongToiThieu, soLuongToiDa, donGia)
 ('CD002', 850, 1000, 11000000); -- Bậc kịch sàn (giá ưu đãi nhất)
 GO
 INSERT INTO HinhAnhChienDich (maChienDich, duongDan, thuTu) VALUES
-('CD001', 'images/chiendichRose1.jpg',    1),
-('CD001', 'images/chiendichRose2.jpg',  2),
-('CD002', 'images/chiendichJen1.jpg',    1),
-('CD002', 'images/chiendichJen2.jpg',   2)
+('CD001', 'images/chiendichRose1.png', 1),
+('CD001', 'images/chiendichRose2.png', 2),
+('CD001', 'images/chiendichRose3.png', 3),
+('CD001', 'images/chiendichRose4.png', 4),
+('CD002', 'images/chiendichJen1.png', 1),
+('CD002', 'images/chiendichJen2.png', 2),
+('CD002', 'images/chiendichJen3.png', 3),
+('CD002', 'images/chiendichJen4.png', 4)
 GO
 -- ============================================================
 -- SẢN PHẨM MỚI (SP003 → SP012)
@@ -1284,24 +1288,59 @@ GO
 -- PHẦN 7: HÌNH ẢNH CHIẾN DỊCH (2 ảnh mỗi chiến dịch)
 -- ============================================================
 INSERT INTO HinhAnhChienDich (maChienDich, duongDan, thuTu) VALUES
-('CD003', 'images/chiendichLisa1.jpg',           1),
-('CD003', 'images/chiendichLisa2.jpg',           2),
-('CD004', 'images/chiendichJisoo1.jpg',          1),
-('CD004', 'images/chiendichJisoo2.jpg',          2),
-('CD005', 'images/chiendichJiChangWook1.jpg',    1),
-('CD005', 'images/chiendichJiChangWook2.jpg',    2),
-('CD006', 'images/chiendichParkBoGum1.jpg',      1),
-('CD006', 'images/chiendichParkBoGum2.jpg',      2),
-('CD007', 'images/chiendichGoYounJung1.jpg',     1),
-('CD007', 'images/chiendichGoYounJung2.jpg',     2),
-('CD008', 'images/chiendichKimJiWon1.jpg',       1),
-('CD008', 'images/chiendichKimJiWon2.jpg',       2),
-('CD009', 'images/chiendichChuongNhuocNam1.jpg', 1),
-('CD009', 'images/chiendichChuongNhuocNam2.jpg', 2),
-('CD010', 'images/chiendichNamtan1.jpg',         1),
-('CD010', 'images/chiendichNamtan2.jpg',         2),
-('CD011', 'images/chiendichMartin1.jpg',         1),
-('CD011', 'images/chiendichMartin2.jpg',         2);
+('CD003', 'images/chiendichLisa1.png',           1),
+('CD003', 'images/chiendichLisa2.png',           2),
+('CD003', 'images/chiendichLisa3.png',           3),
+('CD003', 'images/chiendichLisa4.png',           4),
+('CD004', 'images/chiendichJisoo1.png',          1),
+('CD004', 'images/chiendichJisoo2.png',          2),
+('CD004', 'images/chiendichJisoo3.png',          3),
+('CD004', 'images/chiendichTransit3.jpg',          3), -- preserving dummy if any
+('CD004', 'images/chiendichJisoo4.png',          4),
+('CD005', 'images/chiendichJiChangWook1.png',    1),
+('CD005', 'images/chiendichJiChangWook2.png',    2),
+('CD005', 'images/chiendichJiChangWook3.png',    3),
+('CD005', 'images/chiendichJiChangWook4.png',    4),
+('CD006', 'images/chiendichParkBoGum1.png',      1),
+('CD006', 'images/chiendichParkBoGum2.png',      2),
+('CD006', 'images/chiendichParkBoGum3.png',      3),
+('CD006', 'images/chiendichParkBoGum4.png',      4),
+('CD007', 'images/chiendichGoYounJung1.png',     1),
+('CD007', 'images/chiendichGoYounJung2.png',     2),
+('CD007', 'images/chiendichGoYounJung3.png',     3),
+('CD007', 'images/chiendichGoYounJung4.png',     4),
+('CD008', 'images/chiendichKimJiWon1.png',       1),
+('CD008', 'images/chiendichKimJiWon2.png',       2),
+('CD008', 'images/chiendichKimJiWon3.png',       3),
+('CD008', 'images/chiendichKimJiWon4.png',       4),
+('CD009', 'images/chiendichChuongNhuocNam1.png', 1),
+('CD009', 'images/chiendichChuongNhuocNam2.png', 2),
+('CD009', 'images/chiendichChuongNhuocNam3.png', 3),
+('CD009', 'images/chiendichChuongNhuocNam4.png', 4),
+('CD010', 'images/chiendichNamtan1.png',         1),
+('CD010', 'images/chiendichNamtan2.png',         2),
+('CD010', 'images/chiendichNamtan3.png',         3),
+('CD010', 'images/chiendichNamtan4.png',         4),
+('CD011', 'images/chiendichMartin1.png',         1),
+('CD011', 'images/chiendichMartin2.png',         2),
+('CD011', 'images/chiendichMartin3.png',         3),
+('CD011', 'images/chiendichMartin4.png',         4);
+
+-- ============================================================
+-- INSERT DỮ LIỆU TABLE BANNER
+-- ============================================================
+INSERT INTO Banner (duongDan, tieuDe, thuTu, dangHienThi) VALUES
+('images/banner.png', N'EXED Collab', 1, 1),
+('images/bannerRose1.png', N'ROSÉ X EXED', 2, 1),
+('images/bannerLisa1.png', N'LISA X EXED', 3, 1),
+('images/bannerJisoo1.png', N'JISOO X EXED', 4, 1),
+('images/bannerJen1.png', N'JENNIE X EXED', 5, 1),
+('images/bannerParkBoGum1.png', N'PARK BO GUM X EXED', 6, 1),
+('images/bannerGoYounJung1.png', N'GO YOUN JUNG X EXED', 7, 1),
+('images/bannerKimJiWon1.png', N'KIM JI WON X EXED', 8, 1),
+('images/bannerSieun1.png', N'SIEUN X EXED', 9, 1),
+('images/bannerChuongNhuocNam1.png', N'CHƯƠNG NHƯỢC NAM X EXED', 10, 1);
+GO
 
 -- ============================================================
 -- INSERT DỮ LIỆU TABLE CẤU HÌNH

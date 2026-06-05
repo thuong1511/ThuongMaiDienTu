@@ -168,7 +168,7 @@ function updateCampaignInfo(chienDich, sanPham) {
     const campaignImgContainer = document.querySelector('.campaign-info-detail');
     if (chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0) {
         const imagesHTML = chienDich.hinhAnhChienDichs.map(img => 
-            `<img src="${fixImagePath(img.duongDan)}" alt="Campaign" class="campaign-img" onerror="this.src='../images/banner.jpg'">`
+            `<img src="${fixImagePath(img.duongDan)}" alt="Campaign" class="campaign-img" onerror="this.onerror=null;this.src='../images/chiendich3.jpg'">`
         ).join('');
         
         campaignImgContainer.innerHTML = `
@@ -195,7 +195,7 @@ function updateCampaignInfo(chienDich, sanPham) {
         `;
     } else {
         const campaignImg = document.querySelector('.campaign-img');
-        campaignImg.src = '../images/banner.jpg';
+        campaignImg.src = '../images/chiendich3.jpg';
         
         document.querySelector('.campaign-details h3').textContent = chienDich.tenChienDich;
         
@@ -227,11 +227,11 @@ function updateProductInfo(sanPham, chiTietDonHangs) {
     // Get all product images
     const productImages = sanPham.hinhAnhSanPhams && sanPham.hinhAnhSanPhams.length > 0
         ? sanPham.hinhAnhSanPhams.map(img => fixImagePath(img.duongDan))
-        : ['../images/product-placeholder.jpg'];
+        : ['../images/chiendich3.jpg'];
     
     // Create images HTML
     const imagesHTML = productImages.map(imgSrc => 
-        `<img src="${imgSrc}" alt="Product" class="product-img" onerror="this.src='../images/product-placeholder.jpg'">`
+        `<img src="${imgSrc}" alt="Product" class="product-img" onerror="this.onerror=null;this.src='../images/chiendich3.jpg'">`
     ).join('');
     
     // Calculate total quantity
@@ -632,17 +632,44 @@ document.addEventListener('click', function(e) {
 
 // Helper: Fix image path
 function fixImagePath(path) {
-    if (!path) return '../images/default.jpg';
+    if (!path) return '../images/chiendich3.jpg';
     if (path.startsWith('http')) return path;
     if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
         const cleanPath = path.startsWith('/') ? path.slice(1) : path;
         return `http://localhost:8080/${cleanPath}`;
     }
     if (path.startsWith('../') || path.startsWith('/')) return path;
+
+    const mappedPath = mapMissingSeedImage(path);
+    if (mappedPath) return mappedPath;
     
     const isSubfolder = window.location.pathname.includes('/pages/');
     if (isSubfolder) {
         return '../' + path;
     }
     return path;
+}
+
+function mapMissingSeedImage(path) {
+    const fileName = path.split('/').pop() || '';
+    const productMatch = fileName.match(/^SPCD(Rose|Jen|Lisa|Jisoo|JiChangWook|ParkBoGum|GoYounJung|KimJiWon|Namtan|Sieun|ChuongNhuocNam|Martin)(\d+)\.jpg$/i);
+    if (productMatch) {
+        const artistKey = productMatch[1];
+        const imageNumber = productMatch[2];
+        return `../images/chiendich${artistKey}${imageNumber}.png`;
+    }
+
+    if (/^banner\.jpg$/i.test(fileName)) {
+        return '../images/banner.png';
+    }
+
+    if (/^product-placeholder\.jpg$/i.test(fileName) || /^default\.jpg$/i.test(fileName)) {
+        return '../images/chiendich3.jpg';
+    }
+
+    if (/^chiendichTransit3\.jpg$/i.test(fileName)) {
+        return '../images/chiendichJisoo3.png';
+    }
+
+    return null;
 }
