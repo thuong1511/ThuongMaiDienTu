@@ -96,8 +96,20 @@ const api = {
   },
 
   // Đánh giá APIs
+  async getAllDanhGia() {
+    return this.fetchData('/danhgia');
+  },
+
   async getDanhGiaByChienDich(campaignId) {
     return this.fetchData(`/danhgia/chiendich/${campaignId}`);
+  },
+
+  async checkReviewed(maDonHang) {
+    return this.fetchData(`/danhgia/check/${maDonHang}`);
+  },
+
+  async getDanhGiaByDonHang(maDonHang) {
+    return this.fetchData(`/danhgia/donhang/${maDonHang}`);
   },
 
   // Thông báo APIs

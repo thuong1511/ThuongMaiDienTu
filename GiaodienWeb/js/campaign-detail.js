@@ -50,9 +50,14 @@ async function loadCampaignDetail(campaignId) {
     // Start countdown timer - use start date for upcoming campaigns
     if (campaign.thoiDiem === 'Sắp bắt đầu') {
         startCountdownTimer(campaign.ngayBatDau, true);
+    } else if (campaign.thoiDiem === 'Đã kết thúc') {
+        startCountdownTimer(new Date(0), false);
     } else {
         startCountdownTimer(campaign.ngayKetThuc, false);
     }
+
+    // Check if user already has a registration for this campaign
+    await checkUserRegistration(campaignId);
 
     // Handle status-based UI changes
     handleStatusBasedUI(campaign.thoiDiem);
@@ -266,6 +271,28 @@ function startCountdownTimer(targetDate, isStartDate = false) {
             timeUnits[1].textContent = '00';
             timeUnits[2].textContent = '00';
             timeUnits[3].textContent = '00';
+            
+            // Real-time status transition when countdown reaches 0
+            if (!isStartDate) {
+                const statusBadge = document.querySelector('.status-badge');
+                if (statusBadge && statusBadge.textContent === 'Đang diễn ra') {
+                    statusBadge.textContent = 'Đã kết thúc';
+                    statusBadge.className = 'status-badge ended';
+                    handleStatusBasedUI('Đã kết thúc');
+                    
+                    const countdownLabel = document.querySelector('.countdown-label span');
+                    if (countdownLabel) {
+                        countdownLabel.textContent = 'Đã kết thúc';
+                    }
+                }
+            } else {
+                // If it was "Sắp bắt đầu", reload the campaign detail to show "Đang diễn ra"
+                const urlParams = new URLSearchParams(window.location.search);
+                const campaignId = urlParams.get('id');
+                if (campaignId) {
+                    loadCampaignDetail(campaignId).catch(console.error);
+                }
+            }
             return;
         }
 
@@ -505,17 +532,106 @@ function getStatusClass(thoiDiem) {
 function fixImagePath(path) {
     if (!path) return '../images/default.jpg';
 
-    // If path already starts with ../ or http, return as is
-    if (path.startsWith('../') || path.startsWith('http')) {
+    // If path already starts with http, return as is
+    if (path.startsWith('http')) {
         return path;
     }
 
-    // If path starts with images/, add ../
-    if (path.startsWith('images/')) {
-        return '../' + path;
+    // If path starts with uploads/ or /uploads/, prepend backend server URL
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
     }
 
-    // Otherwise return as is
+    // If path already starts with ../ or /, return as is
+    if (path.startsWith('../') || path.startsWith('/')) {
+        return path;
+    }
+
+    // Check if the current page is inside the /pages/ subfolder
+    const isSubfolder = window.location.pathname.includes('/pages/');
+
+    if (isSubfolder) {
+        return '../' + path;
+    }
     return path;
 }
 
+
+
+// Check if user already has a registration for this campaign
+async function checkUserRegistration(campaignId) {
+    // Only check if user is logged in
+    if (!AuthManager.isLoggedIn()) {
+        return;
+    }
+
+    const currentUser = AuthManager.getCurrentUser();
+    if (!currentUser || !currentUser.maNguoiDung) {
+        return;
+    }
+
+    try {
+        console.log('Checking if user has existing registration for campaign:', campaignId);
+        
+        // Fetch all user registrations
+        const response = await fetch(`${API_BASE_URL}/dangkychiendich/nguoidung/${currentUser.maNguoiDung}`);
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.length > 0) {
+            // Check if any registration matches this campaign (including cancelled ones)
+            const existingRegistration = data.data.find(reg => 
+                reg.chienDich && reg.chienDich.maChienDich == campaignId
+            );
+
+            if (existingRegistration) {
+                console.log('User already has a registration for this campaign:', existingRegistration);
+                disableJoinButton(existingRegistration.daHuy);
+            }
+        }
+    } catch (error) {
+        console.error('Error checking user registration:', error);
+        // Don't block the UI if check fails
+    }
+}
+
+// Disable the join button and show message
+function disableJoinButton(isCancelled) {
+    const joinBtn = document.getElementById('joinBtn');
+    const actionButtons = document.getElementById('actionButtons');
+    
+    if (!joinBtn || !actionButtons) return;
+
+    // Hide the join button completely
+    joinBtn.style.display = 'none';
+
+    // Update action buttons container to display items on same row
+    actionButtons.style.display = 'flex';
+    actionButtons.style.flexDirection = 'row';
+    actionButtons.style.justifyContent = 'space-between';
+    actionButtons.style.alignItems = 'center';
+    actionButtons.style.gap = '15px';
+
+    // Add a note next to the share button (if not already added)
+    if (!document.getElementById('registration-note')) {
+        const note = document.createElement('div');
+        note.id = 'registration-note';
+        note.style.cssText = `
+            color: ${isCancelled ? '#d32f2f' : '#2e7d32'};
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 16px;
+            background: ${isCancelled ? 'rgba(211, 47, 47, 0.1)' : 'rgba(46, 125, 50, 0.1)'};
+            border-radius: 8px;
+            border: 1px solid ${isCancelled ? 'rgba(211, 47, 47, 0.3)' : 'rgba(46, 125, 50, 0.3)'};
+            flex: 1;
+            text-align: left;
+        `;
+        note.innerHTML = isCancelled 
+            ? '⚠️ Bạn đã có đơn đăng ký bị hủy cho chiến dịch này. Không thể đăng ký lại.'
+            : '✓ Bạn đã tham gia chiến dịch này. Xem chi tiết tại <a href="order-history.html" style="color: #5f0704; text-decoration: underline; font-weight: 700;">Lịch sử đơn hàng</a>.';
+        
+        // Insert the note as the first child of action buttons
+        actionButtons.insertBefore(note, actionButtons.firstChild);
+    }
+}

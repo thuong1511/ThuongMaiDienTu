@@ -41,7 +41,7 @@ public class DanhGia {
     @JsonIgnore
     private DonHang donHang;
 
-    @OneToMany(mappedBy = "danhGia", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "danhGia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<HinhAnhDanhGia> hinhAnhDanhGias;
 
     @PrePersist

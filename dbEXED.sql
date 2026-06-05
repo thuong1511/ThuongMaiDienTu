@@ -509,7 +509,7 @@ BEGIN
     DECLARE cur CURSOR FOR
     SELECT i.maDonHang, i.maDangKy
     FROM inserted i
-    WHERE i.maDonHang != 'DH001';  -- Bỏ qua DH001 vì đã có dữ liệu mẫu
+    WHERE i.maDonHang NOT IN ('DH001', 'DH002');  -- Bỏ qua DH001 và DH002 vì đã có dữ liệu mẫu
     
     OPEN cur;
     FETCH NEXT FROM cur INTO @maDonHang, @maDangKy;
@@ -760,7 +760,7 @@ BEGIN
         FROM inserted i
         JOIN deleted d ON i.maDangKy = d.maDangKy
         JOIN ChienDich c ON i.maChienDich = c.maChienDich
-        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0;
+        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0 AND i.soTienHoanLai > 0;
     END
 END;
 GO
@@ -979,10 +979,10 @@ INSERT INTO ChienDich (maChienDich, maSanPham, maNgheSi, tenChienDich,
                        thoiDiem, ngayBatDau, ngayKetThuc,
                        nguongMOQ, nguongToiDa, phiThamGia, giaGoc, tongSoLuongHienTai, nguoiThamGia) VALUES
 ('CD001', 'SP001', 'NS001', N'ROSÉ X EXED', 
- N'Đang diễn ra', '2026-05-25 14:00:00', '2026-06-10 23:59:59', 
+ N'Đang diễn ra', '2026-06-03 14:00:00', '2026-06-17 23:59:59', 
  100, 1200, 500000, 28850000, 914,911),
  ('CD002', 'SP002', 'NS004', N'JENNIE X EXED', 
- N'Đang diễn ra', '2026-05-25 09:00:00', '2026-06-10 23:59:59', 
+ N'Đang diễn ra', '2026-06-03 09:00:00', '2026-06-18 23:59:59', 
  50, 1000, 500000, 15500000, 870,800); 
 GO
 
@@ -1162,14 +1162,14 @@ INSERT INTO ChienDich (
 -- CD004: Jisoo x Dior B23 — THÀNH CÔNG (tongSoLuong=380 >= MOQ=200)
 ('CD004','SP004','NS003', N'JISOO X EXED',
  N'Đã kết thúc', N'Thành công',
- '2026-03-10 00:00:00', '2026-04-05 23:59:59',
+ '2026-05-01 00:00:00', '2026-05-15 23:59:59',
  200, 400, 1000000, 45000000,
  380, 370),
 
 -- CD005: Ji Chang Wook x New Balance 574 — THÀNH CÔNG (tongSoLuong=630 >= MOQ=300)
 ('CD005','SP005','NS005', N'JI CHANG WOOK X EXED',
  N'Đã kết thúc', N'Thành công',
- '2026-03-15 00:00:00', '2026-04-08 23:59:59',
+ '2026-05-10 00:00:00', '2026-05-24 23:59:59',
  300, 800, 500000, 2200000,
  630, 610),
 
@@ -1178,28 +1178,28 @@ INSERT INTO ChienDich (
 -- CD006: Park Bo Gum x Fila Disruptor
 ('CD006','SP006','NS006', N'PARK BO GUM X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-15 00:00:00', '2026-05-31 23:59:59',
+ '2026-05-25 00:00:00', '2026-06-08 23:59:59',
  200, 800, 400000, 1950000,
  25, 20),
 
 -- CD007: Go Youn Jung x Nike AF1 Shadow
 ('CD007','SP007','NS007', N'GO YOUN JUNG X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-20 00:00:00', '2026-06-04 23:59:59',
+ '2026-05-24 00:00:00', '2026-06-07 23:59:59',
  500, 1000, 500000, 2800000,
  930, 900),
 
 -- CD008: Kim Ji Won x Converse Chuck 70
 ('CD008','SP008','NS008', N'KIM JI WON X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-24 00:00:00', '2026-06-07 23:59:59',
+ '2026-05-28 00:00:00', '2026-06-11 23:59:59',
  400, 1000, 450000, 1750000,
  930, 880),
 
 -- CD009: Chương Nhược Nam x Li-Ning Wade
 ('CD009','SP011','NS011', N'CHƯƠNG NHƯỢC NAM X EXED',
  N'Đang diễn ra', NULL,
- '2026-05-16 00:00:00', '2026-06-01 23:59:59',
+ '2026-05-27 00:00:00', '2026-06-10 23:59:59',
  300, 1200, 350000, 650000,
  1030, 990),
 
@@ -1333,13 +1333,13 @@ VALUES ('SO001', 'ND002', 'PX005', N'Nguyễn Thư', '0901000002', N'123 Đườ
 -- 1. ThanhToan cho đơn đăng ký chiến dịch CD004 (Jisoo - đã kết thúc thành công)
 INSERT INTO ThanhToan (hoTenNguoiNhan, soDienThoaiNhan, diaChiGiaoHang, soTienThanhToan, phuongThuc, ngayThanhToan, ghiChu)
 VALUES 
-(N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi, Phường Hải Châu, Đà Nẵng', 91000000, N'VNPay', '2026-03-12 10:30:00', N'Thanh toán chiến dịch Jisoo');
+(N'Nguyễn Thư', '0901000002', N'123 Đường Lê Lợi, Phường Hải Châu, Đà Nẵng', 91000000, N'VNPay', '2026-05-01 10:30:00', N'Thanh toán chiến dịch Jisoo');
 -- maThanhToan sẽ là 1
 
 -- 2. DangKyChienDich cho CD004 (Jisoo)
 INSERT INTO DangKyChienDich (maThanhToan, maMucGia, maNguoiDung, maChienDich, daHuy, tongSoLuong, daHoanTien, soTienHoanLai, ngayHoanTien, ngayDangKy)
 VALUES 
-(1, 16, 'ND002', 'CD004', 0, 2, 0, 0, null, '2026-03-12 10:30:00');
+(1, 16, 'ND002', 'CD004', 0, 2, 0, 0, null, '2026-05-01 10:30:00');
 -- maDangKy sẽ là 1
 
 -- 3. PhieuChiTietDangKy cho đơn đăng ký trên (2 đôi giày Dior)
@@ -1351,7 +1351,7 @@ VALUES
 -- 4. DonHang (chiến dịch thành công, cược đúng, đã giao hàng)
 INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang, ngayTaoDon)
 VALUES 
-('DH001', 1, 65000000, 1, 26000000, '2026-04-06 15:00:00', N'Đã giao', '2026-04-06 09:00:00');
+('DH001', 1, 65000000, 1, 26000000, '2026-05-16 06:00:00', N'Đã giao', '2026-05-16 00:00:00');
 -- giaChotCuoiCung: 39tr (bậc 2 của CD004)
 -- soTienHoanLai: 46tr - 39tr - 1tr(phí) = 6tr
 -- Đã giao để có thể đánh giá
@@ -1372,8 +1372,8 @@ SELECT
     tt.hoTenNguoiNhan,
     dk.ngayDangKy,  -- Thời gian đăng ký chiến dịch
     cd.ngayKetThuc, -- Thời gian chiến dịch kết thúc
-    '2026-04-20 08:15:00',  -- Admin cập nhật
-    '2026-04-22 16:45:00',  -- Admin cập nhật
+    '2026-05-28 08:15:00',  -- Admin cập nhật
+    '2026-05-30 16:45:00',  -- Admin cập nhật
     N'Giao hàng thành công'
 FROM DonHang dh
 INNER JOIN DangKyChienDich dk ON dh.maDangKy = dk.maDangKy
@@ -1395,7 +1395,7 @@ SELECT @maViND002 = maVi FROM Wallet WHERE maNguoiDung = 'ND002';
 INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
 VALUES 
 -- Hoàn tiền từ chiến dịch Jisoo (cược đúng)
-(@maViND002, N'Hoàn tiền', 26000000, N'Hoàn tiền - Cược đúng. Chiến dịch JISOO X EXED', 1, '2026-04-06 15:00:00');
+(@maViND002, N'Hoàn tiền', 26000000, N'Hoàn tiền - Cược đúng. Chiến dịch JISOO X EXED', 1, '2026-05-16 06:00:00');
 
 -- 10. UPDATE số dư ví sau khi có giao dịch
 UPDATE Wallet 
@@ -1404,11 +1404,88 @@ WHERE maNguoiDung = 'ND002';
 
 GO
 
+-- ============================================================
+-- DỮ LIỆU TEST CHO KHÁCH HÀNG ND003 (trieutien)
+-- ============================================================
+
+-- 1. ThanhToan cho đơn đăng ký chiến dịch CD005 (Ji Chang Wook - đã kết thúc thành công)
+INSERT INTO ThanhToan (hoTenNguoiNhan, soDienThoaiNhan, diaChiGiaoHang, soTienThanhToan, phuongThuc, ngayThanhToan, ghiChu)
+VALUES 
+(N'Triệu Tiên', '0901000003', N'Phường Bến Nghé, Quận 1, TP Hồ Chí Minh', 2700000, N'VNPay', '2026-05-15 10:00:00', N'Thanh toán chiến dịch Ji Chang Wook');
+-- maThanhToan sẽ là 2
+
+-- 2. DangKyChienDich cho CD005 (Ji Chang Wook)
+INSERT INTO DangKyChienDich (maThanhToan, maMucGia, maNguoiDung, maChienDich, daHuy, tongSoLuong, daHoanTien, soTienHoanLai, ngayHoanTien, ngayDangKy)
+VALUES 
+(2, 19, 'ND003', 'CD005', 0, 1, 1, 1000000, '2026-05-25 06:00:00', '2026-05-15 10:00:00');
+-- maDangKy sẽ là 2
+
+-- 3. PhieuChiTietDangKy cho đơn đăng ký trên (1 đôi giày New Balance 574 Grey)
+INSERT INTO PhieuChiTietDangKy (maDangKy, maSanPham, maMau, maSize, soLuong)
+VALUES 
+(2, 'SP005', 5, 6, 1);  -- 1 đôi màu Xám (maMau = 5), size 39 (maSize = 6)
+
+-- 4. DonHang (chiến dịch thành công, cược đúng, đã giao hàng)
+INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang, ngayTaoDon)
+VALUES 
+('DH002', 2, 1700000, 1, 1000000, '2026-05-25 06:00:00', N'Đã giao', '2026-05-25 00:00:00');
+
+-- 5. ChiTietDonHang
+INSERT INTO ChiTietDonHang (maDonHang, maMau, maSize, soLuong)
+VALUES 
+('DH002', 5, 6, 1);  -- Xám, size 39
+
+-- 6. PhieuGiaoHang - Lịch sử vận chuyển
+INSERT INTO PhieuGiaoHang (maVanDon, maDonHang, donViVanChuyen, nguoiNhan, ngayDangKy, ngayChuanBi, ngayGiao, ngayNhan, ghiChu)
+SELECT 
+    'GHN987654321',
+    'DH002',
+    N'Giao Hàng Nhanh',
+    tt.hoTenNguoiNhan,
+    dk.ngayDangKy,  -- Thời gian đăng ký chiến dịch
+    cd.ngayKetThuc, -- Thời gian chiến dịch kết thúc
+    '2026-05-26 09:00:00',  -- Admin giao hàng
+    '2026-05-27 15:00:00',  -- Người nhận đã nhận thành công
+    N'Giao hàng thành công'
+FROM DonHang dh
+INNER JOIN DangKyChienDich dk ON dh.maDangKy = dk.maDangKy
+INNER JOIN ChienDich cd ON dk.maChienDich = cd.maChienDich
+INNER JOIN ThanhToan tt ON dk.maThanhToan = tt.maThanhToan
+WHERE dh.maDonHang = 'DH002';
+
+-- 7. Cập nhật Ví và Giao dịch Ví
+DECLARE @maViND003 INT;
+SELECT @maViND003 = maVi FROM Wallet WHERE maNguoiDung = 'ND003';
+
+INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
+VALUES 
+(@maViND003, N'Hoàn tiền', 1000000, N'Hoàn tiền - Cược đúng. Chiến dịch JI CHANG WOOK X EXED', 2, '2026-05-25 06:00:00');
+
+UPDATE Wallet 
+SET soDu = 1000000 
+WHERE maNguoiDung = 'ND003';
+
+-- 8. Đánh giá ẩn danh (anDanh = 1) và 2 hình ảnh đánh giá
+INSERT INTO DanhGia (maDonHang, diemDanhGia, binhLuan, ngayDanhGia, anDanh)
+VALUES 
+('DH002', 5, N'Giày New Balance 574 Grey đi cực kỳ êm chân và tôn dáng. Giao hàng nhanh và đóng gói cẩn thận!', '2026-05-29 10:00:00', 1);
+
+-- Lấy maDanhGia vừa tạo để chèn hình ảnh
+DECLARE @maDanhGiaNew INT;
+SET @maDanhGiaNew = SCOPE_IDENTITY();
+
+INSERT INTO HinhAnhDanhGia (maDanhGia, duongDan, thuTu)
+VALUES 
+(@maDanhGiaNew, 'uploads/danhgia/2026/06/review.jpg', 1),
+(@maDanhGiaNew, 'uploads/danhgia/2026/06/review2.jpg', 2);
+
+GO
+
 select * from ThanhToan
 select * from DangKyChienDich
 select * from PhieuChiTietDangKy
 select * from HinhAnhChienDich
-select * from HinhAnhSanPham
+
 select * from ChienDich
 select * from SoDiaChi
 select * from ChienDich
@@ -1417,14 +1494,16 @@ Select * from DonHang
 select * from ChiTietDonHang
 select * from DangKyChienDich
 select * from MauSac
+select * from SanPham_MauSac
+select * from SanPham_KichThuoc
+select * from SanPham
+select * from HinhAnhSanPham
 select * from BangGiaBacThang
 select * from Wallet
 select * from WalletTransaction
 select * from PhieuGiaoHang
 select * from DanhGia
 select * from HinhAnhDanhGia
+select * from HinhAnhChienDich
 select * from ThongBao
 select * from NguoiDung
-UPDATE ChienDich
-SET ngayKetThuc = '2026-06-01 14:06:59'
-WHERE maChienDich = 'CD001';

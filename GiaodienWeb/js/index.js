@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadHeroCampaign();
     console.log('✅ Step 3 complete');
     
+    // Load recent reviews for homepage
+    console.log('Step 4: Loading recent reviews...');
+    await loadRecentReviews();
+    console.log('✅ Step 4 complete');
+    
     console.log('========================================');
     console.log('✅ All page data loaded successfully!');
     console.log('========================================');
@@ -81,9 +86,9 @@ function renderNgheSiList(ngheSiList) {
     
     // Get first image or use default - MUST match artists.js format
     const hasImages = ngheSi.hinhAnhNgheSis && ngheSi.hinhAnhNgheSis.length > 0;
-    const imageUrl = hasImages 
+    const imageUrl = fixImagePath(hasImages 
       ? ngheSi.hinhAnhNgheSis[0].duongDan 
-      : 'images/default-artist.jpg';
+      : 'images/default-artist.jpg');
     
     console.log(`✅ Nghệ sĩ: ${ngheSi.tenNgheSi}`);
     console.log(`   hasImages: ${hasImages}`);
@@ -151,14 +156,19 @@ function renderChienDichList(chienDichList) {
     const campaignElement = document.createElement('div');
     campaignElement.className = 'campaign-card';
     
-    // Calculate discount percentage
-    const giaHienTai = getCurrentPrice(chienDich);
-    const discountPercent = ((chienDich.giaGoc - giaHienTai) / chienDich.giaGoc * 100).toFixed(1);
+    // Get lowest price from tier table (highest tier = best price)
+    const bangGia = chienDich.bangGiaBacThangs || [];
+    const giaThapNhat = bangGia.length > 0 
+      ? parseFloat(bangGia[bangGia.length - 1].donGia) 
+      : parseFloat(chienDich.giaGoc);
+    
+    // Calculate discount percentage based on lowest possible price
+    const discountPercent = ((chienDich.giaGoc - giaThapNhat) / chienDich.giaGoc * 100).toFixed(1);
     
     // Get campaign image from HinhAnhChienDich (thuTu = 1) or fallback to product image
-    const imageUrl = chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
+    const imageUrl = fixImagePath(chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
                      chienDich.sanPham?.hinhAnhSanPhams?.[0]?.duongDan || 
-                     'images/default-campaign.jpg';
+                     'images/default-campaign.jpg');
     
     // Calculate time remaining
     const timeRemaining = calculateTimeRemaining(chienDich.ngayKetThuc);
@@ -169,7 +179,6 @@ function renderChienDichList(chienDichList) {
     campaignElement.innerHTML = `
       <div class="campaign-image-wrapper">
         <img src="${imageUrl}" alt="${chienDich.tenChienDich}">
-        <div class="campaign-badge-discount">-${discountPercent}%</div>
       </div>
       <div class="campaign-info">
         <div class="campaign-header-block">
@@ -183,8 +192,18 @@ function renderChienDichList(chienDichList) {
             </p>
           </div>
           <div class="campaign-price-right">
-            <span class="price-label">Giá hiện tại:</span>
-            <div class="price-value">${formatCurrency(giaHienTai)}</div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+              <div style="text-decoration: line-through; color: #999; font-size: 13px;">
+                ${formatCurrency(chienDich.giaGoc)}
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 8px;">
+                <span class="price-label" style="font-size: 14px; color: #ffffff;">Giá tốt nhất:</span>
+                <div class="price-value" style="color: #b27933; font-weight: 700; font-size: 18px;">${formatCurrency(giaThapNhat)}</div>
+              </div>
+              <div style="font-size: 12px; color: #81c784; font-weight: 600;">
+                Giảm lên đến ${discountPercent}%
+              </div>
+            </div>
           </div>
         </div>
         <div class="campaign-actions">
@@ -234,7 +253,40 @@ async function loadHeroCampaign() {
       // Update info section with first campaign
       updateInfoPriceSection(sortedCampaigns[0]);
     } else {
-      console.warn('⚠️ No active campaigns found');
+      console.warn('⚠️ No active campaigns found. Fetching most recent campaign as fallback...');
+      // Fallback: Fetch all campaigns to display the most recent ended campaign
+      const allResponse = await api.getAllChienDich();
+      if (allResponse.success && allResponse.data && allResponse.data.length > 0) {
+        // Sort by ngayBatDau descending
+        const sortedAll = allResponse.data.sort((a, b) => new Date(b.ngayBatDau) - new Date(a.ngayBatDau));
+        const latestCampaign = sortedAll[0];
+        
+        console.log('📋 Displaying latest campaign as fallback:', latestCampaign.tenChienDich);
+        
+        // Update hero banner
+        updateHeroBanner(latestCampaign);
+        
+        // Update info section
+        updateInfoPriceSection(latestCampaign);
+        
+        // Update button text for ended campaigns
+        const heroButton = document.querySelector('.hero-content .btn-primary');
+        if (heroButton) {
+          heroButton.textContent = 'XEM CHI TIẾT';
+        }
+      } else {
+        const countdownElement = document.getElementById('countdown-banner');
+        if (countdownElement) {
+          countdownElement.textContent = '00 ngày : 00 giờ : 00 phút : 00 giây';
+        }
+        const statusRow = document.querySelectorAll('.info-left-box .info-row-compact')[1];
+        if (statusRow) {
+          const span = statusRow.querySelector('span');
+          if (span) {
+            span.textContent = 'Không có chiến dịch nào đang diễn ra';
+          }
+        }
+      }
     }
   } catch (error) {
     console.error('❌ Error loading hero campaign:', error.message);
@@ -338,9 +390,9 @@ function updateHeroBanner(campaign) {
   const heroButton = document.querySelector('.hero-content .btn-primary');
   
   // Get banner image (first image from HinhAnhChienDich)
-  const bannerImage = campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0
+  const bannerImage = fixImagePath(campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0
     ? campaign.hinhAnhChienDichs[0].duongDan
-    : 'images/banner.jpg';
+    : 'images/banner.jpg');
   
   // Update background image with contain to show full image without cropping
   if (heroSection) {
@@ -396,7 +448,9 @@ function updateHeroSection(campaign) {
 // Update info-price section with active campaign
 function updateInfoPriceSection(campaign) {
   // Update countdown - MUST be called first
-  if (campaign.ngayKetThuc) {
+  if (campaign.thoiDiem === 'Đã kết thúc') {
+    updateCountdown(new Date(0));
+  } else if (campaign.ngayKetThuc) {
     updateCountdown(campaign.ngayKetThuc);
   } else {
     console.error('❌ Campaign has no ngayKetThuc!');
@@ -405,6 +459,13 @@ function updateInfoPriceSection(campaign) {
   const currentQty = campaign.tongSoLuongHienTai || 0;
   const moq = campaign.nguongMOQ || 0;
   const isMOQMet = currentQty >= moq;
+
+  // Calculate lowest price and discount
+  const bangGia = campaign.bangGiaBacThangs || [];
+  const giaThapNhat = bangGia.length > 0 
+    ? parseFloat(bangGia[bangGia.length - 1].donGia) 
+    : parseFloat(campaign.giaGoc);
+  const discountPercent = ((campaign.giaGoc - giaThapNhat) / campaign.giaGoc * 100).toFixed(1);
 
   // Update MOQ status row (second row in info bar)
   const infoRows = document.querySelectorAll('.info-left-box .info-row-compact');
@@ -423,6 +484,50 @@ function updateInfoPriceSection(campaign) {
       }
     }
   }
+
+  // Add or update price info row (after status row)
+  let priceInfoRow = document.querySelector('.info-row-compact.price-info');
+  console.log('🔍 Price info row exists:', !!priceInfoRow);
+  
+  if (!priceInfoRow) {
+    // Create new row if it doesn't exist
+    console.log('📝 Creating new price info row...');
+    priceInfoRow = document.createElement('div');
+    priceInfoRow.className = 'info-row-compact price-info';
+    priceInfoRow.style.display = 'flex';
+    priceInfoRow.style.flexDirection = 'column';
+    priceInfoRow.style.gap = '8px';
+    priceInfoRow.style.alignItems = 'flex-start';
+    
+    // Insert after status row
+    const infoLeftBox = document.querySelector('.info-left-box');
+    console.log('📦 infoLeftBox found:', !!infoLeftBox);
+    console.log('📊 infoRows.length:', infoRows.length);
+    
+    if (infoLeftBox && infoRows.length >= 2) {
+      infoRows[1].after(priceInfoRow);
+      console.log('✅ Price info row inserted after status row');
+    } else {
+      console.error('❌ Could not insert price info row');
+    }
+  }
+  
+  // Update price info content
+  console.log('📝 Updating price info content...');
+  console.log('  Giá thấp nhất:', giaThapNhat);
+  console.log('  Discount:', discountPercent + '%');
+  
+  priceInfoRow.innerHTML = `
+    <div style="display: flex; align-items: baseline; gap: 8px;">
+      <span style="font-size: 14px; color: #ffffff;">Giá tốt nhất:</span>
+      <strong style="color: #b27933; font-size: 16px;">${formatCurrency(giaThapNhat)}</strong>
+    </div>
+    <div style="font-size: 12px; color: #81c784; font-weight: 600;">
+      Giảm lên đến ${discountPercent}%
+    </div>
+  `;
+  
+  console.log('✅ Price info row updated successfully');
 
   // Update progress bar
   updateProgressBar(campaign);
@@ -494,7 +599,7 @@ function calculateTimeRemaining(endDate) {
   const end = new Date(endDate);
   const diff = end - now;
   
-  if (diff <= 0) return 'Đã kết thúc';
+  if (diff <= 0) return '00 ngày : 00 giờ : 00 phút : 00 giây';
   
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -541,6 +646,20 @@ function updateCountdown(endDate) {
         
         const timeRemaining = calculateTimeRemaining(endDate);
         countdownElement.textContent = timeRemaining;
+        
+        // If the countdown timer hits 0 on the banner, update the status in the info bar to "Đã kết thúc"
+        if (timeRemaining === '00 ngày : 00 giờ : 00 phút : 00 giây') {
+            const infoRows = document.querySelectorAll('.info-left-box .info-row-compact');
+            if (infoRows.length >= 2) {
+                const statusRow = infoRows[1];
+                const span = statusRow.querySelector('span');
+                if (span && !span.textContent.includes('Đã kết thúc')) {
+                    statusRow.classList.remove('moq-pending');
+                    statusRow.classList.add('moq-met');
+                    span.innerHTML = `<strong>Đã kết thúc</strong>`;
+                }
+            }
+        }
     }
 
     // Update ngay lập tức
@@ -697,6 +816,173 @@ if (document.readyState === 'loading') {
   initArtistSlider();
 }
 
+// ============================================
+// REVIEW LOADING FUNCTIONALITY
+// ============================================
+
+// Load recent reviews from database
+async function loadRecentReviews() {
+  try {
+    console.log('Loading recent reviews...');
+    const response = await api.getAllDanhGia();
+    
+    console.log('Reviews API response:', response);
+    
+    if (response.success && response.data && response.data.length > 0) {
+      // Limit to 6 most recent reviews for homepage
+      const recentReviews = response.data.slice(0, 6);
+      console.log(`Rendering ${recentReviews.length} recent reviews`);
+      renderRecentReviews(recentReviews);
+    } else {
+      console.warn('⚠️ No reviews found or API returned error');
+      // Keep existing static reviews as fallback
+    }
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    // Keep existing static reviews as fallback
+  }
+}
+
+// Render recent reviews
+function renderRecentReviews(reviews) {
+  const reviewsContainer = document.querySelector('.bidding-grid');
+  if (!reviewsContainer) {
+    console.error('❌ Reviews container (.bidding-grid) not found');
+    return;
+  }
+  
+  // Clear existing content
+  reviewsContainer.innerHTML = '';
+  
+  reviews.forEach(review => {
+    const reviewCard = createReviewCard(review);
+    reviewsContainer.appendChild(reviewCard);
+  });
+  
+  console.log(`✅ Rendered ${reviews.length} reviews successfully`);
+  
+  // Re-initialize review slider
+  initReviewSlider();
+}
+
+// Create a single review card element
+function createReviewCard(review) {
+  const card = document.createElement('div');
+  card.className = 'bidding-card';
+  
+  // Get campaign name
+  const campaignName = review.campaignName || review.donHang?.dangKyChienDich?.chienDich?.tenChienDich || 'Chiến dịch';
+  
+  // Get reviewer name (handle anonymous reviews)
+  let reviewerName = 'Khách hàng';
+  if (review.name) {
+    reviewerName = review.name;
+  } else if (review.anDanh === 1) {
+    reviewerName = 'Người dùng ẩn danh';
+  } else if (review.donHang?.dangKyChienDich?.nguoiDung?.tenDangNhap) {
+    reviewerName = review.donHang.dangKyChienDich.nguoiDung.tenDangNhap;
+  }
+  
+  // Generate star rating HTML
+  const starsHTML = generateStarsHTML(review.rating || review.diemDanhGia || 0);
+  
+  // Format date
+  const reviewDate = review.createdAt || (review.ngayDanhGia 
+    ? new Date(review.ngayDanhGia).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : '');
+  
+  // Get review images (limit to 2 for display)
+  const images = review.images || review.hinhAnhDanhGias || [];
+  let imagesHTML = '';
+  if (images.length > 0) {
+    imagesHTML = '<div class="bidding-images">';
+    images.slice(0, 2).forEach(img => {
+      let imagePath = typeof img === 'string' ? img : (img.duongDan || '');
+      
+      // Convert backend path to frontend path
+      if (imagePath.startsWith('uploads/')) {
+        imagePath = `http://localhost:8080/${imagePath}`;
+      } else if (!imagePath.startsWith('http') && !imagePath.startsWith('../')) {
+        imagePath = `../${imagePath}`;
+      }
+      
+      imagesHTML += `<img src="${imagePath}" alt="Review image">`;
+    });
+    imagesHTML += '</div>';
+  }
+  
+  // Get product info
+  const productName = review.productName || review.donHang?.phieuChiTietDangKys?.[0]?.sanPhamKichThuocMauSac?.sanPham?.tenSanPham || 'Sản phẩm';
+  const productPrice = review.productPrice !== undefined ? review.productPrice : (review.donHang?.tongTien || 0);
+  const quantity = review.quantity || review.donHang?.phieuChiTietDangKys?.reduce((sum, item) => sum + (item.soLuong || 0), 0) || 1;
+  
+  card.innerHTML = `
+    <h3>Chiến dịch ${campaignName}</h3>
+    <p class="bidding-time">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+      </svg>
+      Người tham gia: <strong>${reviewerName}</strong>
+    </p>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; gap: 3px;">
+          ${starsHTML}
+        </div>
+        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">${(review.rating || review.diemDanhGia || 0).toFixed(1)}</span>
+      </div>
+      <span style="color: #999; font-size: 13px;">${reviewDate}</span>
+    </div>
+    <p class="bidding-desc">${review.binhLuan || ''}</p>
+    ${imagesHTML}
+    <p class="bidding-price">Đã mua: <strong>${productName} - ${formatCurrency(productPrice)}</strong></p>
+    <p class="bidding-votes">Số lượng: <strong>${quantity} ${quantity > 1 ? 'sản phẩm' : 'sản phẩm'}</strong></p>
+  `;
+  
+  return card;
+}
+
+// Generate star rating HTML
+function generateStarsHTML(rating) {
+  let starsHTML = '';
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  
+  // Full stars
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML += `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    `;
+  }
+  
+  // Half star
+  if (hasHalfStar) {
+    starsHTML += `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    `;
+  }
+  
+  // Empty stars
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  for (let i = 0; i < emptyStars; i++) {
+    starsHTML += `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    `;
+  }
+  
+  return starsHTML;
+}
+
+// ============================================
+// REVIEW SLIDER FUNCTIONALITY
+// ============================================
+
 // Review Slider Functionality
 let reviewSliderPosition = 0;
 const reviewsPerView = 2;
@@ -806,4 +1092,20 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initReviewSlider);
 } else {
   initReviewSlider();
+}
+
+// Helper: Fix image path
+function fixImagePath(path) {
+  if (!path) return 'images/default-campaign.jpg';
+  if (path.startsWith('http')) {
+    return path;
+  }
+  if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `http://localhost:8080/${cleanPath}`;
+  }
+  if (path.startsWith('../')) {
+    return path.replace(/^\.\.\//, '');
+  }
+  return path;
 }

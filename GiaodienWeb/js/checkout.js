@@ -1013,8 +1013,17 @@ function formatCurrency(amount) {
 
 function fixImagePath(path) {
     if (!path) return '../images/default.jpg';
-    if (path.startsWith('../') || path.startsWith('http')) return path;
-    if (path.startsWith('images/')) return '../' + path;
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
+    }
+    if (path.startsWith('../') || path.startsWith('/')) return path;
+    
+    const isSubfolder = window.location.pathname.includes('/pages/');
+    if (isSubfolder) {
+        return '../' + path;
+    }
     return path;
 }
 
@@ -1156,9 +1165,13 @@ function startDecisionCountdown() {
     // Calculate time remaining in milliseconds
     let timeRemaining = endDate - now;
     
+    // Get the countdown note element (the <p> inside .bet-decision-timer)
+    const countdownNote = document.querySelector('.bet-decision-timer .timer-note');
+    
     // If campaign has ended, show zeros
     if (timeRemaining <= 0) {
         updateCountdownDisplay(0, 0, 0, 0);
+        if (countdownNote) countdownNote.style.display = 'none';
         return;
     }
     
@@ -1168,12 +1181,15 @@ function startDecisionCountdown() {
     if (timeRemaining > twoDaysInMs) {
         // Show fixed 2 days
         updateCountdownDisplay(2, 0, 0, 0);
+        // Show the note text
+        if (countdownNote) countdownNote.style.display = 'block';
         console.log('⏰ Campaign has more than 2 days remaining - showing fixed 2 days');
         return;
     }
     
-    // Less than or equal to 2 days - start real countdown
+    // Less than or equal to 2 days - start real countdown and hide note
     console.log('⏰ Starting real countdown - time remaining:', timeRemaining);
+    if (countdownNote) countdownNote.style.display = 'none';
     
     function updateTimer() {
         const now = new Date();
@@ -1181,6 +1197,7 @@ function startDecisionCountdown() {
         
         if (timeRemaining <= 0) {
             updateCountdownDisplay(0, 0, 0, 0);
+            if (countdownNote) countdownNote.style.display = 'none';
             clearInterval(timerInterval);
             return;
         }

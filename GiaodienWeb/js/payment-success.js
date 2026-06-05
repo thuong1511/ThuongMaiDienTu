@@ -214,10 +214,20 @@ function updateProgressAlert() {
     }
 }
 
-// Countdown Timer for Decision Time (2 days from now)
+// Countdown Timer for Decision Time (2 days from now, or capped/ended by campaign status)
 function startDecisionCountdown() {
     // Set deadline to 2 days from now (48 hours)
-    const deadline = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+    let deadline = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+    
+    // If campaign has ended, the decision period has also expired
+    if (campaignData && campaignData.thoiDiem === 'Đã kết thúc') {
+        deadline = new Date(0).getTime();
+    } else if (campaignData && campaignData.ngayKetThuc) {
+        const campaignEnd = new Date(campaignData.ngayKetThuc).getTime();
+        if (campaignEnd < deadline) {
+            deadline = campaignEnd;
+        }
+    }
     
     const countdownInterval = setInterval(function() {
         const now = new Date().getTime();

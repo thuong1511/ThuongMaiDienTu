@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/order-detail.css">
+    <link rel="stylesheet" href="../css/order-history-new.css">
 </head>
 <body>
     <!-- Header -->
@@ -286,9 +287,9 @@
 
                     <!-- Actions -->
                     <div class="action-buttons">
-                        <button class="btn-primary" onclick="window.location.href='review.html'">
+                        <button id="reviewActionBtn" class="btn-primary" onclick="handleReviewBtnClick()">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2"></path>
                             </svg>
                             Đánh giá sản phẩm
                         </button>
@@ -311,6 +312,30 @@
             </div>
         </div>
     </section>
+
+    <!-- Review Dialog Modal -->
+    <div id="reviewDialog" class="review-dialog-overlay" style="display: none;">
+        <div class="review-dialog">
+            <div class="review-dialog-header">
+                <h2>Đánh giá của bạn</h2>
+                <button class="close-dialog-btn" onclick="closeReviewDialog()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="review-dialog-body"></div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="imageLightbox" class="lightbox-overlay" style="display: none;">
+        <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-content-wrapper">
+            <img id="lightboxImage" src="" alt="Ảnh đánh giá phóng to">
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

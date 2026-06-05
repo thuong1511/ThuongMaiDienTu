@@ -94,7 +94,7 @@ function createRegistrationCard(registration, details) {
     // Determine campaign status
     const now = new Date();
     const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
-    const isCampaignEnded = campaignEndDate && campaignEndDate < now;
+    const isCampaignEnded = (campaignEndDate && campaignEndDate < now) || (chienDich?.thoiDiem === 'Đã kết thúc');
     
     // Calculate refund amount for ended campaigns
     let soTienHoanLai = 0;
@@ -147,9 +147,11 @@ function createRegistrationCard(registration, details) {
     const decisionDeadline = new Date(registration.ngayDangKy);
     decisionDeadline.setDate(decisionDeadline.getDate() + 2);
     
-    // If campaign ends before decision deadline, use campaign end date
+    // If campaign has ended, decision deadline has definitely passed (set to past)
     let finalDecisionDeadline = decisionDeadline;
-    if (campaignEndDate && campaignEndDate < decisionDeadline) {
+    if (isCampaignEnded) {
+        finalDecisionDeadline = new Date(0);
+    } else if (campaignEndDate && campaignEndDate < decisionDeadline) {
         finalDecisionDeadline = campaignEndDate;
     }
 
@@ -378,7 +380,7 @@ function viewRegistrationDetail(maDangKy) {
     // Determine campaign status
     const now = new Date();
     const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
-    const isCampaignEnded = campaignEndDate && campaignEndDate < now;
+    const isCampaignEnded = (campaignEndDate && campaignEndDate < now) || (chienDich?.thoiDiem === 'Đã kết thúc');
     
     const detailsHTML = details.map((detail, index) => `
         <div style="background: #fdfbf7; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(196, 168, 127, 0.3); display: flex; justify-content: space-between; align-items: center;">
@@ -820,10 +822,15 @@ async function loadOrders() {
         if (data.success && data.data && data.data.length > 0) {
             container.innerHTML = '';
             
-            data.data.forEach(order => {
+            // Check review status for each order
+            for (const order of data.data) {
+                // Check if order has been reviewed
+                const hasReview = await checkOrderHasReview(order.maDonHang);
+                order.daDanhGia = hasReview;
+                
                 const card = createOrderCard(order);
                 container.appendChild(card);
-            });
+            }
         } else {
             container.innerHTML = `
                 <div style="text-align: center; padding: 60px 20px;">
@@ -847,10 +854,24 @@ async function loadOrders() {
     }
 }
 
+// Check if order has review
+async function checkOrderHasReview(orderId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/danhgia/check/${orderId}`);
+        const result = await response.json();
+        return result.success && result.data === true;
+    } catch (error) {
+        console.error('Error checking review status:', error);
+        return false;
+    }
+}
+
 // Create order card HTML
 function createOrderCard(order) {
     const card = document.createElement('div');
     card.className = 'order-card';
+    card.setAttribute('data-order-id', order.maDonHang);
+    card.dataset.order = JSON.stringify(order);
     
     const registration = order.dangKyChienDich;
     const chienDich = registration?.chienDich;
@@ -896,8 +917,13 @@ function createOrderCard(order) {
     // Get refund info
     const daHoanTien = order.daHoanTien;
     const soTienHoanLai = order.soTienHoanLai || 0;
-    const giaChotCuoiCung = order.giaChotCuoiCung || 0;
     const soTienThanhToan = thanhToan?.soTienThanhToan || 0;
+    
+    // Calculate final price per item (giá chốt cuối cùng)
+    const isBetCorrect = daHoanTien && soTienHoanLai > 0;
+    const giaChotCuoiCung = isBetCorrect 
+        ? (bangGia?.donGia || chienDich?.giaGoc || 0)
+        : (chienDich?.giaGoc || 0);
     
     card.innerHTML = `
         <div class="order-header">
@@ -970,9 +996,11 @@ function createOrderCard(order) {
         <div class="order-footer">
             <div class="order-actions">
                 <button class="btn-detail" onclick="viewOrderDetail('${order.maDonHang}')">Xem chi tiết</button>
-                ${shippingStatus === 'delivered' ? `
+                ${shippingStatus === 'delivered' ? (order.daDanhGia ? `
+                <button class="btn-review" onclick="viewReview('${order.maDonHang}', '${chienDich?.maChienDich || ''}')">Xem đánh giá</button>
+                ` : `
                 <button class="btn-review" onclick="window.location.href='review.html?orderId=${order.maDonHang}'">Đánh giá</button>
-                ` : ''}
+                `) : ''}
             </div>
         </div>
     `;
@@ -984,3 +1012,230 @@ function createOrderCard(order) {
 function viewOrderDetail(maDonHang) {
     window.location.href = `order-detail.html?orderId=${maDonHang}`;
 }
+
+// View Review Dialog
+async function viewReview(orderId, campaignId) {
+    try {
+        const user = getCurrentUser();
+        if (!user) {
+            alert('Vui lòng đăng nhập để xem đánh giá');
+            return;
+        }
+
+        // Fetch review by orderId
+        const response = await fetch(`${API_BASE_URL}/danhgia/donhang/${orderId}`);
+        const result = await response.json();
+
+        if (!result.success || !result.data) {
+            alert('Không tìm thấy đánh giá');
+            return;
+        }
+
+        const review = result.data;
+
+        // Fetch campaign name
+        const campaignResponse = await fetch(`${API_BASE_URL}/chiendich/${campaignId}`);
+        const campaignResult = await campaignResponse.json();
+        const campaignName = campaignResult.success ? campaignResult.data.tenChienDich : 'Chiến dịch';
+
+        // Get order card to parse order data
+        const card = document.querySelector(`[data-order-id="${orderId}"]`);
+        const order = card ? JSON.parse(card.dataset.order) : null;
+
+        // Freeze main page scrolling
+        document.body.classList.add('no-scroll');
+
+        // Stars rating and descriptions
+        const starsHTML = generateStars(review.diemDanhGia);
+        const ratingDescMap = {
+            5: 'Tuyệt vời',
+            4: 'Rất tốt',
+            3: 'Hài lòng',
+            2: 'Chưa hài lòng',
+            1: 'Tệ'
+        };
+        const desc = ratingDescMap[review.diemDanhGia] || '';
+
+        // Format date and time
+        const reviewDate = new Date(review.ngayDanhGia);
+        const formattedDate = reviewDate.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        const hours = String(reviewDate.getHours()).padStart(2, '0');
+        const minutes = String(reviewDate.getMinutes()).padStart(2, '0');
+
+        // User profile header details
+        const firstLetter = user.tenDangNhap ? user.tenDangNhap.charAt(0).toUpperCase() : 'U';
+        const displayName = review.anDanh === 1 ? 'Người dùng ẩn danh' : (user.hoTen || user.tenDangNhap || 'Khách hàng');
+
+        // Product info container HTML
+        const productInfoHTML = `
+            <div class="review-product-info">
+                <div><span class="review-product-label">Chiến dịch:</span> <strong class="review-product-val">${campaignName}</strong></div>
+                <div><span class="review-product-label">Sản phẩm:</span> <span class="review-product-val">${order?.dangKyChienDich?.chienDich?.sanPham?.tenSanPham || 'N/A'}</span></div>
+                <div id="reviewProductVariant"><span class="review-product-label">Phân loại:</span> <span class="review-product-val" style="color: #888; font-style: italic;">Đang tải thông tin phân loại...</span></div>
+            </div>
+        `;
+
+        // Fetch variants asynchronously
+        const regId = order?.dangKyChienDich?.maDangKy;
+        if (regId) {
+            fetch(`${API_BASE_URL}/phieuchitietdangky/dangky/${regId}`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success && res.data && res.data.length > 0) {
+                        const txt = res.data.map(d => `${d.mauSac?.tenMau || 'N/A'} - Size ${d.kichThuoc?.tenSize || 'N/A'} (${d.soLuong} đôi)`).join(', ');
+                        const el = document.getElementById('reviewProductVariant');
+                        if (el) {
+                            el.innerHTML = `<span class="review-product-label">Phân loại:</span> <span class="review-product-val">${txt}</span>`;
+                        }
+                    } else {
+                        const el = document.getElementById('reviewProductVariant');
+                        if (el) el.remove();
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading variations:", err);
+                    const el = document.getElementById('reviewProductVariant');
+                    if (el) el.remove();
+                });
+        }
+
+        // Images mapping with zoom overlay
+        let imagesHTML = '';
+        if (review.hinhAnhDanhGias && review.hinhAnhDanhGias.length > 0) {
+            imagesHTML = review.hinhAnhDanhGias.map(img => {
+                let imgSrc = img.duongDan;
+                if (imgSrc.startsWith('uploads/')) {
+                    imgSrc = 'http://localhost:8080/' + imgSrc;
+                } else if (imgSrc.startsWith('/uploads/')) {
+                    imgSrc = 'http://localhost:8080' + imgSrc;
+                }
+                return `
+                    <div class="review-image-wrapper" onclick="openLightbox('${imgSrc}')">
+                        <img src="${imgSrc}" alt="Review image">
+                        <div class="review-image-overlay-zoom">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Populate dialog body with premium Shopee-like e-commerce layout
+        document.querySelector('.review-dialog-body').innerHTML = `
+            <!-- User Header -->
+            <div class="review-user-header">
+                <div class="review-avatar-circle">${firstLetter}</div>
+                <div class="review-user-info-meta">
+                    <div class="review-user-name-wrapper">
+                        <span class="review-username">${displayName}</span>
+                        ${review.anDanh === 1 
+                            ? '<span class="review-anonymous-badge">Ẩn danh</span>' 
+                            : '<span class="review-verified-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>Đã mua hàng</span>'
+                        }
+                    </div>
+                    <div class="review-date">Đánh giá vào ${formattedDate} lúc ${hours}:${minutes}</div>
+                </div>
+            </div>
+
+            <!-- Rating block -->
+            <div class="review-rating-block">
+                <div class="review-rating">
+                    <div class="stars">${starsHTML}</div>
+                    <span class="rating-number">${review.diemDanhGia}.0</span>
+                    <span class="review-rating-desc">| ${desc}</span>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            ${productInfoHTML}
+
+            <!-- Comment Content -->
+            <div class="review-content">
+                ${review.binhLuan ? review.binhLuan.replace(/\n/g, '<br>') : 'Không có nội dung đánh giá'}
+            </div>
+
+            <!-- Images -->
+            <div class="review-images">
+                ${imagesHTML}
+            </div>
+        `;
+
+        // Show dialog
+        document.getElementById('reviewDialog').style.display = 'flex';
+
+    } catch (error) {
+        console.error('Error fetching review:', error);
+        alert('Có lỗi khi tải đánh giá');
+    }
+}
+
+// Close Review Dialog
+function closeReviewDialog() {
+    document.getElementById('reviewDialog').style.display = 'none';
+    document.body.classList.remove('no-scroll');
+}
+
+// Generate stars HTML
+function generateStars(rating) {
+    let starsHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            starsHTML += `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD700">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            `;
+        } else {
+            starsHTML += `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            `;
+        }
+    }
+    return starsHTML;
+}
+
+// Lightbox functions
+function openLightbox(src) {
+    const lightbox = document.getElementById('imageLightbox');
+    const lightboxImg = document.getElementById('lightboxImage');
+    if (lightbox && lightboxImg) {
+        lightboxImg.src = src;
+        lightbox.style.display = 'flex';
+        document.body.classList.add('no-scroll');
+    }
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('imageLightbox');
+    if (lightbox) {
+        lightbox.style.display = 'none';
+    }
+    // Only remove scroll freeze if reviewDialog is also closed
+    const reviewDialog = document.getElementById('reviewDialog');
+    if (!reviewDialog || reviewDialog.style.display === 'none') {
+        document.body.classList.remove('no-scroll');
+    }
+}
+
+// Close dialog when clicking outside
+document.addEventListener('click', function(event) {
+    const dialog = document.getElementById('reviewDialog');
+    if (event.target === dialog) {
+        closeReviewDialog();
+    }
+    const lightbox = document.getElementById('imageLightbox');
+    if (event.target === lightbox) {
+        closeLightbox();
+    }
+});

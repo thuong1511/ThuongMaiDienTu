@@ -241,7 +241,6 @@ function createCampaignCard(campaign) {
         <div class="campaign-card" data-status="${statusInfo.class}" data-artist="${campaign.ngheSi?.tenNgheSi || ''}" data-category="sneaker">
             <div class="campaign-image-wrapper">
                 <img src="${imageUrl}" alt="${campaign.tenChienDich}">
-                <div class="campaign-badge-discount">-${discountPercent}%</div>
                 <div class="campaign-badge-status ${statusInfo.class}">${statusInfo.text}</div>
             </div>
             <div class="campaign-info">
@@ -256,8 +255,16 @@ function createCampaignCard(campaign) {
                     <div class="progress-bar-small">
                         <div class="progress-fill-small ${isMOQMet ? 'completed' : ''}" style="width: ${progressPercent}%${isMOQMet ? '; background: #81c784;' : ''}"></div>
                     </div>
-                    <span class="progress-text-small" style="font-weight: 700; color: ${isMOQMet ? '#81c784' : '#ffb74d'};">
-                        ${isMOQMet ? '✓ Đã đạt MOQ sản xuất' : '⏳ Đang gom số lượng đạt MOQ'}
+                    <span class="progress-text-small" style="font-weight: 700; color: ${
+                        campaign.thoiDiem === 'Đã kết thúc' 
+                            ? (isMOQMet ? '#81c784' : '#d32f2f')
+                            : (isMOQMet ? '#81c784' : '#ffb74d')
+                    };">
+                        ${
+                            campaign.thoiDiem === 'Đã kết thúc'
+                                ? (isMOQMet ? '✓ Đã đạt MOQ sản xuất' : '✗ Không đạt MOQ để sản xuất')
+                                : (isMOQMet ? '✓ Đã đạt MOQ sản xuất' : '⏳ Đang gom số lượng đạt MOQ')
+                        }
                     </span>
                 </div>
 
@@ -532,8 +539,17 @@ function formatCurrency(amount) {
 // Helper: Fix image path
 function fixImagePath(path) {
     if (!path) return '../images/default.jpg';
-    if (path.startsWith('../') || path.startsWith('http')) return path;
-    if (path.startsWith('images/')) return '../' + path;
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
+    }
+    if (path.startsWith('../') || path.startsWith('/')) return path;
+    
+    const isSubfolder = window.location.pathname.includes('/pages/');
+    if (isSubfolder) {
+        return '../' + path;
+    }
     return path;
 }
 
