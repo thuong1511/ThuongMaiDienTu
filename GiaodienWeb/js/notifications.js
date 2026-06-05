@@ -98,7 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) return '';
         // Thay thế định dạng [Nhãn](URL) bằng thẻ <a> của HTML
         return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
-            return `<a href="${url}" class="notification-link" style="color: #FFEEA9; text-decoration: underline; font-weight: 700; transition: color 0.2s;" onclick="event.stopPropagation();">${label}</a>`;
+            let targetUrl = url;
+            const hasGiaodienWebInPath = window.location.pathname.toLowerCase().includes('/giaodienweb/');
+            if (targetUrl.startsWith('/GiaodienWeb/') && !hasGiaodienWebInPath) {
+                targetUrl = targetUrl.substring(12); // Remove "/GiaodienWeb" (length 12), leaving "/pages/review.html..."
+            }
+            return `<a href="${targetUrl}" class="notification-link" style="color: #FFEEA9; text-decoration: underline; font-weight: 700; transition: color 0.2s;" onclick="event.stopPropagation();">${label}</a>`;
         });
     }
 
