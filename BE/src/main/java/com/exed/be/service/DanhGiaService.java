@@ -83,68 +83,107 @@ public class DanhGiaService {
     public List<java.util.Map<String, Object>> getDanhGiaByMaChienDichDTO(String maChienDich) {
         List<DanhGia> list = danhGiaRepository.findByMaChienDich(maChienDich);
         List<java.util.Map<String, Object>> result = new ArrayList<>();
-        
         for (DanhGia dg : list) {
-            java.util.Map<String, Object> map = new java.util.HashMap<>();
-            
-            // Lấy tên reviewer (Ẩn danh hoặc Username)
-            String reviewerName = "Khách hàng";
-            if (dg.getAnDanh() != null && dg.getAnDanh() == 1) {
-                reviewerName = "Người dùng ẩn danh";
-            } else {
-                Optional<com.exed.be.model.DonHang> dhOpt = donHangRepository.findById(dg.getMaDonHang());
-                if (dhOpt.isPresent()) {
-                    com.exed.be.model.DonHang dh = dhOpt.get();
-                    if (dh.getDangKyChienDich() != null && dh.getDangKyChienDich().getNguoiDung() != null) {
-                        reviewerName = dh.getDangKyChienDich().getNguoiDung().getTenDangNhap();
-                    }
-                }
-            }
-            
-            // Lấy danh sách ảnh
-            List<String> images = new ArrayList<>();
-            if (dg.getHinhAnhDanhGias() != null) {
-                for (HinhAnhDanhGia img : dg.getHinhAnhDanhGias()) {
-                    // Trả về đường dẫn khớp tương đối với frontend (ví dụ: ../images/...)
-                    String path = img.getDuongDan();
-                    if (path != null) {
-                        // Nếu là đường dẫn ảo reviews không tồn tại, thay thế bằng ảnh hợp lệ
-                        if (path.contains("images/reviews/")) {
-                            int order = img.getThuTu() != null ? img.getThuTu() : 1;
-                            if (order == 1) path = "images/review1.jpg";
-                            else if (order == 2) path = "images/review1.1.jpg";
-                            else if (order == 3) path = "images/review2.png";
-                            else if (order == 4) path = "images/review2.1.jpg";
-                            else path = "images/review1.jpg";
-                        }
-                        
-                        // Nếu là ảnh thật được upload bởi khách hàng lên thư mục uploads
-                        if (path.startsWith("uploads/")) {
-                            path = "http://localhost:8080/" + path;
-                        } else if (path.startsWith("/uploads/")) {
-                            path = "http://localhost:8080" + path;
-                        }
-                        
-                        if (!path.startsWith("http") && !path.startsWith("../")) {
-                            path = "../" + path;
-                        }
-                        images.add(path);
-                    }
-                }
-            }
-            
-            String createdAt = dg.getNgayDanhGia() != null ? dg.getNgayDanhGia().toLocalDate().toString() : "";
-            
-            map.put("id", dg.getMaDanhGia());
-            map.put("name", reviewerName);
-            map.put("rating", dg.getDiemDanhGia());
-            map.put("comment", dg.getBinhLuan());
-            map.put("images", images);
-            map.put("createdAt", createdAt);
-            map.put("replies", new ArrayList<>()); // Trống cho replies mẫu
-            
-            result.add(map);
+            result.add(convertToDTOMap(dg));
         }
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<java.util.Map<String, Object>> getAllDanhGiaDTO() {
+        List<DanhGia> list = danhGiaRepository.findAllByOrderByNgayDanhGiaDesc();
+        List<java.util.Map<String, Object>> result = new ArrayList<>();
+        for (DanhGia dg : list) {
+            result.add(convertToDTOMap(dg));
+        }
+        return result;
+    }
+
+    private java.util.Map<String, Object> convertToDTOMap(DanhGia dg) {
+        java.util.Map<String, Object> map = new java.util.HashMap<>();
+        
+        // Lấy tên reviewer (Ẩn danh hoặc Username)
+        String reviewerName = "Khách hàng";
+        if (dg.getAnDanh() != null && dg.getAnDanh() == 1) {
+            reviewerName = "Người dùng ẩn danh";
+        } else {
+            Optional<com.exed.be.model.DonHang> dhOpt = donHangRepository.findById(dg.getMaDonHang());
+            if (dhOpt.isPresent()) {
+                com.exed.be.model.DonHang dh = dhOpt.get();
+                if (dh.getDangKyChienDich() != null && dh.getDangKyChienDich().getNguoiDung() != null) {
+                    reviewerName = dh.getDangKyChienDich().getNguoiDung().getTenDangNhap();
+                }
+            }
+        }
+        
+        // Lấy tên chiến dịch, tên sản phẩm, giá chốt cuối và số lượng từ DonHang
+        String campaignName = "Chiến dịch";
+        String productName = "Sản phẩm";
+        java.math.BigDecimal productPrice = java.math.BigDecimal.ZERO;
+        int quantity = 1;
+        
+        Optional<com.exed.be.model.DonHang> dhOpt = donHangRepository.findById(dg.getMaDonHang());
+        if (dhOpt.isPresent()) {
+            com.exed.be.model.DonHang dh = dhOpt.get();
+            productPrice = dh.getGiaChotCuoiCung() != null ? dh.getGiaChotCuoiCung() : java.math.BigDecimal.ZERO;
+            
+            if (dh.getDangKyChienDich() != null) {
+                com.exed.be.model.DangKyChienDich dk = dh.getDangKyChienDich();
+                quantity = dk.getTongSoLuong() != null ? dk.getTongSoLuong() : 1;
+                
+                if (dk.getChienDich() != null) {
+                    com.exed.be.model.ChienDich cd = dk.getChienDich();
+                    campaignName = cd.getTenChienDich() != null ? cd.getTenChienDich() : "Chiến dịch";
+                    if (cd.getSanPham() != null) {
+                        productName = cd.getSanPham().getTenSanPham() != null ? cd.getSanPham().getTenSanPham() : "Sản phẩm";
+                    }
+                }
+            }
+        }
+        
+        // Lấy danh sách ảnh
+        List<String> images = new ArrayList<>();
+        if (dg.getHinhAnhDanhGias() != null) {
+            for (HinhAnhDanhGia img : dg.getHinhAnhDanhGias()) {
+                String path = img.getDuongDan();
+                if (path != null) {
+                    if (path.contains("images/reviews/")) {
+                        int order = img.getThuTu() != null ? img.getThuTu() : 1;
+                        if (order == 1) path = "images/review1.jpg";
+                        else if (order == 2) path = "images/review1.1.jpg";
+                        else if (order == 3) path = "images/review2.png";
+                        else if (order == 4) path = "images/review2.1.jpg";
+                        else path = "images/review1.jpg";
+                    }
+                    
+                    if (path.startsWith("uploads/")) {
+                        path = "http://localhost:8080/" + path;
+                    } else if (path.startsWith("/uploads/")) {
+                        path = "http://localhost:8080" + path;
+                    }
+                    
+                    if (!path.startsWith("http") && !path.startsWith("../")) {
+                        path = "../" + path;
+                    }
+                    images.add(path);
+                }
+            }
+        }
+        
+        String createdAt = dg.getNgayDanhGia() != null ? dg.getNgayDanhGia().toLocalDate().toString() : "";
+        
+        map.put("id", dg.getMaDanhGia());
+        map.put("name", reviewerName);
+        map.put("campaignName", campaignName);
+        map.put("productName", productName);
+        map.put("productPrice", productPrice);
+        map.put("quantity", quantity);
+        map.put("rating", dg.getDiemDanhGia());
+        map.put("comment", dg.getBinhLuan());
+        map.put("images", images);
+        map.put("createdAt", createdAt);
+        map.put("replies", new ArrayList<>()); // Trống cho replies mẫu
+        
+        return map;
     }
 }

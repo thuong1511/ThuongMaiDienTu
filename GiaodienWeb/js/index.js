@@ -86,9 +86,9 @@ function renderNgheSiList(ngheSiList) {
     
     // Get first image or use default - MUST match artists.js format
     const hasImages = ngheSi.hinhAnhNgheSis && ngheSi.hinhAnhNgheSis.length > 0;
-    const imageUrl = hasImages 
+    const imageUrl = fixImagePath(hasImages 
       ? ngheSi.hinhAnhNgheSis[0].duongDan 
-      : 'images/default-artist.jpg';
+      : 'images/default-artist.jpg');
     
     console.log(`✅ Nghệ sĩ: ${ngheSi.tenNgheSi}`);
     console.log(`   hasImages: ${hasImages}`);
@@ -166,9 +166,9 @@ function renderChienDichList(chienDichList) {
     const discountPercent = ((chienDich.giaGoc - giaThapNhat) / chienDich.giaGoc * 100).toFixed(1);
     
     // Get campaign image from HinhAnhChienDich (thuTu = 1) or fallback to product image
-    const imageUrl = chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
+    const imageUrl = fixImagePath(chienDich.hinhAnhChienDichs?.[0]?.duongDan || 
                      chienDich.sanPham?.hinhAnhSanPhams?.[0]?.duongDan || 
-                     'images/default-campaign.jpg';
+                     'images/default-campaign.jpg');
     
     // Calculate time remaining
     const timeRemaining = calculateTimeRemaining(chienDich.ngayKetThuc);
@@ -390,9 +390,9 @@ function updateHeroBanner(campaign) {
   const heroButton = document.querySelector('.hero-content .btn-primary');
   
   // Get banner image (first image from HinhAnhChienDich)
-  const bannerImage = campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0
+  const bannerImage = fixImagePath(campaign.hinhAnhChienDichs && campaign.hinhAnhChienDichs.length > 0
     ? campaign.hinhAnhChienDichs[0].duongDan
-    : 'images/banner.jpg';
+    : 'images/banner.jpg');
   
   // Update background image with contain to show full image without cropping
   if (heroSection) {
@@ -870,32 +870,34 @@ function createReviewCard(review) {
   const card = document.createElement('div');
   card.className = 'bidding-card';
   
-  // Get campaign name from donHang relationship
-  const campaignName = review.donHang?.dangKyChienDich?.chienDich?.tenChienDich || 'Chiến dịch';
+  // Get campaign name
+  const campaignName = review.campaignName || review.donHang?.dangKyChienDich?.chienDich?.tenChienDich || 'Chiến dịch';
   
   // Get reviewer name (handle anonymous reviews)
   let reviewerName = 'Khách hàng';
-  if (review.anDanh === 1) {
+  if (review.name) {
+    reviewerName = review.name;
+  } else if (review.anDanh === 1) {
     reviewerName = 'Người dùng ẩn danh';
   } else if (review.donHang?.dangKyChienDich?.nguoiDung?.tenDangNhap) {
     reviewerName = review.donHang.dangKyChienDich.nguoiDung.tenDangNhap;
   }
   
   // Generate star rating HTML
-  const starsHTML = generateStarsHTML(review.diemDanhGia || 0);
+  const starsHTML = generateStarsHTML(review.rating || review.diemDanhGia || 0);
   
   // Format date
-  const reviewDate = review.ngayDanhGia 
+  const reviewDate = review.createdAt || (review.ngayDanhGia 
     ? new Date(review.ngayDanhGia).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
-    : '';
+    : '');
   
   // Get review images (limit to 2 for display)
-  const images = review.hinhAnhDanhGias || [];
+  const images = review.images || review.hinhAnhDanhGias || [];
   let imagesHTML = '';
   if (images.length > 0) {
     imagesHTML = '<div class="bidding-images">';
     images.slice(0, 2).forEach(img => {
-      let imagePath = img.duongDan || '';
+      let imagePath = typeof img === 'string' ? img : (img.duongDan || '');
       
       // Convert backend path to frontend path
       if (imagePath.startsWith('uploads/')) {
@@ -909,13 +911,13 @@ function createReviewCard(review) {
     imagesHTML += '</div>';
   }
   
-  // Get product info from order
-  const productName = review.donHang?.phieuChiTietDangKys?.[0]?.sanPhamKichThuocMauSac?.sanPham?.tenSanPham || 'Sản phẩm';
-  const productPrice = review.donHang?.tongTien || 0;
-  const quantity = review.donHang?.phieuChiTietDangKys?.reduce((sum, item) => sum + (item.soLuong || 0), 0) || 1;
+  // Get product info
+  const productName = review.productName || review.donHang?.phieuChiTietDangKys?.[0]?.sanPhamKichThuocMauSac?.sanPham?.tenSanPham || 'Sản phẩm';
+  const productPrice = review.productPrice !== undefined ? review.productPrice : (review.donHang?.tongTien || 0);
+  const quantity = review.quantity || review.donHang?.phieuChiTietDangKys?.reduce((sum, item) => sum + (item.soLuong || 0), 0) || 1;
   
   card.innerHTML = `
-    <h3>${campaignName}</h3>
+    <h3>Chiến dịch ${campaignName}</h3>
     <p class="bidding-time">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #999;">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
@@ -927,7 +929,7 @@ function createReviewCard(review) {
         <div style="display: flex; gap: 3px;">
           ${starsHTML}
         </div>
-        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">${(review.diemDanhGia || 0).toFixed(1)}</span>
+        <span style="color: #FFD700; font-size: 20px; font-weight: 700;">${(review.rating || review.diemDanhGia || 0).toFixed(1)}</span>
       </div>
       <span style="color: #999; font-size: 13px;">${reviewDate}</span>
     </div>
@@ -1090,4 +1092,20 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initReviewSlider);
 } else {
   initReviewSlider();
+}
+
+// Helper: Fix image path
+function fixImagePath(path) {
+  if (!path) return 'images/default-campaign.jpg';
+  if (path.startsWith('http')) {
+    return path;
+  }
+  if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `http://localhost:8080/${cleanPath}`;
+  }
+  if (path.startsWith('../')) {
+    return path.replace(/^\.\.\//, '');
+  }
+  return path;
 }

@@ -532,17 +532,28 @@ function getStatusClass(thoiDiem) {
 function fixImagePath(path) {
     if (!path) return '../images/default.jpg';
 
-    // If path already starts with ../ or http, return as is
-    if (path.startsWith('../') || path.startsWith('http')) {
+    // If path already starts with http, return as is
+    if (path.startsWith('http')) {
         return path;
     }
 
-    // If path starts with images/, add ../
-    if (path.startsWith('images/')) {
-        return '../' + path;
+    // If path starts with uploads/ or /uploads/, prepend backend server URL
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
     }
 
-    // Otherwise return as is
+    // If path already starts with ../ or /, return as is
+    if (path.startsWith('../') || path.startsWith('/')) {
+        return path;
+    }
+
+    // Check if the current page is inside the /pages/ subfolder
+    const isSubfolder = window.location.pathname.includes('/pages/');
+
+    if (isSubfolder) {
+        return '../' + path;
+    }
     return path;
 }
 

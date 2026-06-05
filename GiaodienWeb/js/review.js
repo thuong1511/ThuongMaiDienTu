@@ -52,7 +52,7 @@ function updateCampaignInfo(order) {
     // Update campaign image
     const campaignThumb = document.getElementById('campaignThumb');
     if (chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0) {
-        campaignThumb.src = '../' + chienDich.hinhAnhChienDichs[0].duongDan;
+        campaignThumb.src = fixImagePath(chienDich.hinhAnhChienDichs[0].duongDan);
     }
     
     // Update campaign name
@@ -425,3 +425,20 @@ function initializeSubmitButton() {
 
 // Initialize detailed ratings on load
 initializeDetailedRatings();
+
+// Helper: Fix image path
+function fixImagePath(path) {
+    if (!path) return '../images/default.jpg';
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
+    }
+    if (path.startsWith('../') || path.startsWith('/')) return path;
+    
+    const isSubfolder = window.location.pathname.includes('/pages/');
+    if (isSubfolder) {
+        return '../' + path;
+    }
+    return path;
+}

@@ -59,9 +59,9 @@ public class DanhGiaController {
      * GET /api/danhgia
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DanhGia>>> getAllDanhGia() {
+    public ResponseEntity<ApiResponse<List<java.util.Map<String, Object>>>> getAllDanhGia() {
         try {
-            List<DanhGia> danhGias = danhGiaService.getAllDanhGia();
+            List<java.util.Map<String, Object>> danhGias = danhGiaService.getAllDanhGiaDTO();
             return ResponseEntity.ok(new ApiResponse<>(true, "Lấy danh sách đánh giá thành công", danhGias));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

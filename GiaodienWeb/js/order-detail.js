@@ -168,7 +168,7 @@ function updateCampaignInfo(chienDich, sanPham) {
     const campaignImgContainer = document.querySelector('.campaign-info-detail');
     if (chienDich.hinhAnhChienDichs && chienDich.hinhAnhChienDichs.length > 0) {
         const imagesHTML = chienDich.hinhAnhChienDichs.map(img => 
-            `<img src="../${img.duongDan}" alt="Campaign" class="campaign-img" onerror="this.src='../images/banner.jpg'">`
+            `<img src="${fixImagePath(img.duongDan)}" alt="Campaign" class="campaign-img" onerror="this.src='../images/banner.jpg'">`
         ).join('');
         
         campaignImgContainer.innerHTML = `
@@ -226,7 +226,7 @@ function updateProductInfo(sanPham, chiTietDonHangs) {
     
     // Get all product images
     const productImages = sanPham.hinhAnhSanPhams && sanPham.hinhAnhSanPhams.length > 0
-        ? sanPham.hinhAnhSanPhams.map(img => '../' + img.duongDan)
+        ? sanPham.hinhAnhSanPhams.map(img => fixImagePath(img.duongDan))
         : ['../images/product-placeholder.jpg'];
     
     // Create images HTML
@@ -629,3 +629,20 @@ document.addEventListener('click', function(e) {
     const lb = document.getElementById('imageLightbox');
     if (e.target === lb) closeLightbox();
 });
+
+// Helper: Fix image path
+function fixImagePath(path) {
+    if (!path) return '../images/default.jpg';
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
+    }
+    if (path.startsWith('../') || path.startsWith('/')) return path;
+    
+    const isSubfolder = window.location.pathname.includes('/pages/');
+    if (isSubfolder) {
+        return '../' + path;
+    }
+    return path;
+}

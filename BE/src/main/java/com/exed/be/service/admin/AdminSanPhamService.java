@@ -76,7 +76,7 @@ public class AdminSanPhamService {
         sp.setDanhMuc(danhMuc);  // Set object DanhMuc thay vì string
         sp.setTenSanPham(req.getTenSanPham());
         sp.setMoTa(req.getMoTa());
-        sanPhamRepository.save(sp);
+        sanPhamRepository.saveAndFlush(sp);
 
         applyVariants(sp.getMaSanPham(), req);
         return sanPhamRepository.findById(sp.getMaSanPham()).orElse(sp);
@@ -94,7 +94,7 @@ public class AdminSanPhamService {
                     .orElseThrow(() -> new RuntimeException("Danh mục không tồn tại: " + req.getMaDanhMuc()));
             sp.setDanhMuc(danhMuc);  // Set object DanhMuc
         }
-        sanPhamRepository.save(sp);
+        sanPhamRepository.saveAndFlush(sp);
 
         applyVariants(maSanPham, req);
         return sanPhamRepository.findById(maSanPham).orElse(sp);

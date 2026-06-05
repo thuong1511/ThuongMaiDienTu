@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -247,12 +247,12 @@
                             <select id="f-thoiDiem" class="form-input">
                                 <option value="Sắp bắt đầu">Sắp bắt đầu</option>
                                 <option value="Đang diễn ra">Đang diễn ra</option>
-                                <option value="Đã kết thúc">Đã kết thúc</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="group-trangThai" style="display: none;">
                             <label>Trạng thái</label>
                             <select id="f-trangThai" class="form-input">
+                                <option value="">Chưa xác định (Null)</option>
                                 <option value="Thành công">Thành công</option>
                                 <option value="Thất bại">Thất bại</option>
                             </select>
@@ -327,6 +327,12 @@
         document.getElementById('addTierBtn').addEventListener('click', () => addTierRow());
         document.getElementById('fileInput').addEventListener('change', onFileSelect);
         setupDropzone();
+        
+        document.getElementById('f-thoiDiem').addEventListener('change', validateDatesRealTime);
+        document.getElementById('f-ngayBatDau').addEventListener('change', validateDatesRealTime);
+        document.getElementById('f-ngayKetThuc').addEventListener('change', validateDatesRealTime);
+        validateDatesRealTime();
+        
         document.getElementById('createCampaignForm').addEventListener('submit', onSubmit);
     });
 
@@ -374,10 +380,22 @@
             document.getElementById('f-phiThamGia').value = cd.phiThamGia || '';
             document.getElementById('f-nguongMOQ').value = cd.nguongMOQ || '';
             document.getElementById('f-nguongToiDa').value = cd.nguongToiDa || '';
-            document.getElementById('f-thoiDiem').value = cd.thoiDiem || 'Sắp bắt đầu';
-            document.getElementById('f-trangThai').value = cd.trangThai || 'Thành công';
+            const thoiDiemVal = cd.thoiDiem || 'Sắp bắt đầu';
+            const thoiDiemSelect = document.getElementById('f-thoiDiem');
+            if (thoiDiemVal === 'Đã kết thúc') {
+                const opt = document.createElement('option');
+                opt.value = 'Đã kết thúc';
+                opt.textContent = 'Đã kết thúc';
+                thoiDiemSelect.appendChild(opt);
+            }
+            thoiDiemSelect.value = thoiDiemVal;
+
+            // Hiển thị dropdown trạng thái khi chỉnh sửa
+            document.getElementById('group-trangThai').style.display = 'block';
+            document.getElementById('f-trangThai').value = cd.trangThai !== undefined && cd.trangThai !== null ? cd.trangThai : '';
             document.getElementById('f-ngayBatDau').value = toDatetimeLocal(cd.ngayBatDau);
             document.getElementById('f-ngayKetThuc').value = toDatetimeLocal(cd.ngayKetThuc);
+            validateDatesRealTime();
 
             // Bảng giá
             const tiersWrap = document.getElementById('pricingTiers');
@@ -567,12 +585,124 @@
         }
     };
 
+    function formatLocalDateTime(date) {
+        const pad = (n) => String(n).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        const MM = pad(date.getMonth() + 1);
+        const dd = pad(date.getDate());
+        const hh = pad(date.getHours());
+        const mm = pad(date.getMinutes());
+        return `${yyyy}-${MM}-${dd}T${hh}:${mm}`;
+    }
+
+    function validateDatesRealTime() {
+        const thoiDiem = document.getElementById('f-thoiDiem').value;
+        const ngayBatDauInput = document.getElementById('f-ngayBatDau');
+        const ngayKetThucInput = document.getElementById('f-ngayKetThuc');
+
+        const now = new Date();
+        const nowStr = formatLocalDateTime(now);
+
+        // Reset min/max properties to avoid overlapping conflicts
+        ngayBatDauInput.removeAttribute('min');
+        ngayBatDauInput.removeAttribute('max');
+        ngayKetThucInput.removeAttribute('min');
+        ngayKetThucInput.removeAttribute('max');
+
+        // Clear previous custom validities
+        ngayBatDauInput.setCustomValidity('');
+        ngayKetThucInput.setCustomValidity('');
+
+        const startVal = ngayBatDauInput.value;
+        const endVal = ngayKetThucInput.value;
+
+        if (thoiDiem === 'Sắp bắt đầu') {
+            // start date must be > now
+            ngayBatDauInput.min = nowStr;
+            
+            // end date must be > start date (and at least > now)
+            if (startVal) {
+                ngayKetThucInput.min = startVal;
+                const start = new Date(startVal);
+                if (start <= now) {
+                    ngayBatDauInput.setCustomValidity('Thời điểm "Sắp bắt đầu" yêu cầu thời gian bắt đầu phải lớn hơn thời gian hiện tại!');
+                }
+            } else {
+                ngayKetThucInput.min = nowStr;
+            }
+
+            if (startVal && endVal) {
+                const start = new Date(startVal);
+                const end = new Date(endVal);
+                if (end <= start) {
+                    ngayKetThucInput.setCustomValidity('Thời gian kết thúc phải lớn hơn thời gian bắt đầu!');
+                }
+            }
+        } else if (thoiDiem === 'Đang diễn ra') {
+            // start date must be <= now, so max of start date is now
+            ngayBatDauInput.max = nowStr;
+            
+            // end date must be >= now, so min of end date is now
+            ngayKetThucInput.min = nowStr;
+            
+            if (startVal) {
+                const start = new Date(startVal);
+                if (start > now) {
+                    ngayBatDauInput.setCustomValidity('Thời điểm "Đang diễn ra" yêu cầu thời gian bắt đầu phải nhỏ hơn hoặc bằng thời gian hiện tại!');
+                }
+                const startValLocal = startVal;
+                if (new Date(startValLocal) > now) {
+                    ngayKetThucInput.min = startValLocal;
+                } else {
+                    ngayKetThucInput.min = nowStr;
+                }
+            }
+
+            if (endVal) {
+                const end = new Date(endVal);
+                if (end < now) {
+                    ngayKetThucInput.setCustomValidity('Thời điểm "Đang diễn ra" yêu cầu thời gian kết thúc phải lớn hơn hoặc bằng thời gian hiện tại!');
+                }
+            }
+
+            if (startVal && endVal) {
+                const start = new Date(startVal);
+                const end = new Date(endVal);
+                if (end <= start) {
+                    ngayKetThucInput.setCustomValidity('Thời gian kết thúc phải lớn hơn thời gian bắt đầu!');
+                }
+            }
+        } else if (thoiDiem === 'Đã kết thúc') {
+            // end date must be < now
+            ngayKetThucInput.max = nowStr;
+            
+            if (endVal) {
+                ngayBatDauInput.max = endVal;
+                const end = new Date(endVal);
+                if (end >= now) {
+                    ngayKetThucInput.setCustomValidity('Thời điểm "Đã kết thúc" yêu cầu thời gian kết thúc phải nhỏ hơn thời gian hiện tại!');
+                }
+            } else {
+                ngayBatDauInput.max = nowStr;
+            }
+
+            if (startVal && endVal) {
+                const start = new Date(startVal);
+                const end = new Date(endVal);
+                if (end <= start) {
+                    ngayKetThucInput.setCustomValidity('Thời gian kết thúc phải lớn hơn thời gian bắt đầu!');
+                }
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────
     // Submit
     // ────────────────────────────────────────────────────────────
     async function onSubmit(e) {
         e.preventDefault();
 
+        const fTrangThai = document.getElementById('f-trangThai').value;
         const payload = {
             maChienDich: document.getElementById('f-maChienDich').value.trim().toUpperCase(),
             tenChienDich: document.getElementById('f-tenChienDich').value.trim(),
@@ -584,7 +714,7 @@
             nguongToiDa: parseInt(document.getElementById('f-nguongToiDa').value, 10) || 0,
             nguoiThamGia: 0, // Mặc định 0 khi tạo mới
             thoiDiem: document.getElementById('f-thoiDiem').value,
-            trangThai: document.getElementById('f-trangThai').value,
+            trangThai: fTrangThai ? fTrangThai : null,
             ngayBatDau: document.getElementById('f-ngayBatDau').value || null,
             ngayKetThuc: document.getElementById('f-ngayKetThuc').value || null,
             bangGiaBacThangs: readTiers()
@@ -597,6 +727,27 @@
         if (!payload.maSanPham) return showToast('Chưa chọn sản phẩm', 'error');
         if (!payload.ngayBatDau || !payload.ngayKetThuc) return showToast('Thiếu thời gian', 'error');
         if (payload.nguongToiDa < payload.nguongMOQ) return showToast('Ngưỡng tối đa phải >= MOQ', 'error');
+
+        // Validate date/time logic based on thoiDiem
+        const now = new Date();
+        const start = new Date(payload.ngayBatDau);
+        const end = new Date(payload.ngayKetThuc);
+        
+        if (payload.thoiDiem === 'Sắp bắt đầu') {
+            if (start <= now) {
+                return showToast('Thời điểm "Sắp bắt đầu" yêu cầu thời gian bắt đầu phải lớn hơn thời gian hiện tại!', 'error');
+            }
+            if (end <= start) {
+                return showToast('Thời gian kết thúc phải lớn hơn thời gian bắt đầu!', 'error');
+            }
+        } else if (payload.thoiDiem === 'Đang diễn ra') {
+            if (now < start || now > end) {
+                return showToast('Thời điểm "Đang diễn ra" yêu cầu thời gian hiện tại phải nằm trong khoảng thời gian bắt đầu và kết thúc!', 'error');
+            }
+            if (end <= start) {
+                return showToast('Thời gian kết thúc phải lớn hơn thời gian bắt đầu!', 'error');
+            }
+        }
         
         // Validate số lượng ảnh: 2-3 ảnh
         const totalImages = existingImages.length + pendingImages.length;

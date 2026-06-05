@@ -509,7 +509,7 @@ BEGIN
     DECLARE cur CURSOR FOR
     SELECT i.maDonHang, i.maDangKy
     FROM inserted i
-    WHERE i.maDonHang != 'DH001';  -- Bỏ qua DH001 vì đã có dữ liệu mẫu
+    WHERE i.maDonHang NOT IN ('DH001', 'DH002');  -- Bỏ qua DH001 và DH002 vì đã có dữ liệu mẫu
     
     OPEN cur;
     FETCH NEXT FROM cur INTO @maDonHang, @maDangKy;
@@ -1404,11 +1404,88 @@ WHERE maNguoiDung = 'ND002';
 
 GO
 
+-- ============================================================
+-- DỮ LIỆU TEST CHO KHÁCH HÀNG ND003 (trieutien)
+-- ============================================================
+
+-- 1. ThanhToan cho đơn đăng ký chiến dịch CD005 (Ji Chang Wook - đã kết thúc thành công)
+INSERT INTO ThanhToan (hoTenNguoiNhan, soDienThoaiNhan, diaChiGiaoHang, soTienThanhToan, phuongThuc, ngayThanhToan, ghiChu)
+VALUES 
+(N'Triệu Tiên', '0901000003', N'Phường Bến Nghé, Quận 1, TP Hồ Chí Minh', 2700000, N'VNPay', '2026-05-15 10:00:00', N'Thanh toán chiến dịch Ji Chang Wook');
+-- maThanhToan sẽ là 2
+
+-- 2. DangKyChienDich cho CD005 (Ji Chang Wook)
+INSERT INTO DangKyChienDich (maThanhToan, maMucGia, maNguoiDung, maChienDich, daHuy, tongSoLuong, daHoanTien, soTienHoanLai, ngayHoanTien, ngayDangKy)
+VALUES 
+(2, 19, 'ND003', 'CD005', 0, 1, 1, 1000000, '2026-05-25 06:00:00', '2026-05-15 10:00:00');
+-- maDangKy sẽ là 2
+
+-- 3. PhieuChiTietDangKy cho đơn đăng ký trên (1 đôi giày New Balance 574 Grey)
+INSERT INTO PhieuChiTietDangKy (maDangKy, maSanPham, maMau, maSize, soLuong)
+VALUES 
+(2, 'SP005', 5, 6, 1);  -- 1 đôi màu Xám (maMau = 5), size 39 (maSize = 6)
+
+-- 4. DonHang (chiến dịch thành công, cược đúng, đã giao hàng)
+INSERT INTO DonHang (maDonHang, maDangKy, giaChotCuoiCung, daHoanTien, soTienHoanLai, ngayHoanTien, trangThaiGiaoHang, ngayTaoDon)
+VALUES 
+('DH002', 2, 1700000, 1, 1000000, '2026-05-25 06:00:00', N'Đã giao', '2026-05-25 00:00:00');
+
+-- 5. ChiTietDonHang
+INSERT INTO ChiTietDonHang (maDonHang, maMau, maSize, soLuong)
+VALUES 
+('DH002', 5, 6, 1);  -- Xám, size 39
+
+-- 6. PhieuGiaoHang - Lịch sử vận chuyển
+INSERT INTO PhieuGiaoHang (maVanDon, maDonHang, donViVanChuyen, nguoiNhan, ngayDangKy, ngayChuanBi, ngayGiao, ngayNhan, ghiChu)
+SELECT 
+    'GHN987654321',
+    'DH002',
+    N'Giao Hàng Nhanh',
+    tt.hoTenNguoiNhan,
+    dk.ngayDangKy,  -- Thời gian đăng ký chiến dịch
+    cd.ngayKetThuc, -- Thời gian chiến dịch kết thúc
+    '2026-05-26 09:00:00',  -- Admin giao hàng
+    '2026-05-27 15:00:00',  -- Người nhận đã nhận thành công
+    N'Giao hàng thành công'
+FROM DonHang dh
+INNER JOIN DangKyChienDich dk ON dh.maDangKy = dk.maDangKy
+INNER JOIN ChienDich cd ON dk.maChienDich = cd.maChienDich
+INNER JOIN ThanhToan tt ON dk.maThanhToan = tt.maThanhToan
+WHERE dh.maDonHang = 'DH002';
+
+-- 7. Cập nhật Ví và Giao dịch Ví
+DECLARE @maViND003 INT;
+SELECT @maViND003 = maVi FROM Wallet WHERE maNguoiDung = 'ND003';
+
+INSERT INTO WalletTransaction (maVi, loaiGiaoDich, soTien, moTa, maDangKy, ngayGiaoDich)
+VALUES 
+(@maViND003, N'Hoàn tiền', 1000000, N'Hoàn tiền - Cược đúng. Chiến dịch JI CHANG WOOK X EXED', 2, '2026-05-25 06:00:00');
+
+UPDATE Wallet 
+SET soDu = 1000000 
+WHERE maNguoiDung = 'ND003';
+
+-- 8. Đánh giá ẩn danh (anDanh = 1) và 2 hình ảnh đánh giá
+INSERT INTO DanhGia (maDonHang, diemDanhGia, binhLuan, ngayDanhGia, anDanh)
+VALUES 
+('DH002', 5, N'Giày New Balance 574 Grey đi cực kỳ êm chân và tôn dáng. Giao hàng nhanh và đóng gói cẩn thận!', '2026-05-29 10:00:00', 1);
+
+-- Lấy maDanhGia vừa tạo để chèn hình ảnh
+DECLARE @maDanhGiaNew INT;
+SET @maDanhGiaNew = SCOPE_IDENTITY();
+
+INSERT INTO HinhAnhDanhGia (maDanhGia, duongDan, thuTu)
+VALUES 
+(@maDanhGiaNew, 'uploads/danhgia/2026/06/review.jpg', 1),
+(@maDanhGiaNew, 'uploads/danhgia/2026/06/review2.jpg', 2);
+
+GO
+
 select * from ThanhToan
 select * from DangKyChienDich
 select * from PhieuChiTietDangKy
 select * from HinhAnhChienDich
-select * from HinhAnhSanPham
+
 select * from ChienDich
 select * from SoDiaChi
 select * from ChienDich
@@ -1418,11 +1495,15 @@ select * from ChiTietDonHang
 select * from DangKyChienDich
 select * from MauSac
 select * from SanPham_MauSac
+select * from SanPham_KichThuoc
+select * from SanPham
+select * from HinhAnhSanPham
 select * from BangGiaBacThang
 select * from Wallet
 select * from WalletTransaction
 select * from PhieuGiaoHang
 select * from DanhGia
 select * from HinhAnhDanhGia
+select * from HinhAnhChienDich
 select * from ThongBao
 select * from NguoiDung

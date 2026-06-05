@@ -1013,8 +1013,17 @@ function formatCurrency(amount) {
 
 function fixImagePath(path) {
     if (!path) return '../images/default.jpg';
-    if (path.startsWith('../') || path.startsWith('http')) return path;
-    if (path.startsWith('images/')) return '../' + path;
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('uploads/') || path.startsWith('/uploads/')) {
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `http://localhost:8080/${cleanPath}`;
+    }
+    if (path.startsWith('../') || path.startsWith('/')) return path;
+    
+    const isSubfolder = window.location.pathname.includes('/pages/');
+    if (isSubfolder) {
+        return '../' + path;
+    }
     return path;
 }
 
