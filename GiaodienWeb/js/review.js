@@ -355,14 +355,15 @@ function initializeSubmitButton() {
             });
             
             try {
-                // Call multi-upload endpoint
-                const uploadResponse = await fetch(`${API_BASE_URL}/admin/upload/multi?folder=danhgia`, {
+                // Call public upload endpoint for review images
+                const uploadResponse = await fetch(`${API_BASE_URL}/upload/danhgia/multi`, {
                     method: 'POST',
                     body: formData
                 });
                 const uploadResult = await uploadResponse.json();
                 if (uploadResult.success && uploadResult.data) {
                     imagePaths = uploadResult.data.map(item => item.duongDan);
+                    console.log('✅ Uploaded images:', imagePaths);
                 } else {
                     console.error('File upload failed:', uploadResult.message);
                     showPremiumAlert('Lỗi khi tải ảnh lên: ' + uploadResult.message, false);

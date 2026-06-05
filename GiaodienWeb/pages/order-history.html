@@ -138,6 +138,36 @@
         </div>
     </section>
 
+    <!-- Review Dialog Modal -->
+    <div id="reviewDialog" class="review-dialog-overlay" style="display: none;">
+        <div class="review-dialog">
+            <div class="review-dialog-header">
+                <h2>Đánh giá của bạn</h2>
+                <button class="close-dialog-btn" onclick="closeReviewDialog()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="review-dialog-body">
+                <div class="review-campaign-name"></div>
+                <div class="review-rating"></div>
+                <div class="review-date"></div>
+                <div class="review-content"></div>
+                <div class="review-images"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="imageLightbox" class="lightbox-overlay" style="display: none;">
+        <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-content-wrapper">
+            <img id="lightboxImage" src="" alt="Ảnh đánh giá phóng to">
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
