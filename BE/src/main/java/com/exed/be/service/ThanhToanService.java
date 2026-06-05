@@ -77,7 +77,8 @@ public class ThanhToanService {
         
         // Check if balance is sufficient
         if (currentBalance.compareTo(paymentAmount) < 0) {
-            throw new RuntimeException("Số dư ví không đủ. Số dư hiện tại: " + currentBalance + " đ");
+            String formattedBalance = String.format("%,.0f", currentBalance.doubleValue()).replace(',', '.');
+            throw new RuntimeException("Số dư ví không đủ. Số dư hiện tại: " + formattedBalance + " đ");
         }
         
         // Deduct from wallet

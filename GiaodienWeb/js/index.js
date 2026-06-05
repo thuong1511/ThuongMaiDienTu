@@ -234,7 +234,40 @@ async function loadHeroCampaign() {
       // Update info section with first campaign
       updateInfoPriceSection(sortedCampaigns[0]);
     } else {
-      console.warn('⚠️ No active campaigns found');
+      console.warn('⚠️ No active campaigns found. Fetching most recent campaign as fallback...');
+      // Fallback: Fetch all campaigns to display the most recent ended campaign
+      const allResponse = await api.getAllChienDich();
+      if (allResponse.success && allResponse.data && allResponse.data.length > 0) {
+        // Sort by ngayBatDau descending
+        const sortedAll = allResponse.data.sort((a, b) => new Date(b.ngayBatDau) - new Date(a.ngayBatDau));
+        const latestCampaign = sortedAll[0];
+        
+        console.log('📋 Displaying latest campaign as fallback:', latestCampaign.tenChienDich);
+        
+        // Update hero banner
+        updateHeroBanner(latestCampaign);
+        
+        // Update info section
+        updateInfoPriceSection(latestCampaign);
+        
+        // Update button text for ended campaigns
+        const heroButton = document.querySelector('.hero-content .btn-primary');
+        if (heroButton) {
+          heroButton.textContent = 'XEM CHI TIẾT';
+        }
+      } else {
+        const countdownElement = document.getElementById('countdown-banner');
+        if (countdownElement) {
+          countdownElement.textContent = '00 ngày : 00 giờ : 00 phút : 00 giây';
+        }
+        const statusRow = document.querySelectorAll('.info-left-box .info-row-compact')[1];
+        if (statusRow) {
+          const span = statusRow.querySelector('span');
+          if (span) {
+            span.textContent = 'Không có chiến dịch nào đang diễn ra';
+          }
+        }
+      }
     }
   } catch (error) {
     console.error('❌ Error loading hero campaign:', error.message);
@@ -396,7 +429,9 @@ function updateHeroSection(campaign) {
 // Update info-price section with active campaign
 function updateInfoPriceSection(campaign) {
   // Update countdown - MUST be called first
-  if (campaign.ngayKetThuc) {
+  if (campaign.thoiDiem === 'Đã kết thúc') {
+    updateCountdown(new Date(0));
+  } else if (campaign.ngayKetThuc) {
     updateCountdown(campaign.ngayKetThuc);
   } else {
     console.error('❌ Campaign has no ngayKetThuc!');
@@ -494,7 +529,7 @@ function calculateTimeRemaining(endDate) {
   const end = new Date(endDate);
   const diff = end - now;
   
-  if (diff <= 0) return 'Đã kết thúc';
+  if (diff <= 0) return '00 ngày : 00 giờ : 00 phút : 00 giây';
   
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -541,6 +576,20 @@ function updateCountdown(endDate) {
         
         const timeRemaining = calculateTimeRemaining(endDate);
         countdownElement.textContent = timeRemaining;
+        
+        // If the countdown timer hits 0 on the banner, update the status in the info bar to "Đã kết thúc"
+        if (timeRemaining === '00 ngày : 00 giờ : 00 phút : 00 giây') {
+            const infoRows = document.querySelectorAll('.info-left-box .info-row-compact');
+            if (infoRows.length >= 2) {
+                const statusRow = infoRows[1];
+                const span = statusRow.querySelector('span');
+                if (span && !span.textContent.includes('Đã kết thúc')) {
+                    statusRow.classList.remove('moq-pending');
+                    statusRow.classList.add('moq-met');
+                    span.innerHTML = `<strong>Đã kết thúc</strong>`;
+                }
+            }
+        }
     }
 
     // Update ngay lập tức

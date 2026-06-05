@@ -75,7 +75,7 @@ BEGIN
         FROM inserted i
         JOIN deleted d ON i.maDangKy = d.maDangKy
         JOIN ChienDich c ON i.maChienDich = c.maChienDich
-        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0;
+        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0 AND i.soTienHoanLai > 0;
     END
 END;
 GO

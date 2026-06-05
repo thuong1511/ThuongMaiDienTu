@@ -94,7 +94,7 @@ function createRegistrationCard(registration, details) {
     // Determine campaign status
     const now = new Date();
     const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
-    const isCampaignEnded = campaignEndDate && campaignEndDate < now;
+    const isCampaignEnded = (campaignEndDate && campaignEndDate < now) || (chienDich?.thoiDiem === 'Đã kết thúc');
     
     // Calculate refund amount for ended campaigns
     let soTienHoanLai = 0;
@@ -147,9 +147,11 @@ function createRegistrationCard(registration, details) {
     const decisionDeadline = new Date(registration.ngayDangKy);
     decisionDeadline.setDate(decisionDeadline.getDate() + 2);
     
-    // If campaign ends before decision deadline, use campaign end date
+    // If campaign has ended, decision deadline has definitely passed (set to past)
     let finalDecisionDeadline = decisionDeadline;
-    if (campaignEndDate && campaignEndDate < decisionDeadline) {
+    if (isCampaignEnded) {
+        finalDecisionDeadline = new Date(0);
+    } else if (campaignEndDate && campaignEndDate < decisionDeadline) {
         finalDecisionDeadline = campaignEndDate;
     }
 
@@ -378,7 +380,7 @@ function viewRegistrationDetail(maDangKy) {
     // Determine campaign status
     const now = new Date();
     const campaignEndDate = chienDich?.ngayKetThuc ? new Date(chienDich.ngayKetThuc) : null;
-    const isCampaignEnded = campaignEndDate && campaignEndDate < now;
+    const isCampaignEnded = (campaignEndDate && campaignEndDate < now) || (chienDich?.thoiDiem === 'Đã kết thúc');
     
     const detailsHTML = details.map((detail, index) => `
         <div style="background: #fdfbf7; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(196, 168, 127, 0.3); display: flex; justify-content: space-between; align-items: center;">

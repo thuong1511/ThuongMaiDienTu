@@ -50,6 +50,8 @@ async function loadCampaignDetail(campaignId) {
     // Start countdown timer - use start date for upcoming campaigns
     if (campaign.thoiDiem === 'Sắp bắt đầu') {
         startCountdownTimer(campaign.ngayBatDau, true);
+    } else if (campaign.thoiDiem === 'Đã kết thúc') {
+        startCountdownTimer(new Date(0), false);
     } else {
         startCountdownTimer(campaign.ngayKetThuc, false);
     }
@@ -266,6 +268,28 @@ function startCountdownTimer(targetDate, isStartDate = false) {
             timeUnits[1].textContent = '00';
             timeUnits[2].textContent = '00';
             timeUnits[3].textContent = '00';
+            
+            // Real-time status transition when countdown reaches 0
+            if (!isStartDate) {
+                const statusBadge = document.querySelector('.status-badge');
+                if (statusBadge && statusBadge.textContent === 'Đang diễn ra') {
+                    statusBadge.textContent = 'Đã kết thúc';
+                    statusBadge.className = 'status-badge ended';
+                    handleStatusBasedUI('Đã kết thúc');
+                    
+                    const countdownLabel = document.querySelector('.countdown-label span');
+                    if (countdownLabel) {
+                        countdownLabel.textContent = 'Đã kết thúc';
+                    }
+                }
+            } else {
+                // If it was "Sắp bắt đầu", reload the campaign detail to show "Đang diễn ra"
+                const urlParams = new URLSearchParams(window.location.search);
+                const campaignId = urlParams.get('id');
+                if (campaignId) {
+                    loadCampaignDetail(campaignId).catch(console.error);
+                }
+            }
             return;
         }
 

@@ -760,7 +760,7 @@ BEGIN
         FROM inserted i
         JOIN deleted d ON i.maDangKy = d.maDangKy
         JOIN ChienDich c ON i.maChienDich = c.maChienDich
-        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0;
+        WHERE i.daHoanTien = 1 AND d.daHoanTien = 0 AND i.soTienHoanLai > 0;
     END
 END;
 GO
@@ -1426,5 +1426,5 @@ select * from HinhAnhDanhGia
 select * from ThongBao
 select * from NguoiDung
 UPDATE ChienDich
-SET ngayKetThuc = '2026-06-01 14:06:59'
-WHERE maChienDich = 'CD001';
+SET ngayKetThuc = '2026-06-01 21:28:59'
+WHERE maChienDich = 'CD002';
